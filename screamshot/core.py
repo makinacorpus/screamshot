@@ -28,19 +28,19 @@ class ScreenShot(object):
         assert isinstance(url, str), 'url parameter must be a string'
         self.url = url
 
-		if height and width:
-			assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
-			assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-			self.argViewport = {'width': width, 'height': height}
-		elif width:
-			assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
-			self.argViewport = {'width': width, 'height': 600}
-		elif height:
-			assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-			self.argViewport = {'width': 800, 'height': height}
-		else:
-			self.argViewport = None
-			
+        if height and width:
+            assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
+            assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
+            self.argViewport = {'width': width, 'height': height}
+        elif width:
+            assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
+            self.argViewport = {'width': width, 'height': 600}
+        elif height:
+            assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
+            self.argViewport = {'width': 800, 'height': height}
+        else:
+            self.argViewport = None
+            
         assert (img_type == 'png' or img_type == 'jpeg'), 'img_type must be equal to png or jpeg'
         self.img_type = img_type
 
