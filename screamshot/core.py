@@ -23,9 +23,9 @@ class ScreenShot(object):
     * take, () => b'', async, take a screenshot
     """
 
-	@staticmethod
-	def _checkListType(l, expected_type):
-		return((bool(l) and all(isinstance(elem, expected_type) for elem in l)))
+    @staticmethod
+    def _checkListType(l, expected_type):
+        return((bool(l) and all(isinstance(elem, expected_type) for elem in l)))
 
     def __init__(self, url, width=None, height=None, img_type='png',
                  selector=None, wait_for=None, wait_until=None, render=False, data=None):
@@ -55,13 +55,10 @@ class ScreenShot(object):
         if wait_for:
             assert isinstance(wait_for, str), 'wait_for must be a string'
         self.wait_for = wait_for
-		
-		if wait_until:
-			assert ScreenShot._checkListType(wait_until, str), 'wait_until should be a string or a list of string'
-		self.wait_until = wait_until
-
-        assert isinstance(fully_charged, bool), 'fully_charged must be a boolean'
-        self.fully_charged = fully_charged
+        
+        if wait_until:
+            assert ScreenShot._checkListType(wait_until, str), 'wait_until should be a string or a list of string'
+        self.wait_until = wait_until
 
         assert isinstance(render, bool), 'render must be a boolean'
         self.render = render
@@ -75,10 +72,10 @@ class ScreenShot(object):
         if self.argViewport:
                await page.setViewport(self.argViewport)
 
-		if self.wait_until:
-			await page.goto(self.url, waitUntil=self.wait_until)
-		else:
-			await page.goto(self.url)
+        if self.wait_until:
+            await page.goto(self.url, waitUntil=self.wait_until)
+        else:
+            await page.goto(self.url)
 
         return page
 
