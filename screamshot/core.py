@@ -19,8 +19,8 @@ class ScreenShot(object):
             assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
             self.height = height
 
-        assert (im_type == 'png' or im_type == 'jpeg'), 'im_type must be equal to png or jpeg'
-        self.im_type = im_type
+        assert (img_type == 'png' or img_type == 'jpeg'), 'img_type must be equal to png or jpeg'
+        self.img_type = img_type
 
         if selector:
             assert isinstance(selector, str), 'selector must be a string'
@@ -62,7 +62,7 @@ class ScreenShot(object):
         return page
 
     async def _take_screenshot(self, element):
-        screenshot_params = {'type': self.im_type}
+        screenshot_params = {'type': self.img_type}
         return element.screenshot(screenshot_params)
 
     async def take(self):
