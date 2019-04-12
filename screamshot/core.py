@@ -15,7 +15,7 @@ class ScreenShot(object):
     * img_type, optionnal, png (default) or jpeg, the image type
     * selector, optionnal, CSS3 selector, item whose screenshot is taken
     * wait_for, optionnal, CSS3 selector, item to wait before taking the screenshot
-    * fully_charged, optionnal, boolean, default False, wait until no packet has been sent for 500ms
+    * wait_until, optionnal, string or list of string, default None, define how long you wait for the page to be loaded should be either load, domcontentloaded, networkidle0 or networkidle2
     * render, optionnal, boolean, default False, generate an html page
     * data, optionnal, str, the html page generated. Must contains ${screenshot}.
 
@@ -23,8 +23,12 @@ class ScreenShot(object):
     * take, () => b'', async, take a screenshot
     """
 
+	@staticmethod
+	def _checkListType(l, expected_type):
+		return((bool(l) and all(isinstance(elem, expected_type) for elem in l)))
+
     def __init__(self, url, width=None, height=None, img_type='png',
-                 selector=None, wait_for=None, fully_charged=False, render=False, data=None):
+                 selector=None, wait_for=None, wait_until=None, render=False, data=None):
         assert isinstance(url, str), 'url parameter must be a string'
         self.url = url
 
@@ -52,6 +56,10 @@ class ScreenShot(object):
             assert isinstance(wait_for, str), 'wait_for must be a string'
         self.wait_for = wait_for
 		
+		if wait_until:
+			assert ScreenShot._checkListType(wait_until, str), 'wait_until should be a string or a list of string'
+		self.wait_until = wait_until
+
         assert isinstance(fully_charged, bool), 'fully_charged must be a boolean'
         self.fully_charged = fully_charged
 
@@ -67,7 +75,10 @@ class ScreenShot(object):
         if self.argViewport:
                await page.setViewport(self.argViewport)
 
-        await page.goto(self.url)
+		if self.wait_until:
+			await page.goto(self.url, waitUntil=self.wait_until)
+		else:
+			await page.goto(self.url)
 
         return page
 
