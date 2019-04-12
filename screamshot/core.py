@@ -70,4 +70,5 @@ class ScreenShot(object):
         page = await self._init_page(browser)
         element = await self._selector_manager(page)
         img = self._take_screenshot(element)
+        browser.close()
         return img
