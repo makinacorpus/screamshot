@@ -68,8 +68,8 @@ class ScreenShot(object):
 
     async def _init_page(self, browser):
         page = await browser.newPage()
-		if self.argViewport:
-   	    	await page.setViewport(self.argViewport)
+        if self.argViewport:
+               await page.setViewport(self.argViewport)
 
         await page.goto(self.url)
 
@@ -85,12 +85,12 @@ class ScreenShot(object):
 
     async def _take_screenshot(self, element):
         screenshot_params = {'type': self.img_type}
-        return element.screenshot(screenshot_params)
+        return await element.screenshot(screenshot_params)
 
     async def take(self):
         browser = await launch(headless=True)
         page = await self._init_page(browser)
         element = await self._selector_manager(page)
-        img = self._take_screenshot(element)
-        browser.close()
+        img = await self._take_screenshot(element)
+        await browser.close()
         return img
