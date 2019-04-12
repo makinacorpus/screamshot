@@ -8,9 +8,6 @@ class ScreenShot(object):
         assert isinstance(url, str), 'url parameter must be a string'
         self.url = url
 
-        assert (method == 'POST' or method == 'GET'), 'method must be equal to POST or GET'
-        self.method = method
-
         if width:
             assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
             self.width = width
