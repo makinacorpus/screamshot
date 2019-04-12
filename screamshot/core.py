@@ -2,8 +2,25 @@ from pyppeteer import launch
 
 
 class ScreenShot(object):
+    """
+    This object allows a user to take a web page screenshot
 
-    def __init__(self, url, method, width=None, height=None, im_type='png',
+    Attributes:
+    * url, mandatory, str, the website's url
+    * width, optionnal, positive int, the window's width
+    * height, optionnal, positive int, the window's height
+    * img_type, optionnal, png (default) or jpeg, the image type
+    * selector, optionnal, CSS3 selector, item whose screenshot is taken
+    * wait_for, optionnal, CSS3 selector, item to wait before taking the screenshot
+    * fully_charged, optionnal, boolean, default False, wait until no packet has been sent for 500ms
+    * render, optionnal, boolean, default False, generate an html page
+    * data, optionnal, str, the html page generated. Must contains ${screenshot}.
+
+    Methods:
+    * take, () => b'', async, take a screenshot
+    """
+
+    def __init__(self, url, width=None, height=None, img_type='png',
                  selector=None, wait_for=None, fully_charged=False, render=False, data=None):
         assert isinstance(url, str), 'url parameter must be a string'
         self.url = url
