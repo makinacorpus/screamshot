@@ -66,7 +66,7 @@ class ScreenShot(object):
     async def _init_page(self, browser):
         page = await browser.newPage()
 		if self.argViewport:
-   	    	await page.setViewport(page_params)
+   	    	await page.setViewport(self.argViewport)
 
         await page.goto(self.url)
 
