@@ -46,16 +46,12 @@ class ScreenShot(object):
 
         if selector:
             assert isinstance(selector, str), 'selector must be a string'
-            self.selector = selector
-        else:
-            self.selector = None
-
+        self.selector = selector
+        
         if wait_for:
             assert isinstance(wait_for, str), 'wait_for must be a string'
-            self.wait_for = wait_for
-        else:
-            self.wait_for = None
-        
+        self.wait_for = wait_for
+		
         assert isinstance(fully_charged, bool), 'fully_charged must be a boolean'
         self.fully_charged = fully_charged
 
