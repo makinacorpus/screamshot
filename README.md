@@ -1,2 +1,2 @@
 # screamshot
-Python lib to capture screenshots off web applications
+Python lib to capture screenshots of web applications
