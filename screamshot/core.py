@@ -27,6 +27,13 @@ class ScreenShot(object):
 	@staticmethod
 	def _checkListType(l, expected_type):
 		return((bool(l) and all(isinstance(elem, expected_type) for elem in l)))
+	
+	@staticmethod
+	def _checkListOfStrValue(l, values):
+		if isinstance(l, str):
+			l = [l]
+		return all([e in values for e in l])
+
 
 	def __init__(self, url, width=None, height=None, img_type='png',
 				 selector=None, wait_for=None, wait_until=None, render=False, fullPage = False, data=None):
@@ -69,7 +76,7 @@ class ScreenShot(object):
 		self.wait_for = wait_for
 		
 		if wait_until:
-			assert ScreenShot._checkListType(wait_until, str), 'wait_until should be a string or a list of string'
+			assert ScreenShot._checkListType(wait_until, str) and ScreenShot._checkListOfStrValue(wait_until, ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']), 'wait_until should be a string or a list of string of load, domcontentloaded, networkidle0 or networkidle2'
 		self.wait_until = wait_until
 
 		assert isinstance(render, bool), 'render must be a boolean'
@@ -102,6 +109,9 @@ class ScreenShot(object):
 		self.browser = await launch()
 		self.page = await self._init_page(self.browser)
 
+	def load(self):
+		return asyncio.get_event_loop().run_until_complete(self._screamshot())
+
 	async def _screamshot(self):
 		element = await self._selector_manager()
 		screamshot_params = {'type': self.img_type, 'fullPage': self.fullPage}
@@ -109,7 +119,7 @@ class ScreenShot(object):
 		return image
 
 	def screamshot(self):
-		return(asyncio.get_event_loop().run_until_complete(self._screamshot()))
+		return asyncio.get_event_loop().run_until_complete(self._screamshot())
 
 	async def _load_and_screamshot(self):
 		await self._load()
@@ -117,4 +127,4 @@ class ScreenShot(object):
 		return image
 	
 	def load_and_screamshot(self):
-		return(asyncio.get_event_loop().run_until_complete(self._load_and_screamshot()))
+		return asyncio.get_event_loop().run_until_complete(self._load_and_screamshot())
