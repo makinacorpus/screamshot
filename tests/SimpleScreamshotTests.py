@@ -8,7 +8,7 @@ class SimpleScreamshotTests(unittest.TestCase):
         self.screenShot = ScreenShot('https://www.google.fr')
 
     def test_works(self):
-        img = self.screenShot.take()
+        img = self.screenShot.load_and_screamshot()
         self.assertTrue(isinstance(img, bytes))
 
 
