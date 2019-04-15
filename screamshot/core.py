@@ -43,8 +43,7 @@ class ScreenShot():
             list_to_check = [list_to_check]
         return all([e in values for e in list_to_check])
 
-    def __init__(self, url, width=None, height=None,
-                 selector=None, wait_for=None, wait_until=None, full_page=False):
+    def __init__(self, url, **kwargs):
 
         # Initialising attributes
         self.browser = None
@@ -57,37 +56,49 @@ class ScreenShot():
         # one to a default value.
         # If we have none of them, we set argViewport to None
 
-        if height and width:
-            assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
+        self.arg_viewport = {}
+        if 'height' in kwargs:
+            height = kwargs.pop('height')
             assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-            self.arg_viewport = {'width': width, 'height': height}
-        elif width:
-            assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
-            self.arg_viewport = {'width': width, 'height': 600}
-        elif height:
-            assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-            self.arg_viewport = {'width': 800, 'height': height}
+            self.arg_viewport.update({'height': height})
         else:
-            self.arg_viewport = None
+            self.arg_viewport.update({'height': 600})
+        if 'width' in kwargs:
+            width = kwargs.pop('width')
+            assert (isinstance(width, int) and width >= 0), 'height must be a positive integer'
+            self.arg_viewport.update({'height': width})
+        else:
+            self.arg_viewport.update({'width': 800})
 
-        assert isinstance(full_page, bool), 'fullPage must be a boolean'
-        self.full_page = full_page
+        self.full_page = None
+        if 'full_page' in kwargs:
+            full_page = kwargs.pop('full_page')
+            assert isinstance(full_page, bool), 'fullPage must be a boolean'
+            self.full_page = full_page
 
-        if selector:
+        if 'selector' in kwargs:
+            selector = kwargs.pop('selector')
             assert isinstance(selector, str), 'selector must be a string'
-        self.selector = selector
+            self.selector = selector
+        else:
+            self.selector = None
 
-        if wait_for:
+        if 'wait_for' in kwargs:
+            wait_for = kwargs.pop('wait_for')
             assert isinstance(wait_for, str), 'wait_for must be a string'
-        self.wait_for = wait_for
+            self.wait_for = wait_for
+        else:
+            self.wait_for = None
 
-        if wait_until:
+        self.wait_until = None
+        if 'wait_until' in kwargs:
+            wait_until = kwargs.pop('wait_until')
             assert (self._check_list_type(wait_until, str)
                     and self._check_list_of_str_value(
                         wait_until, self.wait_until_possible_values)), (
                             'wait_until should be a string or a list of string of load,'
                             + ' domcontentloaded, networkidle0 or networkidle2')
-        self.wait_until = wait_until
+            self.wait_until = wait_until
 
     async def _init_page(self, browser):
         page = await browser.newPage()
