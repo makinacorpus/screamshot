@@ -38,8 +38,7 @@ class ScreenShot():
         return all([e in values for e in list_to_check])
 
     def __init__(self, url, width=None, height=None,
-                 selector=None, wait_for=None, wait_until=None, full_page=False,
-                 ):
+                 selector=None, wait_for=None, wait_until=None, full_page=False):
 
         # Initialising attributes
         self.browser = None
