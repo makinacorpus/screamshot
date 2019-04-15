@@ -1,5 +1,6 @@
 from pyppeteer import launch
 from operator import xor
+import asyncio
 
 
 # If fullPage is set to True, width and height cannot reduce the size of the screenshot
@@ -91,10 +92,14 @@ class ScreenShot(object):
         screenshot_params = {'type': self.img_type}
         return await element.screenshot(screenshot_params)
 
-    async def take(self):
+    async def _take(self):
         browser = await launch(headless=True)
         page = await self._init_page(browser)
         element = await self._selector_manager(page)
         img = await self._take_screenshot(element)
         await browser.close()
+        return img
+
+    def take(self):
+        img = asyncio.get_event_loop().run_until_complete(self._take())
         return img
