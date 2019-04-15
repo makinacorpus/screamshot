@@ -24,10 +24,18 @@ class ScreenShot():
     * take, () => b'', async, take a screenshot
     """
 
+    wait_until_possible_values = ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
+
     @staticmethod
     def _check_list_type(list_to_check, expected_type):
         return (bool(list_to_check)
                 and all(isinstance(elem, expected_type) for elem in list_to_check))
+
+    @staticmethod
+    def _check_list_of_str_value(list_to_check, values):
+        if isinstance(list_to_check, str):
+            list_to_check = [list_to_check]
+        return all([e in values for e in list_to_check])
 
     def __init__(self, url, width=None, height=None, img_type='png',
                  selector=None, wait_for=None, wait_until=None, render=False, full_page=False,
@@ -72,8 +80,11 @@ class ScreenShot():
         self.wait_for = wait_for
 
         if wait_until:
-            assert ScreenShot._check_list_type(wait_until, str), ('wait_until should be a' +
-                                                                  'string or a list of string')
+            assert (self._check_list_type(wait_until, str)
+                    and self._check_list_of_str_value(
+                        wait_until, self.wait_until_possible_values)), (
+                            'wait_until should be a string or a list of string of load,'
+                            + ' domcontentloaded, networkidle0 or networkidle2')
         self.wait_until = wait_until
 
         assert isinstance(render, bool), 'render must be a boolean'
