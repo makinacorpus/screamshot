@@ -17,7 +17,11 @@ This function takes the following parameters and returns a base64 `bytes` object
 * selector: optionnal, str, CSS3 selector, item whose screenshot is taken
 * wait_for: optionnal, str, CSS3 selector, item to wait before taking the screenshot
 * wait_until: optionnal, str, define how long you wait for the page to be loaded should be
-  either load, domcontentloaded, networkidle0 or networkidle2
+  either: 
+    * load, when load event is fired
+    * domcontentloaded, when the DOMContentLoaded event is fired
+    * networkidle0, when there are no more than 0 network connections for at least 500 ms
+    * networkidle2, when there are no more than 2 network connections for at least 500 ms
 
 ### Precision
 
