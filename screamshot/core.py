@@ -11,6 +11,8 @@ class ScreenShot():
     * url, mandatory, str, the website's url
     * width, optionnal, positive int, the window's width
     * height, optionnal, positive int, the window's height
+            If fullPage is True, width and height can only increase the size on the image.
+
     * img_type, optionnal, png (default) or jpeg, the image type
     * selector, optionnal, CSS3 selector, item whose screenshot is taken
     * wait_for, optionnal, CSS3 selector, item to wait before taking the screenshot
@@ -19,9 +21,13 @@ class ScreenShot():
       networkidle2
     * render, optionnal, boolean, default False, generate an html page
     * data, optionnal, str, the html page generated. Must contains ${screenshot}.
+    * fullPage, optionnal, boolean (default False), do we take a screamshot of the whole scrollable
+      page ?
 
     Methods:
-    * take, () => b'', async, take a screenshot
+    * load, () => void'', load the page
+    * screamshot, () => image, take a screamshot
+    * load_and_screamshot, () => image, load the page and take a screamshot
     """
 
     wait_until_possible_values = ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
@@ -104,6 +110,9 @@ class ScreenShot():
     async def _load(self):
         self.browser = await launch()
         self.page = await self._init_page(self.browser)
+
+    def load(self):
+        asyncio.get_event_loop().run_until_complete(self._load())
 
     async def _screamshot(self, full_page):
         element = await self._selector_manager()
