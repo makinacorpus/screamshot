@@ -3,7 +3,7 @@ import unittest
 from screamshot import ScreenShot
 
 
-class SimpleScreamshotTests(unittest.TestCase):
+class Tests(unittest.TestCase):
     def setUp(self):
         self.base = ScreenShot('https://www.google.fr')
 
