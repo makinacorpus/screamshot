@@ -1,5 +1,6 @@
 from pyppeteer import launch
 from operator import xor
+import asyncio
 
 
 # If fullPage is set to True, width and height cannot reduce the size of the screenshot
@@ -33,7 +34,6 @@ class ScreenShot(object):
 		# Initialising attributes 
 		self.browser = None
         self.page = None
-		self.image = None
 
 		assert isinstance(url, str), 'url parameter must be a string'
         self.url = url
@@ -98,17 +98,23 @@ class ScreenShot(object):
             return await self.page.querySelector(self.selector)
         return self.page
 
-	async def load(self):
+	async def _load(self):
 		self.browser = await launch()
 		self.page = await self._init_page(self.browser)
 
-	async def screamshot(self):
+	async def _screamshot(self):
 		element = await self._selector_manager()
 		screamshot_params = {'type': self.img_type, 'fullPage': self.fullPage}
-		self.image =  await element.screenshot(screamshot_params)
-		return self.image
+		image =  await element.screenshot(screamshot_params)
+		return image
 
-	async def load_and_screamshot(self):
-		await self.load()
-		await self.screamshot()
-		return self.image
+	def screamshot(self):
+		return(asyncio.get_event_loop().run_until_complete(self._screamshot()))
+
+	async def _load_and_screamshot(self):
+		await self._load()
+		image = await self.screamshot()
+		return image
+	
+	def load_and_screamshot(self):
+		return(asyncio.get_event_loop().run_until_complete(self._load_and_screamshot()))
