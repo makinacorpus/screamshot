@@ -28,9 +28,18 @@ class ScreenShot(object):
         return((bool(l) and all(isinstance(elem, expected_type) for elem in l)))
 
     def __init__(self, url, width=None, height=None, img_type='png',
-                 selector=None, wait_for=None, wait_until=None, render=False, data=None):
-        assert isinstance(url, str), 'url parameter must be a string'
+                 selector=None, wait_for=None, wait_until=None, render=False, fullPage = False, data=None):
+		
+		# Initialising attributes 
+		self.browser = None
+        self.page = None
+		self.image = None
+
+		assert isinstance(url, str), 'url parameter must be a string'
         self.url = url
+
+		# We need both height and width or none of them, so if we only have one, we set the other one to a default value.
+		# If we have none of them, we set argViewport to None
 
         if height and width:
             assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
@@ -47,6 +56,9 @@ class ScreenShot(object):
             
         assert (img_type == 'png' or img_type == 'jpeg'), 'img_type must be equal to png or jpeg'
         self.img_type = img_type
+
+		assert isinstance(fullPage, bool), 'fullPage must be a boolean'
+		self.fullPage = fullPage
 
         if selector:
             assert isinstance(selector, str), 'selector must be a string'
@@ -79,22 +91,24 @@ class ScreenShot(object):
 
         return page
 
-    async def _selector_manager(self, page):
+    async def _selector_manager(self):
         if self.wait_for:
-            await page.waitForSelector(self.wait_for)
+            await self.page.waitForSelector(self.wait_for)
         if self.selector:
-            return page.querySelector(self.selector)
+            return await self.page.querySelector(self.selector)
+        return self.page
 
-        return page
+	async def load(self):
+		self.browser = await launch()
+		self.page = await self._init_page(self.browser)
 
-    async def _take_screenshot(self, element):
-        screenshot_params = {'type': self.img_type}
-        return await element.screenshot(screenshot_params)
+	async def screamshot(self):
+		element = await self._selector_manager()
+		screamshot_params = {'type': self.img_type, 'fullPage': self.fullPage}
+		self.image =  await element.screenshot(screamshot_params)
+		return self.image
 
-    async def take(self):
-        browser = await launch(headless=True)
-        page = await self._init_page(browser)
-        element = await self._selector_manager(page)
-        img = await self._take_screenshot(element)
-        await browser.close()
-        return img
+	async def load_and_screamshot(self):
+		await self.load()
+		await self.screamshot()
+		return self.image

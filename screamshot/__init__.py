@@ -3,7 +3,7 @@ Python library to capture screenshots of web applications
 """
 
 
-__author__ = """Maxime Courtet & Felix C"""
+__author__ = """Maxime Courtet & Félix Cloup"""
 __version__ = "0.0.1"
 
 
