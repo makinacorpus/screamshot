@@ -90,9 +90,16 @@ ENV/
 env.bak/
 venv.bak/
 
+# Pipenv
+Pipfile
+Pipfile.lock
+
 # Spyder project settings
 .spyderproject
 .spyproject
+
+# Visual studio code settings
+.vscode
 
 # Rope project settings
 .ropeproject
