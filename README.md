@@ -27,3 +27,19 @@ the function raises an `AssertionError`
 ### Warning
 
 It uses pyppeteer and so async functions
+
+### Exemple
+
+```
+from screamshot import generate_bytes_img
+
+
+def main():
+    img = generate_bytes_img('https://makina-corpus.com/expertise/cartographie',
+                             selector='.image-right', wait_until='networkidle0')
+    print(img)
+
+
+if __name__ == '__main__':
+    main()
+``` 
