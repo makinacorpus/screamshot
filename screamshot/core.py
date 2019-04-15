@@ -39,7 +39,7 @@ class ScreenShot():
 
     def __init__(self, url, width=None, height=None,
                  selector=None, wait_for=None, wait_until=None, full_page=False,
-                 data=None):
+                 ):
 
         # Initialising attributes
         self.browser = None
@@ -83,10 +83,6 @@ class ScreenShot():
                             'wait_until should be a string or a list of string of load,'
                             + ' domcontentloaded, networkidle0 or networkidle2')
         self.wait_until = wait_until
-
-        if data:
-            assert isinstance(data, str), 'data must be a string'
-        self.data = data
 
     async def _init_page(self, browser):
         page = await browser.newPage()
