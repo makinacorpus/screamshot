@@ -51,24 +51,12 @@ class ScreenShot():
         # If we have none of them, we set argViewport to None
 
         self.arg_viewport = {}
-        if 'height' in kwargs:
+        if 'height' in kwargs and 'width' in kwargs:
             height = kwargs.pop('height')
-            assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-            self.arg_viewport.update({'height': height})
-        else:
-            self.arg_viewport.update({'height': 600})
-        if 'width' in kwargs:
             width = kwargs.pop('width')
-            assert (isinstance(width, int) and width >= 0), 'height must be a positive integer'
-            self.arg_viewport.update({'height': width})
-        else:
-            self.arg_viewport.update({'width': 800})
-
-        self.full_page = None
-        if 'full_page' in kwargs:
-            full_page = kwargs.pop('full_page')
-            assert isinstance(full_page, bool), 'fullPage must be a boolean'
-            self.full_page = full_page
+            assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
+            assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
+            self.arg_viewport.update({'width': width, 'height': height})
 
         if 'selector' in kwargs:
             selector = kwargs.pop('selector')
@@ -117,18 +105,18 @@ class ScreenShot():
         self.browser = await launch()
         self.page = await self._init_page(self.browser)
 
-    async def _screamshot(self):
+    async def _screamshot(self, full_page):
         element = await self._selector_manager()
-        screamshot_params = {'fullPage': self.full_page}
+        screamshot_params = {'fullPage': full_page}
         image = await element.screenshot(screamshot_params)
         return image
 
-    def screamshot(self):
-        return asyncio.get_event_loop().run_until_complete(self._screamshot())
+    def screamshot(self, full_page=True):
+        return asyncio.get_event_loop().run_until_complete(self._screamshot(full_page))
 
-    async def _load_and_screamshot(self):
+    async def _load_and_screamshot(self, full_page=True):
         await self._load()
-        image = await self._screamshot()
+        image = await self._screamshot(full_page)
         return image
 
     def load_and_screamshot(self):
