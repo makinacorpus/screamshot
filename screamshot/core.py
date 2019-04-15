@@ -37,7 +37,7 @@ class ScreenShot():
             list_to_check = [list_to_check]
         return all([e in values for e in list_to_check])
 
-    def __init__(self, url, width=None, height=None, img_type='png',
+    def __init__(self, url, width=None, height=None,
                  selector=None, wait_for=None, wait_until=None, render=False, full_page=False,
                  data=None):
 
@@ -64,9 +64,6 @@ class ScreenShot():
             self.arg_viewport = {'width': 800, 'height': height}
         else:
             self.arg_viewport = None
-
-        assert (img_type in ('png', 'jpeg')), 'img_type must be equal to png or jpeg'
-        self.img_type = img_type
 
         assert isinstance(full_page, bool), 'fullPage must be a boolean'
         self.full_page = full_page
