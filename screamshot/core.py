@@ -38,7 +38,7 @@ class ScreenShot():
         return all([e in values for e in list_to_check])
 
     def __init__(self, url, width=None, height=None,
-                 selector=None, wait_for=None, wait_until=None, render=False, full_page=False,
+                 selector=None, wait_for=None, wait_until=None, full_page=False,
                  data=None):
 
         # Initialising attributes
@@ -84,9 +84,6 @@ class ScreenShot():
                             + ' domcontentloaded, networkidle0 or networkidle2')
         self.wait_until = wait_until
 
-        assert isinstance(render, bool), 'render must be a boolean'
-        self.render = render
-
         if data:
             assert isinstance(data, str), 'data must be a string'
         self.data = data
@@ -116,7 +113,7 @@ class ScreenShot():
 
     async def _screamshot(self):
         element = await self._selector_manager()
-        screamshot_params = {'type': self.img_type, 'fullPage': self.full_page}
+        screamshot_params = {'fullPage': self.full_page}
         image = await element.screenshot(screamshot_params)
         return image
 
