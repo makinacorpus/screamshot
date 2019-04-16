@@ -128,13 +128,14 @@ async def generate_bytes_img(url, **kwargs):
 
 async def generate_bytes_img_prom(url, future, **kwargs):
     """
-    This function takes a screenshot
+    This function takes a screenshot and returns it as a `bytes` object in the promise given in \
+        the parameters
 
     :param url: mandatory, the website's url
     :type url: str
 
-    :param check_params: optionnal, default True, allows the verification of parameters
-    :type check_params: bool
+    :param future: mandatory, a promise
+    :type future: `asyncio.Future`
 
     :param width: optionnal, the window's width
     :type width: int
@@ -152,26 +153,34 @@ async def generate_bytes_img_prom(url, future, **kwargs):
         be either load, domcontentloaded, networkidle0 or networkidle2
     :type wait_until: str or list(str)
 
-    :returns: (`bytes`) the base64 code of the image
-
-    :raises AssertionError: this exception is raised if a parameter do not respect the documentation
-
-    .. note:: If `check_params` is equal to `True` and if a parameter does not respect the \
-        conditions, the function raises an `AssertionError`
+    :retype: None
 
     .. warning:: It uses **pyppeteer** and so **async** functions
+
+    .. warning:: This function must be used with the `asyncio` library
 
     :Exemple:
 
     .. code-block:: python
 
-        from screamshot import generate_bytes_img
-        def main():
-            img = generate_bytes_img('https://makina-corpus.com/expertise/cartographie',
-                                    selector='.image-right', wait_until='networkidle0')
-            print(img)
-        if __name__ == '__main__':
-            main()
+        # views.py in a Django project
+        import asyncio
+
+        from django.http import HttpResponse
+
+        from screamshot import generate_bytes_img_prom
+
+
+        def home(request):
+            loop = asyncio.get_event_loop()
+            future = asyncio.Future()
+
+            asyncio.ensure_future(
+                generate_bytes_img_prom('https://www.google.fr', future))
+            loop.run_until_complete(future)
+
+            print(futur.result())
+            return HttpResponse('Done')
     """
     img = await generate_bytes_img(url, **kwargs)
     future.set_result(img)
