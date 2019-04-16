@@ -125,13 +125,7 @@ async def _generate_bytes_img(url, check_params, **kwargs):
 
 def generate_bytes_img(url, check_params=True, **kwargs):
     """
-    generate_bytes_img
-    ===
-    ## Description:
-
-    This function takes the following parameters and returns a base64 `bytes` object
-
-    ## Parameters:
+    This function takes a screenshot
 
     :param url: mandatory, the website's url
     :type url: str
@@ -151,18 +145,30 @@ def generate_bytes_img(url, check_params=True, **kwargs):
     :param wait_for: optionnal, CSS3 selector, item to wait before taking the screenshot
     :type wait_for: str
 
-    :param wait_until: optionnal, define how long you wait for the page to be loaded should be
-    either load, domcontentloaded, networkidle0 or networkidle2
+    :param wait_until: optionnal, define how long you wait for the page to be loaded should \
+        be either load, domcontentloaded, networkidle0 or networkidle2
     :type wait_until: str or list(str)
 
-    ## Precision:
+    :returns: (`bytes`) the base64 code of the image
 
-    * If `check_params` is equal to `True` and if a parameter does not respect the conditions,
-    the function raises an `AssertionError`
+    :raises AssertionError: this exception is raised if a parameter do not respect the documentation
 
-    ## Warning:
+    .. note:: If `check_params` is equal to `True` and if a parameter does not respect the \
+        conditions, the function raises an `AssertionError`
 
-    * It uses pyppeteer and so async functions
+    .. warning:: It uses **pyppeteer** and so **async** functions
+
+    :Exemple:
+
+    .. code-block:: python
+
+        from screamshot import generate_bytes_img
+        def main():
+            img = generate_bytes_img('https://makina-corpus.com/expertise/cartographie',
+                                    selector='.image-right', wait_until='networkidle0')
+            print(img)
+        if __name__ == '__main__':
+            main()
     """
     return asyncio.get_event_loop().run_until_complete(_generate_bytes_img(url, check_params,
                                                                            **kwargs))
