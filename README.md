@@ -3,7 +3,7 @@ Python library to capture screenshots of web applications
 
 # Tests
 1. If you want to run the tests in a MacOS environment, use the following command at the root of the project: `export PYTHONPATH=$PYTHONPATH:.`, 
-2. `python3 -m unittest tests/generate_bytes_img_function_tests.py` runs all the tests of generate_bytes_img
+2. `python3 -m unittest tests/generate_bytes_img_function_tests.py -v` runs all the tests of generate_bytes_img
 
 # Usage
 ## generate_bytes_img_function_tests
