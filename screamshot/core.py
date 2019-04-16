@@ -6,17 +6,6 @@ from pyppeteer import launch
 WAIT_UNTIL_POSSIBLE_VALUES = ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
 
 
-def _check_list_type(list_to_check, expected_type):
-    return (bool(list_to_check)
-            and all(isinstance(elem, expected_type) for elem in list_to_check))
-
-
-def _check_list_of_str_value(list_to_check, values):
-    if isinstance(list_to_check, str):
-        list_to_check = [list_to_check]
-    return all([e in values for e in list_to_check])
-
-
 def _parse_parameters(**kwargs):
     arg_viewport = {}
     if 'width' in kwargs:
@@ -41,30 +30,6 @@ def _parse_parameters(**kwargs):
 
 def _check_params(url, params):
     assert isinstance(url, str), 'url parameter must be a string'
-
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        height = arg_viewport.get('height')
-        width = arg_viewport.get('width')
-        assert height and width, 'both height and width must be define or none of them'
-        assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-        assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
-
-    selector = params.get('selector')
-    if selector:
-        assert isinstance(selector, str), 'selector must be a string'
-
-    wait_for = params.get('wait_for')
-    if wait_for:
-        assert isinstance(wait_for, str), 'wait_for must be a string'
-
-    wait_until = params.get('wait_until')
-    if wait_until:
-        assert (_check_list_type(wait_until, str)
-                and _check_list_of_str_value(
-                    wait_until, WAIT_UNTIL_POSSIBLE_VALUES)), (
-                        'wait_until should be a string or a list of string of load,'
-                        + ' domcontentloaded, networkidle0 or networkidle2')
 
 
 async def _init_page(url, browser, params):
@@ -142,8 +107,6 @@ async def generate_bytes_img(url, **kwargs):
             asyncio.get_event_loop().run_until_complete(main())
     """
     params = _parse_parameters(**kwargs)
-    if check_params:
-        _check_params(url, params)
 
     browser = await launch(headless=True)
 
