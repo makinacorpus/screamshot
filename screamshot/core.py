@@ -24,9 +24,10 @@ def _parse_parameters(**kwargs):
     if 'height' in kwargs:
         arg_viewport.update({'height': kwargs.pop('height')})
 
-    full_page = True
-    if arg_viewport:
-        full_page = False
+    full_page = False
+
+    if 'full_page' in kwargs:
+        full_page = kwargs.pop('full_page')
 
     selector = None
     if 'selector' in kwargs:

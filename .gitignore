@@ -109,3 +109,6 @@ Pipfile.lock
 
 # mypy
 .mypy_cache/
+
+# Pylint
+.pylintrc
