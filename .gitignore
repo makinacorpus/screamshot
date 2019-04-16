@@ -112,3 +112,6 @@ Pipfile.lock
 
 # Pylint
 .pylintrc
+
+# Sphinx
+/sphinx
