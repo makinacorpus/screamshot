@@ -9,7 +9,7 @@ Python library to capture screenshots of web applications
 ## generate_bytes_img_function_tests
 ### Description
 
-If you want to access the documentation run: `python3 -m http.server` and go to <http://0.0.0.0:8000/doc/html/screamshot.html>
+If you want to access the documentation run: `python3 -m http.server` at the root of the project and go to <http://0.0.0.0:8000/doc/html/screamshot.html>
 
 ### Exemple
 
