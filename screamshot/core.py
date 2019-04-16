@@ -24,19 +24,6 @@ def _parse_parameters(**kwargs):
     if 'height' in kwargs:
         arg_viewport.update({'height': kwargs.pop('height')})
 
-    full_page = False
-
-    if 'full_page' in kwargs:
-        full_page = kwargs.pop('full_page')
-
-    selector = None
-    if 'selector' in kwargs:
-        selector = kwargs.pop('selector')
-
-    wait_for = None
-    if 'wait_for' in kwargs:
-        wait_for = kwargs.pop('wait_for')
-
     wait_until = None
     if 'wait_until' in kwargs:
         wait_until = kwargs.pop('wait_until')
@@ -45,9 +32,9 @@ def _parse_parameters(**kwargs):
 
     return {
         'arg_viewport': arg_viewport,
-        'full_page': full_page,
-        'selector': selector,
-        'wait_for': wait_for,
+        'full_page': kwargs.get('full_page', False),
+        'selector': kwargs.get('selector'),
+        'wait_for': kwargs.get('wait_for'),
         'wait_until': wait_until,
     }
 
