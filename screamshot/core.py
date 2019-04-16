@@ -1,9 +1,13 @@
-import asyncio
+"""
+generate_bytes_img and generate_bytes_img_prom functions
+"""
+from os import environ
 
-from pyppeteer import launch
+from pyppeteer import launcher
 
 
-WAIT_UNTIL_POSSIBLE_VALUES = ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
+# Name of the envrinment variable which contains the chrome ws endpoint
+VENV = 'WS_ENDPOINT_SCREAMSHOT'
 
 
 def _parse_parameters(**kwargs):
@@ -28,8 +32,10 @@ def _parse_parameters(**kwargs):
     }
 
 
-def _check_params(url, params):
-    assert isinstance(url, str), 'url parameter must be a string'
+async def _init_browser():
+    browser_ws_endpoint = environ.get(VENV)
+    browser = await launcher.connect({'browserWSEndpoint': browser_ws_endpoint})
+    return browser
 
 
 async def _init_page(url, browser, params):
@@ -108,7 +114,7 @@ async def generate_bytes_img(url, **kwargs):
     """
     params = _parse_parameters(**kwargs)
 
-    browser = await launch(headless=True)
+    browser = await _init_browser()
 
     page = await _init_page(url, browser, params)
 
@@ -117,7 +123,6 @@ async def generate_bytes_img(url, **kwargs):
     screamshot_params = {'fullPage': params.get('full_page')}
     image = await element.screenshot(screamshot_params)
 
-    await browser.close()
     return image
 
 
