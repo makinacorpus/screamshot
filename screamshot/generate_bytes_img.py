@@ -1,10 +1,6 @@
 """
 generate_bytes_img and generate_bytes_img_prom functions
 """
-from os import environ
-
-from pyppeteer import launch, connect
-
 from browser_manager import goto_page_async, get_browser_async
 
 # Name of the envrinment variable which contains the chrome ws endpoint
