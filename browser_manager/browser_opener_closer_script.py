@@ -7,10 +7,15 @@ from pyppeteer import launch, connect
 FILENAME_ENDPOINT = "endpointlist.txt"
 
 
+# Set an async function to synchronous mode using asyncio
+def to_sync(fun):
+    return asyncio.get_event_loop().run_until_complete(fun)
+
+
 # Write the websocket endpoint into the file
 def set_endpoint(ws_endpoint):
-    with open(FILENAME_ENDPOINT, "a") as f:
-        f.write(ws_endpoint + "\n")
+    with open(FILENAME_ENDPOINT, "a") as ws_file:
+        ws_file.write(ws_endpoint + "\n")
     return ws_endpoint
 
 
@@ -18,15 +23,14 @@ def set_endpoint(ws_endpoint):
 def get_endpoints():
     endpoint_list = []
     try:
-        with open(FILENAME_ENDPOINT, "r") as f:
-            for line in f:
+        with open(FILENAME_ENDPOINT, "r") as ws_file:
+            for line in ws_file:
                 line = line.split()[0]
                 endpoint_list.append(line)
-        remove(FILENAME_ENDPOINT)
         return endpoint_list
     except FileNotFoundError:
         print(FILENAME_ENDPOINT + " not found")
-        exit(-1)
+        return None
 
 
 # Launch a browser which will be closed only when delete_browser(ws_endpoint_list) is called
@@ -39,9 +43,11 @@ async def open_browser(is_headless):
 
 # Close all the browsers in the ws_endpoint_list
 async def delete_browser(ws_endpoint_list):
-    for ws_endpoint in ws_endpoint_list:
-        browser = await connect(browserWSEndpoint=ws_endpoint)
-        await browser.close()
+    if ws_endpoint_list:
+        for ws_endpoint in ws_endpoint_list:
+            browser = await connect(browserWSEndpoint=ws_endpoint)
+            await browser.close()
+        remove(FILENAME_ENDPOINT)
 
 
 # Figures out what to do with the arguments
@@ -67,7 +73,7 @@ def arg_parsing():
 
     args = parser.parse_args()
     # Calls the function to use the arguments using asyncio to handle the asynchronous function used
-    asyncio.get_event_loop().run_until_complete(do_it(args))
+    to_sync(do_it(args))
 
 
 arg_parsing()
