@@ -90,7 +90,7 @@ async def generate_bytes_img(url, **kwargs):
         be either load, domcontentloaded, networkidle0 or networkidle2
     :type wait_until: str or list(str)
 
-    :returns: the base64 code of the image
+    :returns: the binary code of the image
     :retype: `bytes`
 
     .. warning:: It uses **pyppeteer** and so **async** functions
