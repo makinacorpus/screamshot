@@ -1,3 +1,6 @@
+"""
+Setup file.
+"""
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
@@ -14,8 +17,6 @@ setup(
 
     version=screamshot.__version__,
 
-    packages=find_packages(),
-
     author=screamshot.__author__,
 
     description='Python library to capture screenshots of web applications or pages',
@@ -24,6 +25,8 @@ setup(
     open(os.path.join(HERE, 'CHANGES.md')).read(),
 
     include_package_data=True,
+    package_data={'package_c-stubs': ['__init__.pyi', 'generate_bytes_img.pyi']},
+    packages=find_packages(),
 
     url='https://github.com/makinacorpus/screamshot',
 
