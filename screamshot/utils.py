@@ -73,8 +73,7 @@ async def get_browser(is_headless=True):
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    else:
-        return await open_browser(is_headless)
+    return await open_browser(is_headless)
 
 
 def get_browser_sync(is_headless=True):
