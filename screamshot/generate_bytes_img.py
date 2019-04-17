@@ -1,16 +1,20 @@
 """
-generate_bytes_img and generate_bytes_img_prom functions
+generate_bytes_img and generate_bytes_img_prom functions.
 """
 from os import environ
+from typing import Any
+from asyncio.futures import Future
 
 from pyppeteer import launch, connect
+from pyppeteer.browser import Browser
+from pyppeteer.page import Page
 
 
 # Name of the envrinment variable which contains the chrome ws endpoint
 VENV = 'WS_ENDPOINT_SCREAMSHOT'
 
 
-def _parse_parameters(**kwargs):
+def _parse_parameters(**kwargs) -> dict:
     arg_viewport = {}
     if 'width' in kwargs:
         arg_viewport.update({'width': kwargs.pop('width')})
@@ -32,7 +36,7 @@ def _parse_parameters(**kwargs):
     }
 
 
-async def _init_browser():
+async def _init_browser() -> Browser:
     browser_ws_endpoint = environ.get(VENV)
     if browser_ws_endpoint:
         browser = await connect({'browserWSEndpoint': browser_ws_endpoint})
@@ -41,7 +45,7 @@ async def _init_browser():
     return browser
 
 
-async def _init_page(url, browser, params):
+async def _init_page(url: str, browser: Browser, params: dict) -> Page:
     page = await browser.newPage()
 
     arg_viewport = params.get('arg_viewport')
@@ -56,7 +60,7 @@ async def _init_page(url, browser, params):
     return page
 
 
-async def _selector_manager(page, params):
+async def _selector_manager(page: Page, params: dict) -> Any:
     wait_for = params.get('wait_for')
     if wait_for:
         await page.waitForSelector(wait_for)
@@ -67,7 +71,7 @@ async def _selector_manager(page, params):
     return page
 
 
-async def generate_bytes_img(url, **kwargs):
+async def generate_bytes_img(url: str, **kwargs) -> bytes:
     """
     This function takes a screenshot and returns it as a `bytes` object
 
@@ -129,7 +133,7 @@ async def generate_bytes_img(url, **kwargs):
     return image
 
 
-async def generate_bytes_img_prom(url, future, **kwargs):
+async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
     """
     This function takes a screenshot and returns it as a `bytes` object in the promise given in \
         the parameters
