@@ -1,6 +1,0 @@
-from asyncio.futures import Future
-
-
-def generate_bytes_img(url: str, **kwargs) -> bytes: ...
-
-def generate_bytes_img_prom(url: str, future: Future, **kwargs): ...
