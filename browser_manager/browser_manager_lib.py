@@ -1,6 +1,53 @@
-from pyppeteer import connect
+from os import remove
+import argparse
+import asyncio
+from pyppeteer import launch, connect
 
-from browser_opener_closer_script import get_endpoints, open_browser, to_sync
+
+FILENAME_ENDPOINT = "endpointlist.txt"
+
+
+# Set an async function to synchronous mode using asyncio
+def to_sync(fun):
+    return asyncio.get_event_loop().run_until_complete(fun)
+
+
+# Write the websocket endpoint into the file
+def set_endpoint(ws_endpoint):
+    with open(FILENAME_ENDPOINT, "a") as ws_file:
+        ws_file.write(ws_endpoint + "\n")
+    return ws_endpoint
+
+
+# Read the file to get the ws endpoints and return them into a list of string
+def get_endpoints():
+    endpoint_list = []
+    try:
+        with open(FILENAME_ENDPOINT, "r") as ws_file:
+            for line in ws_file:
+                line = line.split()[0]
+                endpoint_list.append(line)
+        return endpoint_list
+    except FileNotFoundError:
+        print(FILENAME_ENDPOINT + " not found")
+        return None
+
+
+# Launch a browser which will be closed only when delete_browser(ws_endpoint_list) is called
+async def open_browser(is_headless):
+    browser = await launch(headless=is_headless, autoClose=False)
+    endpoint = browser.wsEndpoint
+    set_endpoint(endpoint)
+    return endpoint
+
+
+# Close all the browsers in the ws_endpoint_list
+async def delete_browser(ws_endpoint_list):
+    if ws_endpoint_list:
+        for ws_endpoint in ws_endpoint_list:
+            browser = await connect(browserWSEndpoint=ws_endpoint)
+            await browser.close()
+        remove(FILENAME_ENDPOINT)
 
 
 # Return a list of available browsers
