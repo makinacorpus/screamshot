@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from browser_manager_lib import get_endpoints, delete_browser, open_browser, to_sync
+from browser_manager import get_endpoints, delete_browser, open_browser, to_sync
 
 
 # Figures out what to do with the arguments
