@@ -96,7 +96,6 @@ async def get_browser(is_headless=True):
     return await open_browser(is_headless)
 
 
-# Check if the browser already have the page and then go to the page
 async def goto_page(url, browser, params):
     """
     Checks if a page already exists in a browser or create a new one
