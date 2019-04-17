@@ -4,7 +4,7 @@ from os import remove
 from pyppeteer import launch, connect
 
 
-FILENAME_ENDPOINT = "endpointlist.txt"
+FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
 
 
 def to_sync(fun):
