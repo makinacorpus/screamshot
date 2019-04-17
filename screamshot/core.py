@@ -3,7 +3,8 @@ import asyncio
 from pyppeteer import launch
 
 
-WAIT_UNTIL_POSSIBLE_VALUES = ['load', 'domcontentloaded', 'networkidle0', 'networkidle2']
+WAIT_UNTIL_POSSIBLE_VALUES = [
+    'load', 'domcontentloaded', 'networkidle0', 'networkidle2']
 
 
 def _check_list_type(list_to_check, expected_type):
@@ -47,8 +48,10 @@ def _check_params(url, params):
         height = arg_viewport.get('height')
         width = arg_viewport.get('width')
         assert height and width, 'both height and width must be define or none of them'
-        assert (isinstance(height, int) and height >= 0), 'height must be a positive integer'
-        assert (isinstance(width, int) and width >= 0), 'width must be a positive integer'
+        assert (isinstance(height, int) and height >=
+                0), 'height must be a positive integer'
+        assert (isinstance(width, int) and width >=
+                0), 'width must be a positive integer'
 
     selector = params.get('selector')
     if selector:
@@ -62,13 +65,19 @@ def _check_params(url, params):
     if wait_until:
         assert (_check_list_type(wait_until, str)
                 and _check_list_of_str_value(
-                    wait_until, WAIT_UNTIL_POSSIBLE_VALUES)), (
-                        'wait_until should be a string or a list of string of load,'
-                        + ' domcontentloaded, networkidle0 or networkidle2')
+            wait_until, WAIT_UNTIL_POSSIBLE_VALUES)), (
+            'wait_until should be a string or a list of string of load,'
+            + ' domcontentloaded, networkidle0 or networkidle2')
 
 
 async def _init_page(url, browser, params):
-    page = await browser.newPage()
+    page = None
+    for page_created in browser.pages():
+        if page_created.url == url:
+            page = page_created
+            break
+    if not page:
+        page = await browser.newPage()
 
     arg_viewport = params.get('arg_viewport')
     if arg_viewport:
@@ -134,7 +143,7 @@ def generate_bytes_img(url, check_params=True, **kwargs):
     :type wait_for: str
 
     :param wait_until: optionnal, define how long you wait for the page to be loaded should \
-        be either load, domcontentloaded, networkidle0 or networkidle2
+            be either load, domcontentloaded, networkidle0 or networkidle2
     :type wait_until: str or list(str)
 
     :returns: (`bytes`) the base64 code of the image
@@ -142,7 +151,7 @@ def generate_bytes_img(url, check_params=True, **kwargs):
     :raises AssertionError: this exception is raised if a parameter do not respect the documentation
 
     .. note:: If `check_params` is equal to `True` and if a parameter does not respect the \
-        conditions, the function raises an `AssertionError`
+            conditions, the function raises an `AssertionError`
 
     .. warning:: It uses **pyppeteer** and so **async** functions
 
@@ -150,13 +159,13 @@ def generate_bytes_img(url, check_params=True, **kwargs):
 
     .. code-block:: python
 
-        from screamshot import generate_bytes_img
-        def main():
-            img = generate_bytes_img('https://makina-corpus.com/expertise/cartographie',
-                                    selector='.image-right', wait_until='networkidle0')
-            print(img)
-        if __name__ == '__main__':
-            main()
+            from screamshot import generate_bytes_img
+            def main():
+                    img = generate_bytes_img('https://makina-corpus.com/expertise/cartographie',
+                                                                    selector='.image-right', wait_until='networkidle0')
+                    print(img)
+            if __name__ == '__main__':
+                    main()
     """
     return asyncio.get_event_loop().run_until_complete(_generate_bytes_img(url, check_params,
                                                                            **kwargs))
