@@ -1,3 +1,6 @@
+"""
+Collection of functions.
+"""
 import asyncio
 from os import remove
 
@@ -9,18 +12,24 @@ FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
 
 def to_sync(fun):
     """
-    This function returns the result of await fun
-    :param fun: mandatory, the function to be awaited
-    :type fun: function to be awaited
+    This synchronous function execute and returns the result of an asynchronous function
+
+    :param fun: mandatory, the asynchronous function
+    :type fun: function
+
+    .. warning :: This function uses `asyncio` package
     """
     return asyncio.get_event_loop().run_until_complete(fun)
 
 
 def set_endpoint(ws_endpoint):
     """
-    This function writes the endpoint to the file FILENAME_ENDPOINT
-    :param ws_endpoint: the endpoint to be written
+    This function store the web socket endpoint of the launched browser
+
+    :param ws_endpoint: mandatory, the web socket endpoint
     :type ws_endpoint: str
+
+    .. note :: ws_endpoint is saved in $FILENAME_ENDPOINT
     """
     with open(FILENAME_ENDPOINT, "w") as ws_file:
         ws_file.write(ws_endpoint + "\n")
@@ -28,8 +37,11 @@ def set_endpoint(ws_endpoint):
 
 def get_endpoint():
     """
-    This function returns the endpoint into a string if FILENAME_ENDPOINT exists, \
-        None if it does not
+    This function returns the web socket endpoint of the running browser
+
+    :retype: str
+
+    .. note :: ws_endpoint is retrieved from $FILENAME_ENDPOINT
     """
     try:
         with open(FILENAME_ENDPOINT, "r") as ws_file:
@@ -43,9 +55,13 @@ def get_endpoint():
 
 async def open_browser(is_headless):
     """
-    Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT
-    :param is_headless: should the browser be launched in headless mode ?
+    Launch a browser and writes its websocket endpoint in $FILENAME_ENDPOINT
+
+    :param is_headless: mandatory, should the browser be launched in headless mode ?
     :type is_headless: bool
+
+    :return: the web socket endpoint
+    :retype: str
     """
     browser = await launch(headless=is_headless, autoClose=False)
     endpoint = browser.wsEndpoint
@@ -56,7 +72,8 @@ async def open_browser(is_headless):
 async def close_browser(ws_endpoint):
     """
     Closes the browser related to ws_endpoint and remove FILENAME_ENDPOINT
-    :param ws_endpoint: the websocket endpoint to close
+
+    :param ws_endpoint: mandatory, the websocket endpoint to close
     :type ws_endpoint: str
     """
     browser = await connect(browserWSEndpoint=ws_endpoint)
@@ -66,9 +83,12 @@ async def close_browser(ws_endpoint):
 
 async def get_browser(is_headless=True):
     """
-    Returns a already creatred browser if one exists, a new one if not
-    :param is_headless: should the browser be launched in headless mode ?
+    Returns a already creatred browser if one exists or a new one if not
+
+    :param is_headless: optionnal, should the browser be launched in headless mode ?
     :type is_headless: bool
+
+    :retype: pyppeteer.browser.Browser
     """
     endpoint = get_endpoint()
     if endpoint:
@@ -80,6 +100,7 @@ async def get_browser(is_headless=True):
 async def goto_page(url, browser, params):
     """
     Checks if a page already exists in a browser or create a new one
+
     :param url: the url of the page to go to
     :type url: str
 
@@ -88,6 +109,8 @@ async def goto_page(url, browser, params):
 
     :param params: the parameters of pyppeteer to create a browser
     :type params: dict
+
+    :retype: pyppeteer.page.Page
     """
     page = None
     wait_until = params.get('wait_until')
