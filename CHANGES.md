@@ -20,7 +20,7 @@ Initialization of Screamshot library
 ===
 
 There is no more `ScreenShot` object just a function named `generate_bytes_img` which
-takes some parameters and returns a base64 `bytes` object.
+takes some parameters and returns a binary `bytes` object.
 
 0.1.1
 ===
