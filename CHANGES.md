@@ -21,3 +21,9 @@ Initialization of Screamshot library
 
 There is no more `ScreenShot` object just a function named `generate_bytes_img` which
 takes some parameters and returns a base64 `bytes` object.
+
+0.1.1
+===
+
+`generate_bytes_img` is no more a sync function and `generate_bytes_img_prom` has been added
+`generate_bytes_img_prom` uses the `asyncio.Future` object

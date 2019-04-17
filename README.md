@@ -14,15 +14,22 @@ If you want to access the documentation run: `python3 -m http.server` at the roo
 ### Exemple
 
 ```
-from screamshot import generate_bytes_img
+# views.py in a Django project
+import asyncio
+
+from django.http import HttpResponse
+
+from screamshot import generate_bytes_img_prom
 
 
-def main():
-    img = generate_bytes_img('https://makina-corpus.com/expertise/cartographie',
-                             selector='.image-right', wait_until='networkidle0')
-    print(img)
+def home(request):
+    loop = asyncio.get_event_loop()
+    future = asyncio.Future()
 
+    asyncio.ensure_future(
+        generate_bytes_img_prom('https://www.google.fr', future))
+    loop.run_until_complete(future)
 
-if __name__ == '__main__':
-    main()
+    print(futur.result())
+    return HttpResponse('Done')
 ``` 
