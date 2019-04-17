@@ -20,8 +20,8 @@ def get_endpoints():
                 endpoint_list.append(line)
         remove("endpointlist.txt")
         return endpoint_list
-    except:
-        print("No browser in the 'endpointlist.txt' file to be closed")
+    except FileNotFoundError:
+        print("endpointlist.txt not found")
         exit(-1)
 
 
