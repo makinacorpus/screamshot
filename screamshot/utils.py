@@ -49,7 +49,6 @@ def get_endpoint():
             line = line.split()[0]
             return line
     except FileNotFoundError:
-        print(FILENAME_ENDPOINT + " not found")
         return None
 
 
