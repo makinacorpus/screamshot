@@ -3,12 +3,12 @@ Browser manager script.
 """
 from argparse import ArgumentParser
 
-from screamshot.utils import get_endpoint, delete_browser, open_browser, to_sync
+from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
 
 
 async def _execute(args):
     if args.close:
-        await delete_browser(get_endpoint())
+        await close_browser(get_endpoint())
     if args.open:
         await open_browser(args.headless)
 

@@ -53,7 +53,7 @@ async def open_browser(is_headless):
     return endpoint
 
 
-async def delete_browser(ws_endpoint):
+async def close_browser(ws_endpoint):
     """
     Closes the browser related to ws_endpoint and remove FILENAME_ENDPOINT
     :param ws_endpoint: the websocket endpoint to close
