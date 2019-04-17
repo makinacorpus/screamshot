@@ -4,24 +4,28 @@ import asyncio
 from pyppeteer import launch, connect
 
 
+FILENAME_ENDPOINT = "endpointlist.txt"
+
+
 # Write the websocket endpoint into the file
 def set_endpoint(ws_endpoint):
-    with open("endpointlist.txt", "a") as f:
+    with open(FILENAME_ENDPOINT, "a") as f:
         f.write(ws_endpoint + "\n")
+    return ws_endpoint
 
 
 # Read the file to get the ws endpoints and return them into a list of string
 def get_endpoints():
     endpoint_list = []
     try:
-        with open("endpointlist.txt", "r") as f:
+        with open(FILENAME_ENDPOINT, "r") as f:
             for line in f:
                 line = line.split()[0]
                 endpoint_list.append(line)
-        remove("endpointlist.txt")
+        remove(FILENAME_ENDPOINT)
         return endpoint_list
     except FileNotFoundError:
-        print("endpointlist.txt not found")
+        print(FILENAME_ENDPOINT + " not found")
         exit(-1)
 
 
@@ -62,7 +66,7 @@ def arg_parsing():
                         help="""Open the browser in graphic mode""")
 
     args = parser.parse_args()
-    # Calls the function to use the arguments
+    # Calls the function to use the arguments using asyncio to handle the asynchronous function used
     asyncio.get_event_loop().run_until_complete(do_it(args))
 
 
