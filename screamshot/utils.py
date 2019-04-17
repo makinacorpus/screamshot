@@ -112,4 +112,3 @@ async def goto_page(url, browser, params):
         await page.setViewport(arg_viewport)
 
     return page
-
