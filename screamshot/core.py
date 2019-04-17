@@ -3,7 +3,7 @@ generate_bytes_img and generate_bytes_img_prom functions
 """
 from os import environ
 
-from pyppeteer import launcher
+from pyppeteer import launch, connect
 
 
 # Name of the envrinment variable which contains the chrome ws endpoint
@@ -34,7 +34,10 @@ def _parse_parameters(**kwargs):
 
 async def _init_browser():
     browser_ws_endpoint = environ.get(VENV)
-    browser = await launcher.connect({'browserWSEndpoint': browser_ws_endpoint})
+    if browser_ws_endpoint:
+        browser = await connect({'browserWSEndpoint': browser_ws_endpoint})
+        return browser
+    browser = await launch(options={'headless': True})
     return browser
 
 
