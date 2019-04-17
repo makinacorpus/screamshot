@@ -11,7 +11,7 @@ class GenerateBytesImgFunctionTests(unittest.TestCase):
 
     def setUp(self):
         self.browser = asyncio.get_event_loop().run_until_complete(
-            launch(headless=True, onClose=False))
+            launch(options={'headless': True, 'onClose': False}))
         os.environ['WS_ENDPOINT_SCREAMSHOT'] = self.browser.wsEndpoint
 
     def test_function_without_promise_without_optional_parameters(self):
