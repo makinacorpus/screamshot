@@ -1,5 +1,4 @@
 from os import remove
-import argparse
 import asyncio
 from pyppeteer import launch, connect
 
@@ -51,43 +50,52 @@ async def delete_browser(ws_endpoint_list):
 
 
 # Return a list of available browsers
-def get_browser_list(is_headless=True):
+async def get_browser_list_async(is_headless=True):
     endpoint_list = get_endpoints()
     if endpoint_list:
         browser_list = []
         for endpoint in endpoint_list:
-            browser_list.append(connect(browserWSEndpoint=endpoint))
+            browser_list.append(await connect(browserWSEndpoint=endpoint))
     else:
-        browser_list = [to_sync(open_browser(is_headless))]
+        browser_list = [await open_browser(is_headless)]
     return browser_list
 
 
+def get_browser_list(is_headless=True):
+    return to_sync(get_browser_list_async(is_headless))
+
+
 # Return the first browser (can be tuned in the future)
+async def get_browser_async(is_headless=True):
+    return await get_browser_list_async(is_headless)[0]
+
+
 def get_browser(is_headless=True):
     return get_browser_list(is_headless)[0]
 
 
-async def goto_page_async(url, params):
-    browser = get_browser()
+# Check if the browser already have the page and then go to the page
+async def goto_page_async(url, browser, params):
     page = None
-    for page_created in browser.pages():
-        if page_created.url == url:
-            page = page_created
-            break
-    if not page:
+    wait_until = params.get('wait_until')
+    if wait_until:
         page = await browser.newPage()
+        await page.goto(url, waitUntil=wait_until)
+    else:
+        for page_created in browser.pages():
+            if page_created.url == url:
+                page = page_created
+                break
+        if not page:
+            page = await browser.newPage()
+            await page.goto(url)
 
     arg_viewport = params.get('arg_viewport')
     if arg_viewport:
         await page.setViewport(arg_viewport)
 
-    wait_until = params.get('wait_until')
-    if wait_until:
-        await page.goto(url, waitUntil=wait_until)
-    else:
-        await page.goto(url)
     return page
 
 
-def goto_page(url, params):
-    return to_sync(goto_page_async(url, params))
+def goto_page(url, browser, params):
+    return to_sync(goto_page_async(url, browser, params))

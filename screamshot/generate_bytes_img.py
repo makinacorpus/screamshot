@@ -5,6 +5,7 @@ from os import environ
 
 from pyppeteer import launch, connect
 
+from browser_manager import goto_page_async, get_browser_async
 
 # Name of the envrinment variable which contains the chrome ws endpoint
 VENV = 'WS_ENDPOINT_SCREAMSHOT'
@@ -33,27 +34,11 @@ def _parse_parameters(**kwargs):
 
 
 async def _init_browser():
-    browser_ws_endpoint = environ.get(VENV)
-    if browser_ws_endpoint:
-        browser = await connect({'browserWSEndpoint': browser_ws_endpoint})
-        return browser
-    browser = await launch(options={'headless': True})
-    return browser
+    return await get_browser_async()
 
 
 async def _init_page(url, browser, params):
-    page = await browser.newPage()
-
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        await page.setViewport(arg_viewport)
-
-    wait_until = params.get('wait_until')
-    if wait_until:
-        await page.goto(url, waitUntil=wait_until)
-    else:
-        await page.goto(url)
-    return page
+    return await goto_page_async(url, browser, params)
 
 
 async def _selector_manager(page, params):
