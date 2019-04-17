@@ -76,13 +76,6 @@ async def get_browser(is_headless=True):
     return await open_browser(is_headless)
 
 
-def get_browser_sync(is_headless=True):
-    """
-    Same as get_browser in synchronous mode
-    """
-    return to_sync(get_browser(is_headless))
-
-
 # Check if the browser already have the page and then go to the page
 async def goto_page(url, browser, params):
     """
@@ -120,9 +113,3 @@ async def goto_page(url, browser, params):
 
     return page
 
-
-def goto_page_sync(url, browser, params):
-    """
-    Same as goto_page in synchronous mode
-    """
-    return to_sync(goto_page(url, browser, params))
