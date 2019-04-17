@@ -1,18 +1,24 @@
 from argparse import ArgumentParser
 
-from browser_manager import get_endpoints, delete_browser, open_browser, to_sync
+from screamshot.utils import get_endpoint, delete_browser, open_browser, to_sync
 
 
-# Figures out what to do with the arguments
 async def do_it(args):
+    """
+    Figures out what to do with the arguments
+    :param args: the parsed arguments
+    :type args: argparse.Namespace class
+    """
     if args.close:
-        await delete_browser(get_endpoints())
+        await delete_browser(get_endpoint())
     if args.open:
         await open_browser(args.headless)
 
 
-# The name is expressive enought I guess, uses argparse
 def arg_parsing():
+    """
+    Returns the parsed arguments
+    """
     parser = ArgumentParser(description="Create or close a browser")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -25,8 +31,16 @@ def arg_parsing():
                         help="""Open the browser in graphic mode""")
 
     args = parser.parse_args()
-    # Calls the function to use the arguments using asyncio to handle the asynchronous function used
+    return args
+
+
+def main():
+    """
+    Parses and uses the arguments
+    """
+    args = arg_parsing()
     to_sync(do_it(args))
 
 
-arg_parsing()
+if __name__ == '__main__':
+    main()

@@ -1,7 +1,7 @@
 """
 generate_bytes_img and generate_bytes_img_prom functions
 """
-from browser_manager import goto_page_async, get_browser_async
+from screamshot.utils import goto_page, get_browser
 
 # Name of the envrinment variable which contains the chrome ws endpoint
 VENV = 'WS_ENDPOINT_SCREAMSHOT'
@@ -28,14 +28,6 @@ def _parse_parameters(**kwargs):
         'wait_for': kwargs.get('wait_for'),
         'wait_until': wait_until,
     }
-
-
-async def _init_browser():
-    return await get_browser_async()
-
-
-async def _init_page(url, browser, params):
-    return await goto_page_async(url, browser, params)
 
 
 async def _selector_manager(page, params):
@@ -102,9 +94,9 @@ async def generate_bytes_img(url, **kwargs):
     """
     params = _parse_parameters(**kwargs)
 
-    browser = await _init_browser()
+    browser = await get_browser()
 
-    page = await _init_page(url, browser, params)
+    page = await goto_page(url, browser, params)
 
     element = await _selector_manager(page, params)
 
