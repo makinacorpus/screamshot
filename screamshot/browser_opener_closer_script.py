@@ -15,10 +15,7 @@ async def do_it(args):
         await open_browser(args.headless)
 
 
-def arg_parsing():
-    """
-    Returns the parsed arguments
-    """
+def _parse_arg():
     parser = ArgumentParser(description="Create or close a browser")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -35,10 +32,7 @@ def arg_parsing():
 
 
 def main():
-    """
-    Parses and uses the arguments
-    """
-    args = arg_parsing()
+    args = _parse_arg()
     to_sync(do_it(args))
 
 
