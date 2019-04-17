@@ -4,7 +4,7 @@ Setup file.
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
 
 import screamshot
 
@@ -25,8 +25,8 @@ setup(
     open(os.path.join(HERE, 'CHANGES.md')).read(),
 
     include_package_data=True,
-    package_data={'package_c-stubs': ['__init__.pyi', 'generate_bytes_img.pyi']},
-    packages=find_packages(),
+    package_data={'screamshot': ['py.typed']},
+    packages=['screamshot'],
 
     url='https://github.com/makinacorpus/screamshot',
 
