@@ -28,8 +28,8 @@ def set_endpoint(ws_endpoint):
 
 def get_endpoint():
     """
-    This function returns the endpoint into a string if FILENAME_ENDPOINT exists,
-                            None if it does not
+    This function returns the endpoint into a string if FILENAME_ENDPOINT exists, \
+        None if it does not
     """
     try:
         with open(FILENAME_ENDPOINT, "r") as ws_file:
