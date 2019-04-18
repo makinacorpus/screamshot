@@ -31,10 +31,6 @@ def _parse_parameters(**kwargs):
 
 
 async def _selector_manager(page, params):
-    wait_for = params.get('wait_for')
-    if wait_for:
-        await page.waitForSelector(wait_for)
-
     selector = params.get('selector')
     if selector:
         return await page.querySelector(selector)
@@ -94,6 +90,8 @@ async def generate_bytes_img(url, **kwargs):
     """
     params = _parse_parameters(**kwargs)
 
+    print(params.get('path'))
+
     browser = await get_browser()
 
     page = await goto_page(url, browser, params)
@@ -101,6 +99,9 @@ async def generate_bytes_img(url, **kwargs):
     element = await _selector_manager(page, params)
 
     screamshot_params = {'fullPage': params.get('full_page')}
+    if params.get("path"):
+        screamshot_params["path"] = params.get("path")
+
     image = await element.screenshot(screamshot_params)
 
     return image

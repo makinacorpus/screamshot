@@ -15,6 +15,10 @@ def to_sync(fun):
     return asyncio.get_event_loop().run_until_complete(fun)
 
 
+def url_match(url1, url2):
+    return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1] or url1[:-1] == url2[:-1]
+
+
 def set_endpoint(ws_endpoint):
     """
     This function writes the endpoint to the file FILENAME_ENDPOINT
@@ -49,7 +53,7 @@ async def open_browser(is_headless):
     browser = await launch(headless=is_headless, autoClose=False)
     endpoint = browser.wsEndpoint
     set_endpoint(endpoint)
-    return endpoint
+    return browser
 
 
 async def delete_browser(ws_endpoint):
@@ -97,26 +101,28 @@ async def goto_page(url, browser, params):
     :type params: dict
     """
     page = None
+    arg_viewport = params.get('arg_viewport')
     wait_until = params.get('wait_until')
+
     if wait_until:
         page = await browser.newPage()
+        await page.setViewport(arg_viewport)
         await page.goto(url, waitUntil=wait_until)
     else:
-        for page_created in browser.pages():
-            if page_created.url == url:
+        already_created_pages = await browser.pages()
+        for page_created in already_created_pages:
+            if url_match(page_created.url, url):
                 page = page_created
+                await page.setViewport(arg_viewport)
                 break
         if not page:
             page = await browser.newPage()
+            await page.setViewport(arg_viewport)
             await page.goto(url)
 
     wait_for = params.get('wait_for')
     if wait_for:
         await page.waitForSelector(wait_for)
-
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        await page.setViewport(arg_viewport)
 
     return page
 
