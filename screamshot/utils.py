@@ -1,6 +1,9 @@
+
 """
 Collection of functions.
 """
+import logging
+from logging.handlers import RotatingFileHandler
 import asyncio
 from os import remove
 
@@ -8,6 +11,23 @@ from pyppeteer import launch, connect
 
 
 FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
+
+
+logger = logging.getLogger()
+
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+
+file_handler = RotatingFileHandler('activity.log', 'a', 1000000, 1)
+
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
+logger.addHandler(stream_handler)
 
 
 def to_sync(fun):
@@ -22,6 +42,20 @@ def to_sync(fun):
     return asyncio.get_event_loop().run_until_complete(fun)
 
 
+def url_match(url1, url2):
+    """
+    This function takes two urls and check if they are the same modulo '/' at the end
+    :param url1: mandatory, the first url
+    :type url1: str
+
+    :param url2: mandatory, the second url
+    :type url2: str
+
+    :rtype: Boolean
+    """
+    return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1] or url1[:-1] == url2[:-1]
+
+
 def set_endpoint(ws_endpoint):
     """
     This function store the web socket endpoint of the launched browser
@@ -29,7 +63,7 @@ def set_endpoint(ws_endpoint):
     :param ws_endpoint: mandatory, the web socket endpoint
     :type ws_endpoint: str
 
-    .. note :: ws_endpoint is saved in $FILENAME_ENDPOINT
+    .. note :: ws_endpoint is saved in FILENAME_ENDPOINT
     """
     with open(FILENAME_ENDPOINT, "w") as ws_file:
         ws_file.write(ws_endpoint + "\n")
@@ -41,7 +75,7 @@ def get_endpoint():
 
     :retype: str
 
-    .. note :: ws_endpoint is retrieved from $FILENAME_ENDPOINT
+    .. note :: ws_endpoint is retrieved from FILENAME_ENDPOINT
     """
     try:
         with open(FILENAME_ENDPOINT, "r") as ws_file:
@@ -49,12 +83,13 @@ def get_endpoint():
             line = line.split()[0]
             return line
     except FileNotFoundError:
-        return None
+        logger.error(str(FILENAME_ENDPOINT + " not found"))
+        exit(-1)
 
 
 async def open_browser(is_headless):
     """
-    Launch a browser and writes its websocket endpoint in $FILENAME_ENDPOINT
+    Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT
 
     :param is_headless: mandatory, should the browser be launched in headless mode ?
     :type is_headless: bool
@@ -65,7 +100,7 @@ async def open_browser(is_headless):
     browser = await launch(headless=is_headless, autoClose=False)
     endpoint = browser.wsEndpoint
     set_endpoint(endpoint)
-    return endpoint
+    return browser
 
 
 async def close_browser(ws_endpoint):
@@ -92,13 +127,20 @@ async def get_browser(is_headless=True):
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    return await open_browser(is_headless)
+    else:
+        return await open_browser(is_headless)
+
+
+def get_browser_sync(is_headless=True):
+    """
+    Same as get_browser in synchronous mode
+    """
+    return to_sync(get_browser(is_headless))
 
 
 async def goto_page(url, browser, params):
     """
     Checks if a page already exists in a browser or create a new one
-
     :param url: the url of the page to go to
     :type url: str
 
@@ -107,29 +149,37 @@ async def goto_page(url, browser, params):
 
     :param params: the parameters of pyppeteer to create a browser
     :type params: dict
-
     :retype: pyppeteer.page.Page
     """
     page = None
+    arg_viewport = params.get('arg_viewport')
     wait_until = params.get('wait_until')
+
     if wait_until:
         page = await browser.newPage()
+        await page.setViewport(arg_viewport)
         await page.goto(url, waitUntil=wait_until)
     else:
-        for page_created in browser.pages():
-            if page_created.url == url:
+        already_created_pages = await browser.pages()
+        for page_created in already_created_pages:
+            if url_match(page_created.url, url):
                 page = page_created
+                await page.setViewport(arg_viewport)
                 break
         if not page:
             page = await browser.newPage()
+            await page.setViewport(arg_viewport)
             await page.goto(url)
 
     wait_for = params.get('wait_for')
     if wait_for:
         await page.waitForSelector(wait_for)
 
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        await page.setViewport(arg_viewport)
-
     return page
+
+
+def goto_page_sync(url, browser, params):
+    """
+    Same as goto_page in synchronous mode
+    """
+    return to_sync(goto_page(url, browser, params))
