@@ -5,7 +5,11 @@ from screamshot.utils import to_sync
 
 
 async def do_it(args):
-    # print(args.wait_until)
+    """
+    Calls the function 'generate_bytes_img' with the right arguments
+    :param args: the parsed arguments
+    :type args: argparse.Namespace class
+    """
     if args.wait_until:
         await generate_bytes_img(args.url,
                                  path=args.path,
@@ -24,6 +28,9 @@ async def do_it(args):
 
 
 def argParsing():
+    """
+    Returns the parsed arguments
+    """
     parser = ArgumentParser(description="Take a screenshot")
 
     # Mandatory arguments
@@ -67,11 +74,13 @@ def argParsing():
                                 metavar="wait_for_selector",
                                 help="The CSS3 selector of an element you want to wait to be loaded before taking the screenshot")
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
+    """
+    Parses and uses the arguments
+    """
     args = argParsing()
     to_sync(do_it(args))
 

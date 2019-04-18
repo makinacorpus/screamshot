@@ -16,6 +16,14 @@ def to_sync(fun):
 
 
 def url_match(url1, url2):
+    """
+    This function takes two urls and check if they are the same modulo '/' at the end
+    :param url1: mandatory, the first url
+    :type url1: str
+
+    :param url2: mandatory, the second url
+    :type url2: str
+    """
     return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1] or url1[:-1] == url2[:-1]
 
 
