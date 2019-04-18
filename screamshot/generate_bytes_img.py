@@ -1,9 +1,7 @@
 """
 generate_bytes_img and generate_bytes_img_prom functions
 """
-from os import environ
-
-from pyppeteer import launch, connect
+from screamshot.utils import goto_page, get_browser
 
 
 # Name of the envrinment variable which contains the chrome ws endpoint
@@ -24,36 +22,13 @@ def _parse_parameters(**kwargs):
             wait_until = [wait_until]
 
     return {
+        'path': kwargs.get('path'),
         'arg_viewport': arg_viewport,
         'full_page': kwargs.get('full_page', False),
         'selector': kwargs.get('selector'),
         'wait_for': kwargs.get('wait_for'),
         'wait_until': wait_until,
     }
-
-
-async def _init_browser():
-    browser_ws_endpoint = environ.get(VENV)
-    if browser_ws_endpoint:
-        browser = await connect({'browserWSEndpoint': browser_ws_endpoint})
-        return browser
-    browser = await launch(options={'headless': True})
-    return browser
-
-
-async def _init_page(url, browser, params):
-    page = await browser.newPage()
-
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        await page.setViewport(arg_viewport)
-
-    wait_until = params.get('wait_until')
-    if wait_until:
-        await page.goto(url, waitUntil=wait_until)
-    else:
-        await page.goto(url)
-    return page
 
 
 async def _selector_manager(page, params):
@@ -117,9 +92,9 @@ async def generate_bytes_img(url, **kwargs):
     """
     params = _parse_parameters(**kwargs)
 
-    browser = await _init_browser()
+    browser = await get_browser()
 
-    page = await _init_page(url, browser, params)
+    page = await goto_page(url, browser, params)
 
     element = await _selector_manager(page, params)
 
