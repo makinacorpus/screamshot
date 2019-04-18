@@ -27,10 +27,7 @@ async def do_it(args):
                                  wait_for=args.wait_for)
 
 
-def argParsing():
-    """
-    Returns the parsed arguments
-    """
+def _arg_parsing():
     parser = ArgumentParser(description="Take a screenshot")
 
     # Mandatory arguments
@@ -79,9 +76,9 @@ def argParsing():
 
 def main():
     """
-    Parses and uses the arguments
+    Take a screamshot and save the resulting image
     """
-    args = argParsing()
+    args = _arg_parsing()
     to_sync(do_it(args))
 
 

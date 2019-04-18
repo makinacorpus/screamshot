@@ -98,8 +98,9 @@ async def generate_bytes_img(url, **kwargs):
     element = await _selector_manager(page, params)
 
     screamshot_params = {'fullPage': params.get('full_page')}
-    if params.get("path"):
-        screamshot_params["path"] = params.get("path")
+    path = params.get("path")
+    if path:
+        screamshot_params["path"] = path
 
     image = await element.screenshot(screamshot_params)
 

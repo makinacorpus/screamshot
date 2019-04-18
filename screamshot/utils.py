@@ -2,6 +2,8 @@
 """
 Collection of functions.
 """
+import logging
+from logging.handlers import RotatingFileHandler
 import asyncio
 from os import remove
 
@@ -9,6 +11,23 @@ from pyppeteer import launch, connect
 
 
 FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
+
+
+logger = logging.getLogger()
+
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+
+file_handler = RotatingFileHandler('activity.log', 'a', 1000000, 1)
+
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
+logger.addHandler(stream_handler)
 
 
 def to_sync(fun):
@@ -31,6 +50,8 @@ def url_match(url1, url2):
 
     :param url2: mandatory, the second url
     :type url2: str
+
+    :rtype: Boolean
     """
     return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1] or url1[:-1] == url2[:-1]
 
@@ -62,8 +83,8 @@ def get_endpoint():
             line = line.split()[0]
             return line
     except FileNotFoundError:
-        print(FILENAME_ENDPOINT + " not found")
-        return None
+        logger.error(str(FILENAME_ENDPOINT + " not found"))
+        exit(-1)
 
 
 async def open_browser(is_headless):

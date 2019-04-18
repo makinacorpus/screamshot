@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from screamshot.utils import get_endpoint, delete_browser, open_browser, to_sync
+from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
 
 
 async def do_it(args):
@@ -10,15 +10,12 @@ async def do_it(args):
     :type args: argparse.Namespace class
     """
     if args.close:
-        await delete_browser(get_endpoint())
+        await close_browser(get_endpoint())
     if args.open:
         await open_browser(args.headless)
 
 
-def arg_parsing():
-    """
-    Returns the parsed arguments
-    """
+def _arg_parsing():
     parser = ArgumentParser(description="Create or close a browser")
 
     # Mandatory arguments
@@ -40,9 +37,9 @@ def arg_parsing():
 
 def main():
     """
-    Parses and uses the arguments
+    Open or close a browser
     """
-    args = arg_parsing()
+    args = _arg_parsing()
     to_sync(do_it(args))
 
 
