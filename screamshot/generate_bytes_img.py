@@ -3,6 +3,7 @@ generate_bytes_img and generate_bytes_img_prom functions
 """
 from screamshot.utils import goto_page, get_browser
 
+
 # Name of the envrinment variable which contains the chrome ws endpoint
 VENV = 'WS_ENDPOINT_SCREAMSHOT'
 
@@ -89,8 +90,6 @@ async def generate_bytes_img(url, **kwargs):
             asyncio.get_event_loop().run_until_complete(main())
     """
     params = _parse_parameters(**kwargs)
-
-    print(params.get('path'))
 
     browser = await get_browser()
 
