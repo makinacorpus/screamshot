@@ -20,6 +20,8 @@ def arg_parsing():
     Returns the parsed arguments
     """
     parser = ArgumentParser(description="Create or close a browser")
+
+    # Mandatory arguments
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         "-c", "--close", action="store_true", help="""Close the browsers
@@ -27,6 +29,8 @@ def arg_parsing():
     group.add_argument(
         "-o", "--open", action="store_true", help="""Open a browser and store its websocket
 		endpoint in endpointlist.txt """)
+
+    # Optionnal argument
     parser.add_argument("-g", "--graphic", dest="headless", action="store_false",
                         help="""Open the browser in graphic mode""")
 
