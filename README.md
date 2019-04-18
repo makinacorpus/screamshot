@@ -10,7 +10,7 @@ Python library to capture screenshots of web applications
 
 ## When it is already setup
 
-You just need to run `docker-compose`.
+You just need to run `docker-compose up`.
 
 ## To clean up
 
