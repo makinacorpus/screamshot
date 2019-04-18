@@ -2,8 +2,20 @@
 Python library to capture screenshots of web applications
 
 # Tests
-1. If you want to run the tests in a MacOS environment, use the following command at the root of the project: `export PYTHONPATH=$PYTHONPATH:.`, 
-2. `python3 -m unittest tests/generate_bytes_img_function_tests.py -v` runs all the tests of generate_bytes_img
+## The first time
+
+1. Install **Docker**
+2. Run: `docker-compose build`, to create all the required images
+3. To start the verification, run: `docker-compose up`
+
+## When it is already setup
+
+You just need to run `docker-compose`.
+
+## To clean up
+
+* If you want to stop containers and remove containers, networks, volumes, and images created by up, run: `docker-compose down`.
+* If you want to delete all the images, run: `docker --rmi all`.
 
 # Usage
 ## generate_bytes_img_function_tests
