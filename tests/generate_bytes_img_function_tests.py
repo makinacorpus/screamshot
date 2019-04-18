@@ -16,7 +16,7 @@ class GenerateBytesImgFunctionTests(unittest.TestCase):
 
     def test_function_without_promise_without_optional_parameters(self):
         img = asyncio.get_event_loop().run_until_complete(
-            generate_bytes_img('https://www.google.fr')
+            generate_bytes_img('http://0.0.0.0:8000/website_test/')
         )
         self.assertTrue(img and isinstance(img, bytes))
 
@@ -24,7 +24,7 @@ class GenerateBytesImgFunctionTests(unittest.TestCase):
         loop = asyncio.get_event_loop()
         future = asyncio.Future()
         asyncio.ensure_future(
-            generate_bytes_img_prom('https://www.google.fr', future))
+            generate_bytes_img_prom('http://0.0.0.0:8000/website_test/', future))
         loop.run_until_complete(future)
         img = future.result()
         self.assertTrue(img and isinstance(img, bytes))
