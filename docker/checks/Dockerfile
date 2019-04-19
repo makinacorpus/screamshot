@@ -13,6 +13,3 @@ COPY ./docker/checks/checks-requirement.txt /screamshot
 
 RUN pip3 install -r requirement.txt
 RUN pip3 install -r checks-requirement.txt
-
-RUN useradd -ms /bin/bash default
-USER default
