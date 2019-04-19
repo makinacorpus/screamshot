@@ -45,8 +45,7 @@ def main():
     logger.info('\n####################\n        MYPY        \n####################\n')
     os.system('mypy .')
     logger.info('\n####################\n      UNITTEST      \n####################\n')
-    res = subprocess.run(["python3", "-m", "unittest",
-                          "tests/generate_bytes_img_function_tests.py", "-v"],
+    res = subprocess.run(["python3", "-m", "unittest"],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stderr = res.stderr.decode('utf8')
     if res.returncode == 1:
