@@ -1,6 +1,7 @@
 """
 This script waits for the server to respond to <http://server:5000/index.html>, and then \
-    performs the MYPY and PYLINT checks. Finally he performs the unittests.
+    performs the MYPY and PYLINT checks and the unittests. Finally it sends a closing request \
+        to the server and waits for it
 """
 #!/usr/bin/env python
 import os
@@ -55,6 +56,8 @@ def main():
     logger.info(stdout)
     logger.info('\n####################\n       PYLINT       \n####################\n')
     os.system('pylint ./screamshot')
+    _wait_server('http://server:5000/close', 'Waits for server since: %ds',
+                 'Server shutdown after: %ds')
 
 
 if __name__ == '__main__':
