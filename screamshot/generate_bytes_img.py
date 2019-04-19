@@ -4,10 +4,6 @@ generate_bytes_img and generate_bytes_img_prom functions
 from screamshot.utils import goto_page, get_browser
 
 
-# Name of the envrinment variable which contains the chrome ws endpoint
-VENV = 'WS_ENDPOINT_SCREAMSHOT'
-
-
 def _parse_parameters(**kwargs):
     arg_viewport = {}
     if 'width' in kwargs:
@@ -93,7 +89,9 @@ async def generate_bytes_img(url, **kwargs):
 
     browser = await get_browser()
 
-    page = await goto_page(url, browser, params)
+    page = await goto_page(url, browser,
+                           wait_for=params.get('wait_for'),
+                           wait_until=params.get('wait_until'))
 
     element = await _selector_manager(page, params)
 
