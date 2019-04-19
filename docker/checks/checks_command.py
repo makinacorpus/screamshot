@@ -2,13 +2,16 @@
 This script waits for the server to respond to <http://server:5000/index.html>, and then \
     performs the MYPY and PYLINT checks and the unittests. Finally it sends a closing request \
         to the server and waits for it
+
 """
 #!/usr/bin/env python
 import os
 import logging
 from time import sleep
 import subprocess
-import re
+from re import search
+from argparse import ArgumentParser
+
 from urllib3.exceptions import MaxRetryError
 
 from requests import get
@@ -23,6 +26,30 @@ formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
 logger.addHandler(stream_handler)
+
+
+def _parse_arg():
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument('--wait-url',
+                        help='The URL to wait before starting the tests and checks',
+                        type=str, default='http://server:5000/index.html')
+    parser.add_argument('--close-url',
+                        help='The URL that shutdown the server',
+                        type=str, default='http://server:5000/close')
+    parser.add_argument('--no-mypy',
+                        help='Mypy checks will not be run', action='store_true', default=False)
+    parser.add_argument('--no-pylint',
+                        help='Pylint checks will not be run', action='store_true', default=False)
+    parser.add_argument('--no-unittest-parsing',
+                        help='By default, unittest stdout is parsed to remove unnecessary warnings',
+                        action='store_true', default=False)
+    parser.add_argument('--no-server-closing',
+                        help='By default, it closes the server',
+                        action='store_true', default=False)
+
+    return parser.parse_args()
+
 
 
 def _wait_server(url, waiting_message, final_message):
@@ -41,33 +68,43 @@ def _wait_server(url, waiting_message, final_message):
 
 def _parse_unittest_stdout(returncode, o_stdout):
     if returncode == 1:
-        stdout = re.search(r'(?P<message>[^<]+FAILED)', o_stdout).group('message')
+        stdout = search(r'(?P<message>[^<]+FAILED)', o_stdout).group('message')
     else:
-        stdout = re.search(r'(?P<message>[^<]+OK)', o_stdout).group('message')
+        stdout = search(r'(?P<message>[^<]+OK)', o_stdout).group('message')
     return stdout
 
 
 def main():
-    _wait_server('http://server:5000/index.html', 'Waits for the connection since: %ds',
+    # os.system('su docker')
+    os.system('python3 setup.py install')
+    args = _parse_arg()
+
+    _wait_server(args.wait_url, 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
 
-    logger.info('\n####################\n        MYPY        \n####################\n')
-    os.system('mypy .')
+    if not args.no_mypy:
+        logger.info('\n####################\n        MYPY        \n####################\n')
+        os.system('mypy .')
 
     logger.info('\n####################\n      UNITTEST      \n####################\n')
     res = subprocess.run(["python3", "-m", "unittest"],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # Pyppeteer sends many warnings when closing Python
-    # The following lines erase them
     stderr = res.stderr.decode('utf8')
-    stdout = _parse_unittest_stdout(res.returncode, stderr)
-    logger.info(stdout)
+    if not args.no_unittest_parsing:
+        # Pyppeteer sends many warnings when closing Python
+        # The following lines erase them
+        stdout = _parse_unittest_stdout(res.returncode, stderr)
+        logger.info(stdout)
+    else:
+        logger.info(stderr)
 
-    logger.info('\n####################\n       PYLINT       \n####################\n')
-    os.system('pylint ./screamshot')
+    if not args.no_pylint:
+        logger.info('\n####################\n       PYLINT       \n####################\n')
+        os.system('pylint ./screamshot')
 
-    _wait_server('http://server:5000/close', 'Waits for server since: %ds',
-                 'Server shutdown after: %ds')
+    if not args.no_server_closing:
+        _wait_server(args.close_url, 'Waits for server since: %ds',
+                     'Server shutdown after: %ds')
 
 
 if __name__ == '__main__':
