@@ -1,4 +1,3 @@
-=========
 CHANGELOG
 =========
 
@@ -6,15 +5,15 @@ CHANGELOG
 ===
 
 Initialization of Screamshot library
-    1. __init__ file:
-        * __author__
-        * __version__
-        * __all__
-    2. core file:
-        * A `ScreenShot` object with three methods:
-            * `load`, loads a web page
-            * `screamshot`, takes a screenshot of a loaded page
-            * `load_and_screamshot`, loads a web page and takes a screenshot
+1. __init__ file:
+    * __author__
+    * __version__
+    * __all__
+2. core file:
+    * A `ScreenShot` object with three methods:
+        * `load`, loads a web page
+        * `screamshot`, takes a screenshot of a loaded page
+        * `load_and_screamshot`, loads a web page and takes a screenshot
 
 0.1.0
 ===
@@ -27,3 +26,8 @@ takes some parameters and returns a binary `bytes` object.
 
 `generate_bytes_img` is no more a sync function and `generate_bytes_img_prom` has been added
 `generate_bytes_img_prom` uses the `asyncio.Future` object
+
+0.1.2
+===
+
+A test and verification tool using Docker is now available
