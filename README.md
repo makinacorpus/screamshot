@@ -6,7 +6,7 @@ Python library to capture screenshots of web applications
 Please run the tests and checks and correct all errors and warnings before committing.
 
 # Testing and checks
-## To start testing and checks
+## To start the tests and checks
 ### The first time
 
 1. Install **Docker**
