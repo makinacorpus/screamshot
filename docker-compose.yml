@@ -1,16 +1,20 @@
-version: "3.7"
+version: "3.3"
 services:
   server:
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
-    command: "flask run -h 0.0.0.0"
+    network_mode: host
+    command: "flask run"
+    ports:
+      - 5000:5000
   checks:
     depends_on:
       - "server"
     build:
       context: .
       dockerfile: ./docker/checks/Dockerfile
+    network_mode: host
     volumes:
       - .:/screamshot
     command: "python3 docker/checks/checks_command.py"
