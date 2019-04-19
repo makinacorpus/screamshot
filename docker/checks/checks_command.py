@@ -39,6 +39,14 @@ def _wait_server(url, waiting_message, final_message):
     logger.info(final_message, count)
 
 
+def _parse_unittest_stdout(returncode, o_stdout):
+    if returncode == 1:
+        stdout = re.search(r'(?P<message>[^<]+FAILED)', o_stdout).group('message')
+    else:
+        stdout = re.search(r'(?P<message>[^<]+OK)', o_stdout).group('message')
+    return stdout
+
+
 def main():
     _wait_server('http://server:5000/index.html', 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
@@ -52,10 +60,7 @@ def main():
     # Pyppeteer sends many warnings when closing Python
     # The following lines erase them
     stderr = res.stderr.decode('utf8')
-    if res.returncode == 1:
-        stdout = re.search(r'(?P<message>[^<]+FAILED)', stderr).group('message')
-    else:
-        stdout = re.search(r'(?P<message>[^<]+OK)', stderr).group('message')
+    stdout = _parse_unittest_stdout(res.returncode, stderr)
     logger.info(stdout)
 
     logger.info('\n####################\n       PYLINT       \n####################\n')
