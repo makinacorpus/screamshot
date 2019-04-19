@@ -53,8 +53,8 @@ def main():
     else:
         stdout = re.search(r'(?P<message>[^<]+OK)', stderr).group('message')
     logger.info(stdout)
-    _wait_server('http://server:5000/close', 'Waits for server since: %ds',
-                 'Server shutdown after: %ds')
+    logger.info('\n####################\n       PYLINT       \n####################\n')
+    os.system('pylint ./screamshot')
 
 
 if __name__ == '__main__':
