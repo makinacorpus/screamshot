@@ -26,7 +26,7 @@ You just need to run `docker-compose up`.
 
 * You must use the `unittest` package
 * You must put your test file in the **tests** folder
-* You must name your test file in the following next pattern: **tests_*.py**
+* You must name your test file using the following next pattern: **tests_*.py**
 
 # Usage
 ## generate_bytes_img_function_tests
