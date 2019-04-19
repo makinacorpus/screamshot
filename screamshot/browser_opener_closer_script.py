@@ -12,7 +12,7 @@ async def do_it(args):
     if args.close:
         await close_browser(get_endpoint())
     if args.open:
-        await open_browser(args.headless)
+        await open_browser(args.headless, no_sandbox_arg=args.no_sandbox)
 
 
 def _arg_parsing():
@@ -30,6 +30,8 @@ def _arg_parsing():
     # Optionnal argument
     parser.add_argument("-g", "--graphic", dest="headless", action="store_false",
                         help="""Open the browser in graphic mode""")
+    parser.add_argument('-ns', "--no-sandbox",
+                        action="store_const", const=["--no-sandbox"], help="Desactivate sandbox")
 
     args = parser.parse_args()
     return args

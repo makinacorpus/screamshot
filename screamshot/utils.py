@@ -8,7 +8,7 @@ from os import remove
 from pyppeteer import launch, connect
 
 
-FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
+FILENAME_ENDPOINT = "endpointlist.txt"
 
 
 logger = logging.getLogger()
@@ -84,7 +84,7 @@ def get_endpoint():
         return None
 
 
-async def open_browser(is_headless, write_websocket=True):
+async def open_browser(is_headless, write_websocket=True, no_sandbox_arg=None):
     """
     Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
 
@@ -97,7 +97,7 @@ async def open_browser(is_headless, write_websocket=True):
     :return: the opened browser
     :retype: pyppeteer Browser
     """
-    browser = await launch(headless=is_headless, autoClose=False)
+    browser = await launch(headless=is_headless, autoClose=False, args=no_sandbox_arg)
     if write_websocket:
         endpoint = browser.wsEndpoint
         set_endpoint(endpoint)

@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.3"
 services:
   server:
     build:
@@ -13,4 +13,4 @@ services:
       dockerfile: ./docker/checks/Dockerfile
     volumes:
       - .:/screamshot
-    command: "python3 docker/checks/checks_command.py"
+    command: "python3 docker/checks/checks_command.py --no-mypy --no-pylint"
