@@ -1,21 +1,32 @@
 # screamshot
 Python library to capture screenshots of web applications
 
-# Tests
-## The first time
+# Good practices before committing
+
+Please run the tests and checks and correct all errors and warnings before committing.
+
+# Testing and checks
+## Start testing and checks
+### The first time
 
 1. Install **Docker**
 2. Run: `docker-compose build`, to create all the required images
 3. To start the verification, run: `docker-compose up`
 
-## When it is already setup
+### When it is already setup
 
 You just need to run `docker-compose up`.
 
-## To clean up
+### To clean up
 
 * If you want to stop containers and remove containers, networks, volumes, and images created by up, run: `docker-compose down`.
 * If you want to delete all the images, run: `docker --rmi all`.
+
+## Write new tests
+
+* You must use the `unittest` package
+* You must put your test file in the **tests** folder
+* You must name your test file in the following the next pattern: **tests_*.py**
 
 # Usage
 ## generate_bytes_img_function_tests
