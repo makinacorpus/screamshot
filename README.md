@@ -28,6 +28,10 @@ You just need to run `docker-compose up`.
 * You must put your test file in the **tests** folder
 * You must name your test file using the following next pattern: **tests_*.py**
 
+### Local server
+
+A server with a web page can be used at the following address: <http://server:5000/index.html>
+
 # Usage
 ## generate_bytes_img_function_tests
 ### Description
