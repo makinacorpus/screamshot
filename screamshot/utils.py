@@ -111,12 +111,15 @@ async def close_browser(ws_endpoint):
     remove(FILENAME_ENDPOINT)
 
 
-async def get_browser(is_headless=True):
+async def get_browser(is_headless=True, write_websocket=True):
     """
-    Returns a already creatred browser if one exists or a new one if not
+    Returns a already created browser if one exists or a new one if not
 
     :param is_headless: optionnal, should the browser be launched in headless mode ?
     :type is_headless: bool
+
+    :param write_websocket: optional, should we store the websocket endpoint in FILENAME_ENDPOINT ?
+    :type write_websocket: bool
 
     :retype: pyppeteer.browser.Browser
     """
@@ -124,14 +127,14 @@ async def get_browser(is_headless=True):
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
     else:
-        return await open_browser(is_headless)
+        return await open_browser(is_headless, write_websocket)
 
 
-def get_browser_sync(is_headless=True):
+def get_browser_sync(is_headless=True, write_websocket=True):
     """
     Same as get_browser in synchronous mode
     """
-    return to_sync(get_browser(is_headless))
+    return to_sync(get_browser(is_headless, write_websocket))
 
 
 async def goto_page(url, browser, wait_for=None, wait_until="load"):
