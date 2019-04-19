@@ -93,7 +93,9 @@ async def generate_bytes_img(url, **kwargs):
 
     browser = await get_browser()
 
-    page = await goto_page(url, browser, params)
+    page = await goto_page(url, browser,
+                           wait_for=params.get('wait_for'),
+                           wait_until=params.get('wait_until'))
 
     element = await _selector_manager(page, params)
 
