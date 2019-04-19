@@ -13,4 +13,4 @@ services:
       dockerfile: ./docker/checks/Dockerfile
     volumes:
       - .:/screamshot
-    command: "python3 docker/scripts/checks_command.py"
+    command: "python3 docker/checks/checks_command.py"
