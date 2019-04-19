@@ -22,6 +22,11 @@ stream_handler.setLevel(logging.DEBUG)
 logger.addHandler(stream_handler)
 
 
+def check_wait_until_arg(wait_until_arg,
+                         values=["load", "domcontentloaded", "networkidle0", "networkidle2"]):
+    return wait_until_arg in values or all([arg in values for arg in wait_until_arg])
+
+
 def to_sync(fun):
     """
     This synchronous function execute and returns the result of an asynchronous function
@@ -76,7 +81,7 @@ def get_endpoint():
             return line
     except FileNotFoundError:
         logger.error(str(FILENAME_ENDPOINT + " not found"))
-        exit(-1)
+        return None
 
 
 async def open_browser(is_headless, write_websocket=True):
@@ -154,12 +159,17 @@ async def goto_page(url, browser, wait_for=None, wait_until="load"):
 
     :retype: pyppeteer.page.Page
     """
-    page = None
+
+    if not check_wait_until_arg(wait_until):
+        logger.error(
+            "Invalid wait_until argument, should be should be a list of load, domcontentloaded, networkidle0 and/or networkidle2")
+        return None
 
     if wait_until != "load":
         page = await browser.newPage()
         await page.goto(url, waitUntil=wait_until)
     else:
+        page = None
         already_created_pages = await browser.pages()
         for page_created in already_created_pages:
             if url_match(page_created.url, url):
