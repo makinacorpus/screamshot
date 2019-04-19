@@ -6,7 +6,7 @@ Python library to capture screenshots of web applications
 Please run the tests and checks and correct all errors and warnings before committing.
 
 # Testing and checks
-## Start testing and checks
+## To start testing and checks
 ### The first time
 
 1. Install **Docker**
@@ -22,7 +22,7 @@ You just need to run `docker-compose up`.
 * If you want to stop containers and remove containers, networks, volumes, and images created by up, run: `docker-compose down`.
 * If you want to delete all the images, run: `docker --rmi all`.
 
-## Write new tests
+## To write new tests
 
 * You must use the `unittest` package
 * You must put your test file in the **tests** folder
