@@ -9,11 +9,10 @@ RUN mkdir screamshot
 WORKDIR /screamshot
 
 COPY ./requirement.txt /screamshot
+COPY ./docker/checks/checks-requirement.txt /screamshot
 
 RUN pip3 install -r requirement.txt
-RUN pip3 install pylint
-RUN pip3 install mypy
-RUN pip3 install requests
+RUN pip3 install -r checks-requirement.txt
 
 RUN useradd -ms /bin/bash default
 USER default
