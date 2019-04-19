@@ -1,4 +1,6 @@
 """
+This script waits for the server to respond to <http://server:5000/index.html>, and then \
+    performs the MYPY and PYLINT checks. Finally he performs the unittests.
 """
 #!/usr/bin/env python
 import os
