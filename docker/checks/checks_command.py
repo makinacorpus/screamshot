@@ -42,19 +42,25 @@ def _wait_server(url, waiting_message, final_message):
 def main():
     _wait_server('http://server:5000/index.html', 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
+
     logger.info('\n####################\n        MYPY        \n####################\n')
     os.system('mypy .')
+
     logger.info('\n####################\n      UNITTEST      \n####################\n')
     res = subprocess.run(["python3", "-m", "unittest"],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Pyppeteer sends many warnings when closing Python
+    # The following lines erase them
     stderr = res.stderr.decode('utf8')
     if res.returncode == 1:
         stdout = re.search(r'(?P<message>[^<]+FAILED)', stderr).group('message')
     else:
         stdout = re.search(r'(?P<message>[^<]+OK)', stderr).group('message')
     logger.info(stdout)
+
     logger.info('\n####################\n       PYLINT       \n####################\n')
     os.system('pylint ./screamshot')
+
     _wait_server('http://server:5000/close', 'Waits for server since: %ds',
                  'Server shutdown after: %ds')
 
