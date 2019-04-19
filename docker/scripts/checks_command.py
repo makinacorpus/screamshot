@@ -8,8 +8,10 @@ import logging
 from time import sleep
 import subprocess
 import re
+from urllib3.exceptions import MaxRetryError
 
 from requests import get
+from requests.exceptions import ConnectionError as RequestsConnectionError
 
 
 logger = logging.getLogger()
@@ -29,7 +31,7 @@ def _wait_server(url, waiting_message, final_message):
         try:
             get(url)
             server_started = True
-        except:
+        except (RequestsConnectionError, MaxRetryError) as _:
             sleep(1)
             logger.info(waiting_message, count)
             count += 1
