@@ -33,10 +33,10 @@ def _parse_arg():
 
     parser.add_argument('--wait-url',
                         help='The URL to wait before starting the tests and checks',
-                        type=str, default='http://server:5000/index.html')
+                        type=str, default='http://127.0.0.1:5000/index.html')
     parser.add_argument('--close-url',
                         help='The URL that shutdown the server',
-                        type=str, default='http://server:5000/close')
+                        type=str, default='http://127.0.0.1:5000/close')
     parser.add_argument('--no-mypy',
                         help='Mypy checks will not be run', action='store_true', default=False)
     parser.add_argument('--no-pylint',
@@ -75,8 +75,6 @@ def _parse_unittest_stdout(returncode, o_stdout):
 
 
 def main():
-    # os.system('su docker')
-    os.system('python3 setup.py install')
     args = _parse_arg()
 
     _wait_server(args.wait_url, 'Waits for the connection since: %ds',
