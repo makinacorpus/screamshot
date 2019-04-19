@@ -8,3 +8,5 @@ RUN mkdir server
 WORKDIR /server
 
 COPY ./tests/server /server
+
+EXPOSE 5000
