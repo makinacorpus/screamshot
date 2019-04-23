@@ -31,3 +31,10 @@ takes some parameters and returns a binary `bytes` object.
 ===
 
 A test and verification tool using Docker is now available
+
+0.1.3
+===
+
+Add two commands:
+* `browser-manager`
+* `screamshot`
