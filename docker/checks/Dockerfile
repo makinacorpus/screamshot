@@ -8,11 +8,17 @@ RUN apt-get install -y libx11-xcb1 libxrandr2 libasound2 \
 RUN mkdir screamshot
 WORKDIR /screamshot
 
-COPY ./requirement.txt /screamshot
-COPY ./docker/checks/checks-requirement.txt /screamshot
+COPY . /screamshot
 
 RUN pip3 install -r requirement.txt
+<<<<<<< HEAD
 RUN pip3 install -r checks-requirement.txt
+=======
+RUN pip3 install -r ./docker/checks/checks-requirement.txt
+RUN python3 setup.py install
+
+EXPOSE 5000
+>>>>>>> 36fbe977cc5a61a31ccbd0ac910f1756778326b5
 
 EXPOSE 5000
 

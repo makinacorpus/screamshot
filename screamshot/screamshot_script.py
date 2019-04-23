@@ -28,6 +28,7 @@ def _arg_parsing():
     parser.add_argument("--wait_until", nargs="+", type=str,
                         choices=["load", "domcontentloaded",
                                  "networkidle0", "networkidle2"],
+                        default="load",
                         help="How long do you want to wait for the page to be loaded")
 
     selector_group = parser.add_argument_group(title="CSS3 selectors (optional)",
