@@ -1,0 +1,17 @@
+language: python
+python:
+  - "3.5"
+install:
+  - pip3 install -r requirement.txt
+  - pip3 install -r ./docker/checks/checks-requirement.txt
+  - pip3 install flask
+jobs:
+  include:
+    - stage: test
+      script:
+        - export FLASK_APP=tests/server/app.py
+        - flask run &
+        - python3 ./docker/checks/checks_command.py --no-mypy --no-pylint --no-unittest-parsing
+    - stage: pylint
+      script:
+        - pylint .
