@@ -1,12 +1,10 @@
-dist: xenial
+language: python
+python:
+  - "3.5"
 install:
-  - sudo apt-get update
-  - sudo apt-get install python3-setuptools
-  - sudo easy_install3 pip
-  - pip3 install --upgrade setuptools --user
-  - pip3 install -r requirement.txt
-  - pip3 install -r ./docker/checks/checks-requirement.txt
-  - pip3 install flask
+  - pip install -r requirement.txt
+  - pip install -r ./docker/checks/checks-requirement.txt
+  - pip install flask
 jobs:
   include:
     - stage: test
