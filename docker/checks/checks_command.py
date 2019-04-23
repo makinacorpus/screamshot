@@ -130,7 +130,6 @@ def main():
         logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
         _wait_server(args.close_url, 'Waits for server since: %ds',
                      'Server shutdown after: %ds')
-    exit(unittest_res.returncode)
 
 
 if __name__ == '__main__':
