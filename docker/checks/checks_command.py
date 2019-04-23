@@ -77,32 +77,53 @@ def _parse_unittest_stdout(returncode, o_stdout):
 def main():
     args = _parse_arg()
 
+    logger.info('\n####################\n    SETUP INSTALL    \n####################\n')
+    os.system('sudo python3 setup.py install')
+
+    logger.info('\n####################\n     WAIT SERVER     \n####################\n')
     _wait_server(args.wait_url, 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
 
-    if not args.no_mypy:
-        logger.info('\n####################\n        MYPY        \n####################\n')
-        os.system('mypy .')
-
     logger.info('\n####################\n      UNITTEST      \n####################\n')
-    res = subprocess.run(["python3", "-m", "unittest"],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stderr = res.stderr.decode('utf8')
+    unittest_res = subprocess.run(["python3", "-m", "unittest"],
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stderr = unittest_res.stderr.decode('utf8')
     if not args.no_unittest_parsing:
         # Pyppeteer sends many warnings when closing Python
         # The following lines erase them
-        stdout = _parse_unittest_stdout(res.returncode, stderr)
+        stdout = _parse_unittest_stdout(unittest_res.returncode, stderr)
         logger.info(stdout)
     else:
         logger.info(stderr)
+    if unittest_res.returncode:
+        logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
+        _wait_server(args.close_url, 'Waits for server since: %ds',
+                     'Server shutdown after: %ds')
+        exit(1)
 
     if not args.no_pylint:
         logger.info('\n####################\n       PYLINT       \n####################\n')
-        os.system('pylint ./screamshot')
+        pylint_res = subprocess.run(['pylint', './screamshot'])
+        if pylint_res.returncode:
+            logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
+            _wait_server(args.close_url, 'Waits for server since: %ds',
+                         'Server shutdown after: %ds')
+            exit(1)
+
+    if not args.no_mypy:
+        logger.info('\n####################\n        MYPY        \n####################\n')
+        mypy_res = subprocess.run(['mypy', '.'])
+        if mypy_res.returncode:
+            logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
+            _wait_server(args.close_url, 'Waits for server since: %ds',
+                         'Server shutdown after: %ds')
+            exit(1)
 
     if not args.no_server_closing:
+        logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
         _wait_server(args.close_url, 'Waits for server since: %ds',
                      'Server shutdown after: %ds')
+    exit(unittest_res.returncode)
 
 
 if __name__ == '__main__':

@@ -8,13 +8,20 @@ RUN apt-get install -y libx11-xcb1 libxrandr2 libasound2 \
 RUN mkdir screamshot
 WORKDIR /screamshot
 
-COPY . /screamshot
+COPY ./requirement.txt /screamshot
+COPY ./docker/checks/checks-requirement.txt /screamshot
 
 RUN pip3 install -r requirement.txt
-RUN pip3 install -r ./docker/checks/checks-requirement.txt
-RUN python3 setup.py install
+RUN pip3 install -r checks-requirement.txt
 
 EXPOSE 5000
 
-RUN useradd -ms /bin/bash default
-USER default
+RUN apt-get -y install sudo
+
+RUN adduser --disabled-password --gecos '' docker
+RUN adduser docker sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER docker
+
+RUN sudo apt-get update
