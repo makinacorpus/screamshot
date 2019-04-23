@@ -1,6 +1,7 @@
 """
 Collection of functions.
 """
+import logging
 import asyncio
 from os import remove
 
@@ -8,6 +9,17 @@ from pyppeteer import launch, connect
 
 
 FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
+
+
+logger = logging.getLogger()
+
+logger.setLevel(logging.WARNING)
+
+formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
+logger.addHandler(stream_handler)
 
 
 def to_sync(fun):
@@ -22,6 +34,20 @@ def to_sync(fun):
     return asyncio.get_event_loop().run_until_complete(fun)
 
 
+def url_match(url1, url2):
+    """
+    This function takes two urls and check if they are the same modulo '/' at the end
+    :param url1: mandatory, the first url
+    :type url1: str
+
+    :param url2: mandatory, the second url
+    :type url2: str
+
+    :rtype: Boolean
+    """
+    return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1] or url1[:-1] == url2[:-1]
+
+
 def set_endpoint(ws_endpoint):
     """
     This function store the web socket endpoint of the launched browser
@@ -29,7 +55,7 @@ def set_endpoint(ws_endpoint):
     :param ws_endpoint: mandatory, the web socket endpoint
     :type ws_endpoint: str
 
-    .. note :: ws_endpoint is saved in $FILENAME_ENDPOINT
+    .. note :: ws_endpoint is saved in FILENAME_ENDPOINT
     """
     with open(FILENAME_ENDPOINT, "w") as ws_file:
         ws_file.write(ws_endpoint + "\n")
@@ -41,7 +67,7 @@ def get_endpoint():
 
     :retype: str
 
-    .. note :: ws_endpoint is retrieved from $FILENAME_ENDPOINT
+    .. note :: ws_endpoint is retrieved from FILENAME_ENDPOINT
     """
     try:
         with open(FILENAME_ENDPOINT, "r") as ws_file:
@@ -49,23 +75,28 @@ def get_endpoint():
             line = line.split()[0]
             return line
     except FileNotFoundError:
-        return None
+        logger.error(str(FILENAME_ENDPOINT + " not found"))
+        exit(-1)
 
 
-async def open_browser(is_headless):
+async def open_browser(is_headless, write_websocket=True):
     """
-    Launch a browser and writes its websocket endpoint in $FILENAME_ENDPOINT
+    Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
 
     :param is_headless: mandatory, should the browser be launched in headless mode ?
     :type is_headless: bool
 
-    :return: the web socket endpoint
-    :retype: str
+    :param write_websocket: optional, should we store the websocket endpoint in FILENAME_ENDPOINT ?
+    :type write_websocket: bool
+
+    :return: the opened browser
+    :retype: pyppeteer Browser
     """
     browser = await launch(headless=is_headless, autoClose=False)
-    endpoint = browser.wsEndpoint
-    set_endpoint(endpoint)
-    return endpoint
+    if write_websocket:
+        endpoint = browser.wsEndpoint
+        set_endpoint(endpoint)
+    return browser
 
 
 async def close_browser(ws_endpoint):
@@ -80,56 +111,58 @@ async def close_browser(ws_endpoint):
     remove(FILENAME_ENDPOINT)
 
 
-async def get_browser(is_headless=True):
+async def get_browser(is_headless=True, write_websocket=True):
     """
-    Returns a already creatred browser if one exists or a new one if not
+    Returns a already created browser if one exists or a new one if not
 
     :param is_headless: optionnal, should the browser be launched in headless mode ?
     :type is_headless: bool
+
+    :param write_websocket: optional, should we store the websocket endpoint in FILENAME_ENDPOINT ?
+    :type write_websocket: bool
 
     :retype: pyppeteer.browser.Browser
     """
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    return await open_browser(is_headless)
+    return await open_browser(is_headless, write_websocket)
 
 
-async def goto_page(url, browser, params):
+async def goto_page(url, browser, wait_for=None, wait_until="load"):
     """
     Checks if a page already exists in a browser or create a new one
-
     :param url: the url of the page to go to
     :type url: str
 
     :param browser: the browser to create the page into
     :type browser: browser from pyppeteer
 
-    :param params: the parameters of pyppeteer to create a browser
-    :type params: dict
+    :param wait_for: optionnal, CSS3 selector, item to wait before handing over the page
+    :type wait_for: str
+
+    :param wait_until: optionnal, define how long you wait for the page to be loaded should be \
+        either load, domcontentloaded, networkidle0 or networkidle2
+    :type wait_until: str or list(str)
 
     :retype: pyppeteer.page.Page
     """
     page = None
-    wait_until = params.get('wait_until')
-    if wait_until:
+
+    if wait_until != "load":
         page = await browser.newPage()
         await page.goto(url, waitUntil=wait_until)
     else:
-        for page_created in browser.pages():
-            if page_created.url == url:
+        already_created_pages = await browser.pages()
+        for page_created in already_created_pages:
+            if url_match(page_created.url, url):
                 page = page_created
                 break
         if not page:
             page = await browser.newPage()
             await page.goto(url)
 
-    wait_for = params.get('wait_for')
     if wait_for:
         await page.waitForSelector(wait_for)
-
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        await page.setViewport(arg_viewport)
 
     return page

@@ -4,10 +4,6 @@ generate_bytes_img and generate_bytes_img_prom functions
 from screamshot.utils import goto_page, get_browser
 
 
-# Name of the envrinment variable which contains the chrome ws endpoint
-VENV = 'WS_ENDPOINT_SCREAMSHOT'
-
-
 def _parse_parameters(**kwargs):
     arg_viewport = {}
     if 'width' in kwargs:
@@ -32,10 +28,6 @@ def _parse_parameters(**kwargs):
 
 
 async def _selector_manager(page, params):
-    wait_for = params.get('wait_for')
-    if wait_for:
-        await page.waitForSelector(wait_for)
-
     selector = params.get('selector')
     if selector:
         return await page.querySelector(selector)
@@ -48,6 +40,9 @@ async def generate_bytes_img(url, **kwargs):
 
     :param url: mandatory, the website's url
     :type url: str
+
+    :param path: optional, the path to the image output
+    :type path: str
 
     :param width: optionnal, the window's width
     :type width: int
@@ -94,11 +89,17 @@ async def generate_bytes_img(url, **kwargs):
 
     browser = await get_browser()
 
-    page = await goto_page(url, browser, params)
+    page = await goto_page(url, browser,
+                           wait_for=params.get('wait_for'),
+                           wait_until=params.get('wait_until'))
 
     element = await _selector_manager(page, params)
 
     screamshot_params = {'fullPage': params.get('full_page')}
+    path = params.get("path")
+    if path:
+        screamshot_params["path"] = path
+
     image = await element.screenshot(screamshot_params)
 
     return image
@@ -114,6 +115,9 @@ async def generate_bytes_img_prom(url, future, **kwargs):
 
     :param future: mandatory, a promise
     :type future: `asyncio.Future`
+
+    :param path: optional, the path to the image output
+    :type path: str
 
     :param width: optionnal, the window's width
     :type width: int
