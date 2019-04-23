@@ -52,8 +52,7 @@ def get_endpoint():
         return None
 
 
-@asyncio.coroutine
-def open_browser(is_headless):
+async def open_browser(is_headless):
     """
     Launch a browser and writes its websocket endpoint in $FILENAME_ENDPOINT
 
@@ -69,8 +68,7 @@ def open_browser(is_headless):
     return endpoint
 
 
-@asyncio.coroutine
-def close_browser(ws_endpoint):
+async def close_browser(ws_endpoint):
     """
     Closes the browser related to ws_endpoint and remove FILENAME_ENDPOINT
 
@@ -82,8 +80,7 @@ def close_browser(ws_endpoint):
     remove(FILENAME_ENDPOINT)
 
 
-@asyncio.coroutine
-def get_browser(is_headless=True):
+async def get_browser(is_headless=True):
     """
     Returns a already creatred browser if one exists or a new one if not
 
@@ -98,8 +95,7 @@ def get_browser(is_headless=True):
     return await open_browser(is_headless)
 
 
-@asyncio.coroutine
-def goto_page(url, browser, params):
+async def goto_page(url, browser, params):
     """
     Checks if a page already exists in a browser or create a new one
 
