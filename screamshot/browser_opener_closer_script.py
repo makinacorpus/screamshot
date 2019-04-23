@@ -1,12 +1,14 @@
-"""
-Create or close a browser
-"""
 from argparse import ArgumentParser
 
 from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
 
 
-async def _run(args):
+async def do_it(args):
+    """
+    Figures out what to do with the arguments
+    :param args: the parsed arguments
+    :type args: argparse.Namespace class
+    """
     if args.close:
         await close_browser(get_endpoint())
     if args.open:
@@ -31,12 +33,16 @@ def _arg_parsing():
     parser.add_argument('-ns', "--no-sandbox",
                         action="store_const", const=["--no-sandbox"], help="Desactivate sandbox")
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    return args
 
 
 def main():
+    """
+    Open or close a browser
+    """
     args = _arg_parsing()
-    to_sync(_run(args))
+    to_sync(do_it(args))
 
 
 if __name__ == '__main__':

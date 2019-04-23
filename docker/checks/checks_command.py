@@ -86,6 +86,9 @@ def main():
                  'Connection is available after: %ds')
 
     logger.info(
+        '\n####################\n   LAUNCH BROWSER      \n####################\n')
+    os.system("browser-manager -o -ns")
+    logger.info(
         '\n####################\n      UNITTEST      \n####################\n')
     unittest_res = subprocess.run(["python3", "-m", "unittest"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -103,6 +106,9 @@ def main():
         _wait_server(args.close_url, 'Waits for server since: %ds',
                      'Server shutdown after: %ds')
         exit(1)
+    logger.info(
+        '\n####################\n   CLOSE BROWSER      \n####################\n')
+    os.system("browser-manager -c")
 
     if not args.no_pylint:
         logger.info(
