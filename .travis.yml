@@ -1,8 +1,8 @@
 dist: xenial
 install:
   - sudo apt-get update
-  - sudo apt-get install -y python3-pip
-  - sudo pip3 install --upgrade pip
+  - sudo apt-get install python3-setuptools
+  - sudo easy_install3 pip
   - pip3 install --upgrade setuptools --user
   - pip3 install -r requirement.txt
   - pip3 install -r ./docker/checks/checks-requirement.txt
