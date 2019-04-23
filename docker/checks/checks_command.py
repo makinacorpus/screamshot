@@ -33,10 +33,10 @@ def _parse_arg():
 
     parser.add_argument('--wait-url',
                         help='The URL to wait before starting the tests and checks',
-                        type=str, default='http://server:5000/index.html')
+                        type=str, default='http://127.0.0.1:5000/index.html')
     parser.add_argument('--close-url',
                         help='The URL that shutdown the server',
-                        type=str, default='http://server:5000/close')
+                        type=str, default='http://127.0.0.1:5000/close')
     parser.add_argument('--no-mypy',
                         help='Mypy checks will not be run', action='store_true', default=False)
     parser.add_argument('--no-pylint',
@@ -49,6 +49,7 @@ def _parse_arg():
                         action='store_true', default=False)
 
     return parser.parse_args()
+
 
 
 def _wait_server(url, waiting_message, final_message):
@@ -75,18 +76,15 @@ def _parse_unittest_stdout(returncode, o_stdout):
 
 def main():
     args = _parse_arg()
-    os.system('python3 setup.py install')
+
     _wait_server(args.wait_url, 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
 
     if not args.no_mypy:
-        logger.info(
-            '\n####################\n        MYPY        \n####################\n')
+        logger.info('\n####################\n        MYPY        \n####################\n')
         os.system('mypy .')
 
-    os.system('python3 screamshot/browser_opener_closer_script.py -o')
-    logger.info(
-        '\n####################\n      UNITTEST      \n####################\n')
+    logger.info('\n####################\n      UNITTEST      \n####################\n')
     res = subprocess.run(["python3", "-m", "unittest"],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stderr = res.stderr.decode('utf8')
@@ -98,10 +96,8 @@ def main():
     else:
         logger.info(stderr)
 
-    os.system('python3 screamshot/browser_opener_closer_script.py -c')
     if not args.no_pylint:
-        logger.info(
-            '\n####################\n       PYLINT       \n####################\n')
+        logger.info('\n####################\n       PYLINT       \n####################\n')
         os.system('pylint ./screamshot')
 
     if not args.no_server_closing:
