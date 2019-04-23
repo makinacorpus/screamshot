@@ -32,9 +32,6 @@ def _arg_parsing():
 
 
 def main():
-    """
-    Open or close a browser
-    """
     args = _arg_parsing()
     to_sync(_run(args))
 
