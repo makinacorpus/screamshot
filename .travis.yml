@@ -4,10 +4,10 @@ python:
 install:
   - sudo apt-get update
   - sudo apt-get install python3-setuptools
-  - pip install --upgrade setuptools
-  - pip install -r requirement.txt
-  - pip install -r ./docker/checks/checks-requirement.txt
-  - pip install flask
+  - pip3 install --upgrade setuptools
+  - pip3 install -r requirement.txt
+  - pip3 install -r ./docker/checks/checks-requirement.txt
+  - pip3 install flask
 jobs:
   include:
     - stage: test
