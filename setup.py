@@ -42,4 +42,11 @@ setup(
     install_requires=[
         'pyppeteer',
     ],
+
+    entry_points={
+        'console_scripts': [
+            'screamshot = screamshot.screamshot_script:main',
+            'browser-manager = screamshot.browser_manager_script:main',
+        ],
+    },
 )

@@ -1,13 +1,12 @@
 """
 generate_bytes_img and generate_bytes_img_prom functions.
 """
-from os import environ
 from typing import Any
 from asyncio.futures import Future
 
-from pyppeteer import launch, connect
-from pyppeteer.browser import Browser
 from pyppeteer.page import Page
+
+from screamshot.utils import goto_page, get_browser
 
 
 # Name of the envrinment variable which contains the chrome ws endpoint
@@ -28,6 +27,7 @@ def _parse_parameters(**kwargs) -> dict:
             wait_until = [wait_until]
 
     return {
+        'path': kwargs.get('path'),
         'arg_viewport': arg_viewport,
         'full_page': kwargs.get('full_page', False),
         'selector': kwargs.get('selector'),
@@ -36,35 +36,7 @@ def _parse_parameters(**kwargs) -> dict:
     }
 
 
-async def _init_browser() -> Browser:
-    browser_ws_endpoint = environ.get(VENV)
-    if browser_ws_endpoint:
-        browser = await connect({'browserWSEndpoint': browser_ws_endpoint})
-        return browser
-    browser = await launch(options={'headless': True})
-    return browser
-
-
-async def _init_page(url: str, browser: Browser, params: dict) -> Page:
-    page = await browser.newPage()
-
-    arg_viewport = params.get('arg_viewport')
-    if arg_viewport:
-        await page.setViewport(arg_viewport)
-
-    wait_until = params.get('wait_until')
-    if wait_until:
-        await page.goto(url, waitUntil=wait_until)
-    else:
-        await page.goto(url)
-    return page
-
-
 async def _selector_manager(page: Page, params: dict) -> Any:
-    wait_for = params.get('wait_for')
-    if wait_for:
-        await page.waitForSelector(wait_for)
-
     selector = params.get('selector')
     if selector:
         return await page.querySelector(selector)
@@ -77,6 +49,9 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
 
     :param url: mandatory, the website's url
     :type url: str
+
+    :param path: optional, the path to the image output
+    :type path: str
 
     :param width: optionnal, the window's width
     :type width: int
@@ -94,7 +69,7 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
         be either load, domcontentloaded, networkidle0 or networkidle2
     :type wait_until: str or list(str)
 
-    :returns: the base64 code of the image
+    :returns: the binary code of the image
     :retype: `bytes`
 
     .. warning:: It uses **pyppeteer** and so **async** functions
@@ -121,13 +96,19 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
     """
     params = _parse_parameters(**kwargs)
 
-    browser = await _init_browser()
+    browser = await get_browser()
 
-    page = await _init_page(url, browser, params)
+    page = await goto_page(url, browser,
+                           wait_for=params.get('wait_for'),
+                           wait_until=params.get('wait_until'))
 
     element = await _selector_manager(page, params)
 
     screamshot_params = {'fullPage': params.get('full_page')}
+    path = params.get("path")
+    if path:
+        screamshot_params["path"] = path
+
     image = await element.screenshot(screamshot_params)
 
     return image
@@ -143,6 +124,9 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
 
     :param future: mandatory, a promise
     :type future: `asyncio.Future`
+
+    :param path: optional, the path to the image output
+    :type path: str
 
     :param width: optionnal, the window's width
     :type width: int
