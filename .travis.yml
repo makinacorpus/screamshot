@@ -2,6 +2,7 @@ language: python
 python:
   - "3.5"
 install:
+  - pip install --upgrade setuptools
   - pip install -r requirement.txt
   - pip install -r ./docker/checks/checks-requirement.txt
   - pip install flask
