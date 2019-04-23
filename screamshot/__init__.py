@@ -1,6 +1,7 @@
-"""
-Python library to capture screenshots of web pages
-"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""Meta data for screamshot."""
 
 
 __author__ = """Maxime Courtet & Félix Cloup"""

@@ -1,10 +1,19 @@
 """
-generate_bytes_img and generate_bytes_img_prom functions
+generate_bytes_img and generate_bytes_img_prom functions.
 """
+from typing import Any
+from asyncio.futures import Future
+
+from pyppeteer.page import Page
+
 from screamshot.utils import goto_page, get_browser
 
 
-def _parse_parameters(**kwargs):
+# Name of the envrinment variable which contains the chrome ws endpoint
+VENV = 'WS_ENDPOINT_SCREAMSHOT'
+
+
+def _parse_parameters(**kwargs) -> dict:
     arg_viewport = {}
     if 'width' in kwargs:
         arg_viewport.update({'width': kwargs.pop('width')})
@@ -27,14 +36,14 @@ def _parse_parameters(**kwargs):
     }
 
 
-async def _selector_manager(page, params):
+async def _selector_manager(page: Page, params: dict) -> Any:
     selector = params.get('selector')
     if selector:
         return await page.querySelector(selector)
     return page
 
 
-async def generate_bytes_img(url, **kwargs):
+async def generate_bytes_img(url: str, **kwargs) -> bytes:
     """
     This function takes a screenshot and returns it as a `bytes` object
 
@@ -105,7 +114,7 @@ async def generate_bytes_img(url, **kwargs):
     return image
 
 
-async def generate_bytes_img_prom(url, future, **kwargs):
+async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
     """
     This function takes a screenshot and returns it as a `bytes` object in the promise given in \
         the parameters
