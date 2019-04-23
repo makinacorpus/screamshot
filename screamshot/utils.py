@@ -131,15 +131,7 @@ async def get_browser(is_headless=True, write_websocket=True):
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    else:
-        return await open_browser(is_headless, write_websocket)
-
-
-def get_browser_sync(is_headless=True, write_websocket=True):
-    """
-    Same as get_browser in synchronous mode
-    """
-    return to_sync(get_browser(is_headless, write_websocket))
+    return await open_browser(is_headless, write_websocket)
 
 
 async def goto_page(url, browser, wait_for=None, wait_until="load"):
@@ -154,7 +146,8 @@ async def goto_page(url, browser, wait_for=None, wait_until="load"):
     :param wait_for: optionnal, CSS3 selector, item to wait before handing over the page
     :type wait_for: str
 
-    :param wait_until: optionnal, define how long you wait for the page to be loaded should be either load, domcontentloaded, networkidle0 or networkidle2
+    :param wait_until: optionnal, define how long you wait for the page to be loaded should be \
+        either load, domcontentloaded, networkidle0 or networkidle2
     :type wait_until: str or list(str)
 
     :retype: pyppeteer.page.Page
@@ -183,10 +176,3 @@ async def goto_page(url, browser, wait_for=None, wait_until="load"):
         await page.waitForSelector(wait_for)
 
     return page
-
-
-def goto_page_sync(url, browser, wait_for=None, wait_until="load"):
-    """
-    Same as goto_page in synchronous mode
-    """
-    return to_sync(goto_page(url, browser, wait_for, wait_until))

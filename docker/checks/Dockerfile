@@ -16,5 +16,14 @@ RUN python3 setup.py install
 
 EXPOSE 5000
 
-RUN useradd -ms /bin/bash default
-USER default
+EXPOSE 5000
+
+RUN apt-get -y install sudo
+
+RUN adduser --disabled-password --gecos '' docker
+RUN adduser docker sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER docker
+
+RUN sudo apt-get update

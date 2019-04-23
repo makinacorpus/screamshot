@@ -1,7 +1,10 @@
+"""
+Setup file.
+"""
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
 
 import screamshot
 
@@ -14,8 +17,6 @@ setup(
 
     version=screamshot.__version__,
 
-    packages=find_packages(),
-
     author=screamshot.__author__,
 
     description='Python library to capture screenshots of web applications or pages',
@@ -24,6 +25,8 @@ setup(
     open(os.path.join(HERE, 'CHANGES.md')).read(),
 
     include_package_data=True,
+    package_data={'screamshot': ['py.typed']},
+    packages=['screamshot'],
 
     url='https://github.com/makinacorpus/screamshot',
 
@@ -39,4 +42,11 @@ setup(
     install_requires=[
         'pyppeteer',
     ],
+
+    entry_points={
+        'console_scripts': [
+            'screamshot = screamshot.screamshot_script:main',
+            'browser-manager = screamshot.browser_manager_script:main',
+        ],
+    },
 )
