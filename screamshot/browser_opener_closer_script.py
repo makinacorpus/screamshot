@@ -6,12 +6,7 @@ from argparse import ArgumentParser
 from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
 
 
-async def do_it(args):
-    """
-    Figures out what to do with the arguments
-    :param args: the parsed arguments
-    :type args: argparse.Namespace class
-    """
+async def _run(args):
     if args.close:
         await close_browser(get_endpoint())
     if args.open:
@@ -41,7 +36,7 @@ def main():
     Open or close a browser
     """
     args = _arg_parsing()
-    to_sync(do_it(args))
+    to_sync(_run(args))
 
 
 if __name__ == '__main__':
