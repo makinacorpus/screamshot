@@ -1,3 +1,6 @@
+"""
+Create or close a browser
+"""
 from argparse import ArgumentParser
 
 from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
@@ -16,20 +19,18 @@ async def do_it(args):
 
 
 def _arg_parsing():
-    parser = ArgumentParser(description="Create or close a browser")
+    parser = ArgumentParser(description=__doc__)
 
     # Mandatory arguments
     group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-c", "--close", action="store_true", help="""Close the browsers
-		in the endpointlist.txt file""")
-    group.add_argument(
-        "-o", "--open", action="store_true", help="""Open a browser and store its websocket
-		endpoint in endpointlist.txt """)
+    group.add_argument("-c", "--close", action="store_true", help="Close the browsers in the \
+        endpointlist.txt file")
+    group.add_argument("-o", "--open", action="store_true", help="Open a browser and store its \
+        websocket endpoint in endpointlist.txt")
 
     # Optionnal argument
-    parser.add_argument("-g", "--graphic", dest="headless", action="store_false",
-                        help="""Open the browser in graphic mode""")
+    parser.add_argument("-g", "--graphic", dest="headless", action="store_false", help="Open the \
+        browser in graphic mode")
 
     args = parser.parse_args()
     return args
