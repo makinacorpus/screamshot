@@ -2,6 +2,7 @@ language: python
 python:
   - "3.5"
 install:
+  - sudo apt-get install -y python3-setuptools
   - pip3 install -r requirement.txt
   - pip3 install -r ./docker/checks/checks-requirement.txt
   - pip3 install flask
