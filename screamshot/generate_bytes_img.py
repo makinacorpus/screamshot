@@ -1,6 +1,8 @@
 """
 generate_bytes_img and generate_bytes_img_prom functions
 """
+import asyncio
+
 from screamshot.utils import goto_page, get_browser
 
 
@@ -31,7 +33,8 @@ def _parse_parameters(**kwargs):
     }
 
 
-async def _selector_manager(page, params):
+@asyncio.coroutine
+def _selector_manager(page, params):
     wait_for = params.get('wait_for')
     if wait_for:
         await page.waitForSelector(wait_for)
@@ -42,7 +45,8 @@ async def _selector_manager(page, params):
     return page
 
 
-async def generate_bytes_img(url, **kwargs):
+@asyncio.coroutine
+def generate_bytes_img(url, **kwargs):
     """
     This function takes a screenshot and returns it as a `bytes` object
 
@@ -104,7 +108,8 @@ async def generate_bytes_img(url, **kwargs):
     return image
 
 
-async def generate_bytes_img_prom(url, future, **kwargs):
+@asyncio.coroutine
+def generate_bytes_img_prom(url, future, **kwargs):
     """
     This function takes a screenshot and returns it as a `bytes` object in the promise given in \
         the parameters

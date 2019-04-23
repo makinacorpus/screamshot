@@ -1,12 +1,14 @@
 """
 Browser manager script.
 """
+import asyncio
 from argparse import ArgumentParser
 
 from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
 
 
-async def _execute(args):
+@asyncio.coroutine
+def _execute(args):
     if args.close:
         await close_browser(get_endpoint())
     if args.open:
