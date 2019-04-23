@@ -80,7 +80,7 @@ def get_endpoint():
             line = line.split()[0]
             return line
     except FileNotFoundError:
-        logger.error(str(FILENAME_ENDPOINT + " not found"))
+        logger.warning(str(FILENAME_ENDPOINT + " not found"))
         return None
 
 

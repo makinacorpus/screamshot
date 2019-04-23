@@ -51,7 +51,6 @@ def _parse_arg():
     return parser.parse_args()
 
 
-
 def _wait_server(url, waiting_message, final_message):
     count = 0
     server_started = False
@@ -77,14 +76,18 @@ def _parse_unittest_stdout(returncode, o_stdout):
 def main():
     args = _parse_arg()
 
+    os.system('python3 setup.py install')
+
     _wait_server(args.wait_url, 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
 
     if not args.no_mypy:
-        logger.info('\n####################\n        MYPY        \n####################\n')
+        logger.info(
+            '\n####################\n        MYPY        \n####################\n')
         os.system('mypy .')
-
-    logger.info('\n####################\n      UNITTEST      \n####################\n')
+    os.system('python3 screamshot/browser_opener_closer_script.py -o -ns')
+    logger.info(
+        '\n####################\n      UNITTEST      \n####################\n')
     res = subprocess.run(["python3", "-m", "unittest"],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stderr = res.stderr.decode('utf8')
@@ -96,8 +99,12 @@ def main():
     else:
         logger.info(stderr)
 
+    os.system('python3 screamshot/browser_opener_closer_script.py -c')
+
     if not args.no_pylint:
-        logger.info('\n####################\n       PYLINT       \n####################\n')
+
+        logger.info(
+            '\n####################\n       PYLINT       \n####################\n')
         os.system('pylint ./screamshot')
 
     if not args.no_server_closing:

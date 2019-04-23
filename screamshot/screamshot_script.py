@@ -10,21 +10,13 @@ async def do_it(args):
     :param args: the parsed arguments
     :type args: argparse.Namespace class
     """
-    if args.wait_until:
-        await generate_bytes_img(args.url,
-                                 path=args.path,
-                                 width=args.width, height=args.height,
-                                 full_page=args.fullpage,
-                                 selector=args.selector,
-                                 wait_for=args.wait_for,
-                                 wait_until=args.wait_until)
-    else:
-        await generate_bytes_img(args.url,
-                                 path=args.path,
-                                 width=args.width, height=args.height,
-                                 full_page=args.fullpage,
-                                 selector=args.selector,
-                                 wait_for=args.wait_for)
+    await generate_bytes_img(args.url,
+                             path=args.path,
+                             width=args.width, height=args.height,
+                             full_page=args.fullpage,
+                             selector=args.selector,
+                             wait_for=args.wait_for,
+                             wait_until=args.wait_until)
 
 
 def _arg_parsing():
@@ -59,6 +51,7 @@ def _arg_parsing():
                         type=str,
                         choices=["load", "domcontentloaded",
                                  "networkidle0", "networkidle2"],
+                        default="load",
                         help="How long do you want to wait for the page to be loaded")
 
     selector_group = parser.add_argument_group(title="CSS3 selectors (optional)",
