@@ -7,7 +7,7 @@ from screamshot import generate_bytes_img
 from screamshot.utils import to_sync
 
 
-async def do_it(args):
+async def _run(args):
     """
     Calls the function 'generate_bytes_img' with the right arguments
     :param args: the parsed arguments
@@ -71,7 +71,7 @@ def main():
     Take a screamshot and save the resulting image
     """
     args = _arg_parsing()
-    to_sync(do_it(args))
+    to_sync(_run(args))
 
 
 if __name__ == '__main__':
