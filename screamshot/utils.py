@@ -8,7 +8,7 @@ from os import remove
 from pyppeteer import launch, connect
 
 
-FILENAME_ENDPOINT = "/tmp/endpointlist.txt"
+FILENAME_ENDPOINT = "endpointlist.txt"
 
 
 logger = logging.getLogger()
@@ -20,6 +20,11 @@ formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.DEBUG)
 logger.addHandler(stream_handler)
+
+
+def _check_wait_until_arg(wait_until_arg):
+    values = ["load", "domcontentloaded", "networkidle0", "networkidle2"]
+    return wait_until_arg in values or all([arg in values for arg in wait_until_arg])
 
 
 def to_sync(fun):
@@ -75,11 +80,11 @@ def get_endpoint():
             line = line.split()[0]
             return line
     except FileNotFoundError:
-        logger.error(str(FILENAME_ENDPOINT + " not found"))
-        exit(-1)
+        logger.warning(str(FILENAME_ENDPOINT + " not found"))
+        return None
 
 
-async def open_browser(is_headless, write_websocket=True):
+async def open_browser(is_headless, launch_args, write_websocket=True):
     """
     Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
 
@@ -89,10 +94,13 @@ async def open_browser(is_headless, write_websocket=True):
     :param write_websocket: optional, should we store the websocket endpoint in FILENAME_ENDPOINT ?
     :type write_websocket: bool
 
+    :param launch_args: optional, other optional parameters use
+    :type launch_args: list of str
+
     :return: the opened browser
     :retype: pyppeteer Browser
     """
-    browser = await launch(headless=is_headless, autoClose=False)
+    browser = await launch(headless=is_headless, autoClose=False, args=launch_args)
     if write_websocket:
         endpoint = browser.wsEndpoint
         set_endpoint(endpoint)
@@ -147,12 +155,18 @@ async def goto_page(url, browser, wait_for=None, wait_until="load"):
 
     :retype: pyppeteer.page.Page
     """
-    page = None
+
+    if not _check_wait_until_arg(wait_until):
+        logger.error(
+            "Invalid wait_until argument, should be should be a list of load, domcontentloaded, \
+                networkidle0 and/or networkidle2")
+        return None
 
     if wait_until != "load":
         page = await browser.newPage()
         await page.goto(url, waitUntil=wait_until)
     else:
+        page = None
         already_created_pages = await browser.pages()
         for page_created in already_created_pages:
             if url_match(page_created.url, url):

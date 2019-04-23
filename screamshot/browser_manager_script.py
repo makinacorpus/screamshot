@@ -6,13 +6,6 @@ from argparse import ArgumentParser
 from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
 
 
-async def _run(args):
-    if args.close:
-        await close_browser(get_endpoint())
-    if args.open:
-        await open_browser(args.headless)
-
-
 def _arg_parsing():
     parser = ArgumentParser(description=__doc__)
 
@@ -27,13 +20,19 @@ def _arg_parsing():
     parser.add_argument("-g", "--graphic", dest="headless", action="store_false", help="Open the \
         browser in graphic mode")
 
+    parser.add_argument("-ns", "--no-sandbox", action="store_const", const=["--no-sandbox"],
+                        default="[]", help="Open the browser without sandbox")
+
     args = parser.parse_args()
     return args
 
 
 def main():
     args = _arg_parsing()
-    to_sync(_run(args))
+    if args.close:
+        to_sync(close_browser(get_endpoint()))
+    if args.open:
+        to_sync(open_browser(args.headless, args.no_sandbox))
 
 
 if __name__ == '__main__':

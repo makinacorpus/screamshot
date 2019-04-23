@@ -7,29 +7,6 @@ from screamshot import generate_bytes_img
 from screamshot.utils import to_sync
 
 
-async def _run(args):
-    """
-    Calls the function 'generate_bytes_img' with the right arguments
-    :param args: the parsed arguments
-    :type args: argparse.Namespace class
-    """
-    if args.wait_until:
-        await generate_bytes_img(args.url,
-                                 path=args.path,
-                                 width=args.width, height=args.height,
-                                 full_page=args.fullpage,
-                                 selector=args.selector,
-                                 wait_for=args.wait_for,
-                                 wait_until=args.wait_until)
-    else:
-        await generate_bytes_img(args.url,
-                                 path=args.path,
-                                 width=args.width, height=args.height,
-                                 full_page=args.fullpage,
-                                 selector=args.selector,
-                                 wait_for=args.wait_for)
-
-
 def _arg_parsing():
     parser = ArgumentParser(description=__doc__)
 
@@ -51,6 +28,7 @@ def _arg_parsing():
     parser.add_argument("--wait_until", nargs="+", type=str,
                         choices=["load", "domcontentloaded",
                                  "networkidle0", "networkidle2"],
+                        default="load",
                         help="How long do you want to wait for the page to be loaded")
 
     selector_group = parser.add_argument_group(title="CSS3 selectors (optional)",
@@ -68,7 +46,21 @@ def _arg_parsing():
 
 def main():
     args = _arg_parsing()
-    to_sync(_run(args))
+    if args.wait_until:
+        to_sync(generate_bytes_img(args.url,
+                                   path=args.path,
+                                   width=args.width, height=args.height,
+                                   full_page=args.fullpage,
+                                   selector=args.selector,
+                                   wait_for=args.wait_for,
+                                   wait_until=args.wait_until))
+    else:
+        to_sync(generate_bytes_img(args.url,
+                                   path=args.path,
+                                   width=args.width, height=args.height,
+                                   full_page=args.fullpage,
+                                   selector=args.selector,
+                                   wait_for=args.wait_for))
 
 
 if __name__ == '__main__':

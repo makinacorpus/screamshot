@@ -51,7 +51,6 @@ def _parse_arg():
     return parser.parse_args()
 
 
-
 def _wait_server(url, waiting_message, final_message):
     count = 0
     server_started = False
@@ -77,12 +76,15 @@ def _parse_unittest_stdout(returncode, o_stdout):
 def main():
     args = _parse_arg()
 
-    logger.info('\n####################\n    SETUP INSTALL    \n####################\n')
+    logger.info('\n####################\n    SETUP INSTALL   \n####################\n')
     os.system('sudo python3 setup.py install')
 
     logger.info('\n####################\n     WAIT SERVER     \n####################\n')
     _wait_server(args.wait_url, 'Waits for the connection since: %ds',
                  'Connection is available after: %ds')
+
+    logger.info('\n####################\n   LAUNCH BROWSER   \n####################\n')
+    os.system('browser-manager -o -ns')
 
     logger.info('\n####################\n      UNITTEST      \n####################\n')
     unittest_res = subprocess.run(["python3", "-m", "unittest"],
@@ -99,7 +101,12 @@ def main():
         logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
         _wait_server(args.close_url, 'Waits for server since: %ds',
                      'Server shutdown after: %ds')
+        logger.info('\n####################\n    CLOSE BROWSER  \n####################\n')
+        os.system('browser-manager -c')
         exit(1)
+
+    logger.info('\n####################\n    CLOSE BROWSER  \n####################\n')
+    os.system('browser-manager -c')
 
     if not args.no_pylint:
         logger.info('\n####################\n       PYLINT       \n####################\n')
@@ -123,7 +130,6 @@ def main():
         logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
         _wait_server(args.close_url, 'Waits for server since: %ds',
                      'Server shutdown after: %ds')
-    exit(unittest_res.returncode)
 
 
 if __name__ == '__main__':

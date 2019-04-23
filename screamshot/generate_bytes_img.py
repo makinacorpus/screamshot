@@ -20,11 +20,12 @@ def _parse_parameters(**kwargs) -> dict:
     if 'height' in kwargs:
         arg_viewport.update({'height': kwargs.pop('height')})
 
-    wait_until = None
     if 'wait_until' in kwargs:
         wait_until = kwargs.pop('wait_until')
         if not isinstance(wait_until, list):
             wait_until = [wait_until]
+    else:
+        wait_until = ['load']
 
     return {
         'path': kwargs.get('path'),

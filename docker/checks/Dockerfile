@@ -13,6 +13,8 @@ COPY ./docker/checks/checks-requirement.txt /screamshot
 
 RUN pip3 install -r requirement.txt
 RUN pip3 install -r checks-requirement.txt
+RUN pip3 install numpy
+RUN pip3 install pillow
 
 EXPOSE 5000
 
