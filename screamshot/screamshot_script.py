@@ -67,9 +67,6 @@ def _arg_parsing():
 
 
 def main():
-    """
-    Take a screamshot and save the resulting image
-    """
     args = _arg_parsing()
     to_sync(_run(args))
 
