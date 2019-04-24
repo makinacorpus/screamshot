@@ -7,8 +7,9 @@ version: 2
 python:
   version: 3.6
   install:
-    - method: pip
-      path: requirement.txt
+    - requirements.txt: requirement.txt
+    # - method: pip
+    #   path: .requirement.txt
       # extra_requirements:
       #   - requirement.txt
     - method: setuptools
