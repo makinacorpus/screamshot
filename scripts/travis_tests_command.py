@@ -38,10 +38,6 @@ def main():
     logger.info('\n####################\n    CLOSE BROWSER  \n####################\n')
     system('browser-manager -c')
 
-    logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
-    wait_server(args.close_url, 'Waits for server since: %ds',
-                'Server shutdown after: %ds')
-
     exit(unittest_res.returncode)
 
 
