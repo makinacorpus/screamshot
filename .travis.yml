@@ -1,0 +1,20 @@
+language: python
+version: 3.6
+install:
+  - sudo apt update
+  - pip3 install --upgrade pip
+  - pip install --upgrade setuptools
+  - pip install -r requirements.txt
+  - pip install -r dev-requirements.txt
+  - pip install flask
+  - python3 setup.py install
+jobs:
+  include:
+    - stage: tests
+      script:
+        - export FLASK_APP=tests/server/app.py
+        - flask run &
+        - python3 ./scripts/travis_tests_command.py
+    - stage: pylint
+      script:
+        - pylint ./screamshot

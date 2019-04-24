@@ -4,6 +4,11 @@ Collection of functions.
 import logging
 import asyncio
 from os import remove
+from time import sleep
+from urllib3.exceptions import MaxRetryError
+
+from requests import get
+from requests.exceptions import ConnectionError as RequestsConnectionError
 
 from pyppeteer import launch, connect
 
@@ -180,3 +185,34 @@ async def goto_page(url, browser, wait_for=None, wait_until="load"):
         await page.waitForSelector(wait_for)
 
     return page
+
+
+def wait_server(url, waiting_message, final_message):
+    """
+    Wait for a web page to answer
+
+    :param url: the url of the web page
+    :type url: str
+
+    :param waiting_message: this message will pop up every minute
+    :type waiting_message: str
+
+    :param final_message: this message will pop up when the connection is stable
+    :type final_message: str
+
+    :param log: a logger
+    :type log: RootLogger
+
+    .. info :: if you add `%d` in your messages you can include time count in it
+    """
+    count = 0
+    server_started = False
+    while not server_started:
+        try:
+            get(url)
+            server_started = True
+        except (RequestsConnectionError, MaxRetryError) as _:
+            sleep(1)
+            logger.info(waiting_message, count)
+            count += 1
+    logger.info(final_message, count)
