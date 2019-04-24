@@ -41,27 +41,21 @@ def main():
     args = _parse_arg()
     exit_code = 0
 
-    logger.info('\n####################\n    SETUP INSTALL   \n####################\n')
-    os.system('sudo python3 setup.py install')
-
     logger.info('\n####################\n     WAIT SERVER     \n####################\n')
     wait_server(args.wait_url, 'Waits for the connection since: %ds',
                 'Connection is available after: %ds')
 
     logger.info('\n####################\n   LAUNCH BROWSER   \n####################\n')
-    launch_browser_res = subprocess.run(["browser-manager", "-o", "-ns"])
+    launch_browser_res = subprocess.run(["python3", "screamshot/browser_manager_script.py", "-o", "-ns"])
     exit_code = launch_browser_res.returncode
 
     if not exit_code:
         logger.info('\n####################\n      UNITTEST      \n####################\n')
-        unittest_res = subprocess.run(["python3", "-m", "unittest"], stderr=subprocess.PIPE)
-        exit_code = unittest_res.returncode
-        stderr = unittest_res.stderr.decode('utf8')
-        stdout = _parse_unittest_stdout(exit_code, stderr)
-        logger.info(stdout)
+        pytest_res = subprocess.run(["pytest", "-v", "--disable-warnings", "--cov=screamshot"])
+        exit_code = pytest_res.returncode
 
         logger.info('\n####################\n    CLOSE BROWSER  \n####################\n')
-        os.system('browser-manager -c')
+        launch_browser_res = subprocess.run(["python3", "screamshot/browser_manager_script.py", "-c"])
 
     if not exit_code:
         logger.info('\n####################\n       PYLINT       \n####################\n')
@@ -76,6 +70,7 @@ def main():
     logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
     wait_server(args.close_url, 'Waits for server since: %ds',
                 'Server shutdown after: %ds')
+
     exit(exit_code)
 
 
