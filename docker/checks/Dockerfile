@@ -8,11 +8,11 @@ RUN apt-get install -y libx11-xcb1 libxrandr2 libasound2 \
 RUN mkdir screamshot
 WORKDIR /screamshot
 
-COPY ./requirement.txt /screamshot
-COPY ./docker/checks/checks-requirement.txt /screamshot
+COPY ./requirements.txt /screamshot
+COPY ./docker/checks/checks-requirements.txt /screamshot
 
-RUN pip3 install -r requirement.txt
-RUN pip3 install -r checks-requirement.txt
+RUN pip3 install -r requirements.txt
+RUN pip3 install -r checks-requirements.txt
 RUN pip3 install numpy
 RUN pip3 install pillow
 
