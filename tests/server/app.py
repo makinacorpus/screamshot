@@ -1,4 +1,10 @@
+import logging
+
 from flask import Flask, render_template, request, send_from_directory, url_for, redirect
+
+
+logger = logging.getLogger('werkzeug')
+logger.setLevel(logging.ERROR)
 
 
 app = Flask(__name__, static_url_path='')
