@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/makinacorpus/screamshot.svg?branch=master)](https://travis-ci.org/makinacorpus/screamshot)
+
 # screamshot
 Python library to capture screenshots of web applications
 
