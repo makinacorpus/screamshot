@@ -11,9 +11,8 @@ COPY . /screamshot
 
 RUN pip3 install -r requirements.txt
 RUN pip3 install -r dev-requirements.txt
-RUN python3 setup.py install
 
-RUN apt-get -y install sudo
+RUN apt -y install sudo
 
 RUN adduser --disabled-password --gecos '' docker
 RUN adduser docker sudo
