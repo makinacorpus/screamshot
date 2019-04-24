@@ -1,3 +1,6 @@
 pyppeteer==0.0.25
-Pillow
-numpy
+Pillow==6.0.0
+numpy==1.16.3
+Flask
+sphinx
+sphinx_rtd_theme
