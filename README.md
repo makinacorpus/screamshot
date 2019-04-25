@@ -60,6 +60,6 @@ def home(request):
         generate_bytes_img_prom('https://www.google.fr', future))
     loop.run_until_complete(future)
 
-    print(futur.result())
+    print(future.result())
     return HttpResponse('Done')
 ``` 

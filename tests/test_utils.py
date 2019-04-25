@@ -4,8 +4,9 @@ Tests `utils.py` functions
 import unittest
 
 import pyppeteer
+from pyppeteer.browser import Browser
 
-from screamshot.utils import get_browser, goto_page, to_sync
+from screamshot.utils import get_browser, close_browser, goto_page, to_sync
 # from screamshot import generate_bytes_img, generate_bytes_img_prom
 
 
@@ -14,8 +15,7 @@ class TestsUtilsFunctions(unittest.TestCase):
     Tests `utils.py` functions
     """
     def setUp(self):
-        self.browser = to_sync(get_browser(
-            is_headless=False, write_websocket=True))
+        self.browser = to_sync(get_browser(launch_args=['--no-sandbox']))
 
     def test_goto_page_basic(self):
         """
@@ -89,6 +89,13 @@ class TestsUtilsFunctions(unittest.TestCase):
             'http://127.0.0.1:5000/other.html', self.browser, wait_for='#godot',
             wait_until='domcontentloaded'))
         self.assertIsInstance(page, pyppeteer.page.Page)
+
+    def test_get_browser(self):
+        browser = to_sync(get_browser())
+        self.assertIsInstance(browser, Browser)
+
+    def tearDown(self):
+        to_sync(close_browser())
 
 
 if __name__ == '__main__':

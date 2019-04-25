@@ -55,7 +55,7 @@ def url_match(url1, url2):
 
     :rtype: Boolean
     """
-    return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1] or url1[:-1] == url2[:-1]
+    return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1]
 
 
 def set_endpoint(ws_endpoint):
@@ -66,6 +66,8 @@ def set_endpoint(ws_endpoint):
     :type ws_endpoint: str
 
     .. note :: ws_endpoint is saved in FILENAME_ENDPOINT
+
+    .. warning :: It must have the following form: http://.../..., for get_endpoint to work
     """
     with open(FILENAME_ENDPOINT, "w") as ws_file:
         ws_file.write(ws_endpoint + "\n")
@@ -89,7 +91,7 @@ def get_endpoint():
         return None
 
 
-async def open_browser(is_headless, launch_args, write_websocket=True):
+async def open_browser(is_headless, launch_args=None, write_websocket=True):
     """
     Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
 
@@ -112,19 +114,17 @@ async def open_browser(is_headless, launch_args, write_websocket=True):
     return browser
 
 
-async def close_browser(ws_endpoint):
+async def close_browser():
     """
     Closes the browser related to ws_endpoint and remove FILENAME_ENDPOINT
-
-    :param ws_endpoint: mandatory, the websocket endpoint to close
-    :type ws_endpoint: str
     """
+    ws_endpoint = get_endpoint()
     browser = await connect(browserWSEndpoint=ws_endpoint)
     await browser.close()
     remove(FILENAME_ENDPOINT)
 
 
-async def get_browser(is_headless=True, write_websocket=True):
+async def get_browser(is_headless=True, launch_args=None, write_websocket=True):
     """
     Returns a already created browser if one exists or a new one if not
 
@@ -139,7 +139,7 @@ async def get_browser(is_headless=True, write_websocket=True):
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    return await open_browser(is_headless, write_websocket)
+    return await open_browser(is_headless, launch_args=launch_args, write_websocket=write_websocket)
 
 
 async def goto_page(url, browser, wait_for=None, wait_until="load"):
@@ -187,7 +187,7 @@ async def goto_page(url, browser, wait_for=None, wait_until="load"):
     return page
 
 
-def wait_server(url, waiting_message, final_message):
+def wait_server_start(url, waiting_message, final_message):
     """
     Wait for a web page to answer
 
@@ -200,14 +200,15 @@ def wait_server(url, waiting_message, final_message):
     :param final_message: this message will pop up when the connection is stable
     :type final_message: str
 
-    :param log: a logger
-    :type log: RootLogger
-
     .. info :: if you add `%d` in your messages you can include time count in it
+
+    .. warning :: Raise a MaxRetryError if the server has not answered after 10s
     """
     count = 0
     server_started = False
     while not server_started:
+        if count == 10:
+            raise MaxRetryError(url, None)
         try:
             get(url)
             server_started = True
@@ -215,4 +216,36 @@ def wait_server(url, waiting_message, final_message):
             sleep(1)
             logger.info(waiting_message, count)
             count += 1
+    logger.info(final_message, count)
+
+
+def wait_server_close(url, waiting_message, final_message):
+    """
+    Wait for a server to close
+
+    :param url: the url to close the server
+    :type url: str
+
+    :param waiting_message: this message will pop up every minute
+    :type waiting_message: str
+
+    :param final_message: this message will pop up when the connection is down
+    :type final_message: str
+
+    .. info :: if you add `%d` in your messages you can include time count in it
+
+    .. warning :: Raise a MaxRetryError if the server has not closed after 10s
+    """
+    count = 0
+    server_started = False
+    while not server_started:
+        if count == 10:
+            raise MaxRetryError(url, None)
+        try:
+            get(url)
+            sleep(1)
+            logger.info(waiting_message, count)
+            count += 1
+        except (RequestsConnectionError, MaxRetryError) as _:
+            server_started = True
     logger.info(final_message, count)

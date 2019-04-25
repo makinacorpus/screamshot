@@ -4,13 +4,12 @@ This script installs the screamshot package and then waits for the server to res
         the tests. Finally, it sends a closing request to the server and waits for it.
 """
 #!/usr/bin/env python
-import os
 from logging import getLogger, INFO
-import subprocess
+from subprocess import run
 from argparse import ArgumentParser
 from re import search
 
-from screamshot.utils import wait_server
+from screamshot.utils import wait_server_start, wait_server_close
 
 
 logger = getLogger()
@@ -42,34 +41,28 @@ def main():
     exit_code = 0
 
     logger.info('\n####################\n     WAIT SERVER     \n####################\n')
-    wait_server(args.wait_url, 'Waits for the connection since: %ds',
-                'Connection is available after: %ds')
-
-    logger.info('\n####################\n   LAUNCH BROWSER   \n####################\n')
-    launch_browser_res = subprocess.run(["python3", "screamshot/browser_manager_script.py", "-o", "-ns"])
-    exit_code = launch_browser_res.returncode
+    wait_server_start(args.wait_url, 'Waits for the connection since: %ds',
+                      'Connection is available after: %ds')
 
     if not exit_code:
         logger.info('\n####################\n      UNITTEST      \n####################\n')
-        pytest_res = subprocess.run(["pytest", "-v", "--disable-warnings", "--cov=screamshot"])
+        pytest_res = run(["pytest", "-v", "--disable-warnings", "--cov=screamshot",
+                          "--cov-report=term-missing"])
         exit_code = pytest_res.returncode
-
-        logger.info('\n####################\n    CLOSE BROWSER  \n####################\n')
-        launch_browser_res = subprocess.run(["python3", "screamshot/browser_manager_script.py", "-c"])
 
     if not exit_code:
         logger.info('\n####################\n       PYLINT       \n####################\n')
-        pylint_res = subprocess.run(['pylint', './screamshot'])
+        pylint_res = run(['pylint', './screamshot'])
         exit_code = pylint_res.returncode
 
     if not exit_code:
         logger.info('\n####################\n        MYPY        \n####################\n')
-        mypy_res = subprocess.run(['mypy', '.'])
+        mypy_res = run(['mypy', '.'])
         exit_code = mypy_res.returncode
 
     logger.info('\n####################\n   SHUTDOWN SERVER   \n####################\n')
-    wait_server(args.close_url, 'Waits for server since: %ds',
-                'Server shutdown after: %ds')
+    wait_server_close(args.close_url, 'Waits for server since: %ds',
+                      'Server shutdown after: %ds')
 
     exit(exit_code)
 

@@ -7,7 +7,7 @@ from screamshot import generate_bytes_img
 from screamshot.utils import to_sync
 
 
-def _arg_parsing():
+def main():
     parser = ArgumentParser(description=__doc__)
 
     # Mandatory arguments
@@ -41,26 +41,12 @@ def _arg_parsing():
                                 help="The CSS3 selector of an element you want to wait to be \
                                     loaded before taking the screenshot")
 
-    return parser.parse_args()
+    args = parser.parse_args()
 
-
-def main():
-    args = _arg_parsing()
-    if args.wait_until:
-        to_sync(generate_bytes_img(args.url,
-                                   path=args.path,
-                                   width=args.width, height=args.height,
-                                   full_page=args.fullpage,
-                                   selector=args.selector,
-                                   wait_for=args.wait_for,
-                                   wait_until=args.wait_until))
-    else:
-        to_sync(generate_bytes_img(args.url,
-                                   path=args.path,
-                                   width=args.width, height=args.height,
-                                   full_page=args.fullpage,
-                                   selector=args.selector,
-                                   wait_for=args.wait_for))
+    to_sync(
+        generate_bytes_img(args.url, path=args.path, width=args.width, height=args.height,
+                           full_page=args.fullpage, selector=args.selector,
+                           wait_for=args.wait_for, wait_until=args.wait_until))
 
 
 if __name__ == '__main__':
