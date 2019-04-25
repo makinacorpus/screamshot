@@ -39,16 +39,6 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         self.img_kitten = Image.open(
             'tests/server/static/OtherPage/aww_kitten.jpg')
 
-    def test_screamshot_full_page(self):
-        """
-        Takes a full-screen screenshot and compares it with a pre-recorded image.
-        """
-        img_bytes = BytesIO(to_sync(generate_bytes_img('http://localhost:5000/other.html',
-                                                       full_page=True)))
-        screamshot_img = Image.open(img_bytes)
-        img = Image.open('tests/test_screamshot_full_page.png')
-        self.assertAlmostEqual(_rmsd(screamshot_img, img), 0, delta=0.05)
-
     def test_screamshot_same_bytes_write(self):
         """
         Takes a screenshot and compares the buffer to the saved image.
