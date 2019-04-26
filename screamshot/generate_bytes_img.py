@@ -5,8 +5,9 @@ from typing import Any
 from asyncio.futures import Future
 
 from pyppeteer.page import Page
+from pyppeteer.browser import Browser
 
-from screamshot.utils import goto_page, get_browser
+from screamshot.utils import get_browser
 
 
 def _parse_parameters(**kwargs) -> dict:
