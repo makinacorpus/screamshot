@@ -39,7 +39,8 @@ A server with a web page can be used at the following address: <http://server:50
 ## generate_bytes_img_function_tests
 ### Description
 
-If you want to access the documentation run: `python3 -m http.server` at the root of the project and go to <http://0.0.0.0:8000/doc/html/screamshot.html>
+The documentation is accessible [here](https://screamshot.readthedocs.io/en/latest/), on readthedocs.
+
 
 ### Exemple
 
