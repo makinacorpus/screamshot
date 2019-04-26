@@ -38,10 +38,27 @@ def _parse_parameters(**kwargs) -> dict:
     }
 
 
+async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
+    page = await browser.newPage()
+
+    arg_viewport = params.get('arg_viewport')
+    if arg_viewport:
+        page.setViewport(arg_viewport)
+
+    await page.goto(url, waitUntil=params.get('wait_until'))
+
+    wait_for = params.get('wait_for')
+    if wait_for:
+        await page.waitForSelector(wait_for)
+
+    return page
+
+
 async def _selector_manager(page: Page, params: dict) -> Any:
     selector = params.get('selector')
     if selector:
         return await page.querySelector(selector)
+
     return page
 
 
@@ -100,9 +117,7 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
 
     browser = await get_browser()
 
-    page = await goto_page(url, browser,
-                           wait_for=params.get('wait_for'),
-                           wait_until=params.get('wait_until'))
+    page = await _page_manager(browser, url, params)
 
     element = await _selector_manager(page, params)
 
