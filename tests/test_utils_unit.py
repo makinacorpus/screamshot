@@ -9,10 +9,48 @@ from urllib3.exceptions import MaxRetryError
 
 from requests.exceptions import ConnectionError as RequestsConnectionError
 
-from screamshot.utils import (_check_wait_until_arg, url_match, set_endpoint, FILENAME_ENDPOINT,
-                              get_endpoint, wait_server_start, wait_server_close)
+from screamshot.utils import (to_sync, _check_wait_until_arg, url_match, set_endpoint,
+                              FILENAME_ENDPOINT, get_endpoint, open_browser, get_browser,
+                              wait_server_start, wait_server_close)
 
 from _io import TextIOWrapper
+
+
+class FakeBrowser:
+    def __init__(self, headless, autoClose, args):
+        self.headless = headless
+        self.autoClose = autoClose
+        self.args = args
+        self.wsEndpoint = 'wsEndpoint'
+
+async def mocked_launch(options=None, **kwargs):
+    parameters = dict()
+    if options:
+        parameters.update(options)
+    parameters.update(kwargs)
+
+    headless = parameters.get('headless')
+    if not headless:
+        headless = False
+
+    autoClose = parameters.get('autoClose', True)
+
+    args = parameters.get('args')
+
+    browser = FakeBrowser(headless, autoClose, args)
+    return browser
+
+
+def mocked_set_endpoint(ws_endpoint):
+    raise ValueError(ws_endpoint)
+
+
+async def mocked_connect(browserWSEndpoint=None):
+    raise ValueError('connect !')
+
+
+async def mocked_open_browser(is_headless, launch_args=None, write_websocket=True):
+    raise ValueError('open_browser !')
 
 
 class UnistTestsUtilsFunctions(TestCase):
@@ -84,6 +122,52 @@ class UnistTestsUtilsFunctions(TestCase):
         self.assertEqual(get_endpoint(), 'toto')
 
         remove(FILENAME_ENDPOINT)
+
+    @mock.patch('screamshot.utils.set_endpoint')
+    @mock.patch('screamshot.utils.launch')
+    def test_open_browser(self, mock_launch, mock_set_endpoint):
+        mock_launch.side_effect = mocked_launch
+        mock_set_endpoint.side_effect = mocked_set_endpoint
+
+        browser1 = to_sync(open_browser(True, write_websocket=False))
+        self.assertTrue(browser1.headless)
+        self.assertFalse(browser1.autoClose)
+        self.assertEqual(browser1.args, None)
+        self.assertEqual(browser1.wsEndpoint, 'wsEndpoint')
+
+        browser2 = to_sync(open_browser(False, write_websocket=False))
+        self.assertFalse(browser2.headless)
+        self.assertFalse(browser2.autoClose)
+        self.assertEqual(browser2.args, None)
+        self.assertEqual(browser2.wsEndpoint, 'wsEndpoint')
+
+        browser3 = to_sync(open_browser(True, launch_args=['--no-sandbox'], write_websocket=False))
+        self.assertTrue(browser3.headless)
+        self.assertFalse(browser3.autoClose)
+        self.assertEqual(browser3.args, ['--no-sandbox'])
+        self.assertEqual(browser3.wsEndpoint, 'wsEndpoint')
+
+        with self.assertRaisesRegex(ValueError, 'wsEndpoint'):
+            browser4 = to_sync(open_browser(True, launch_args=['--no-sandbox']))
+            self.assertTrue(browser4.headless)
+            self.assertFalse(browser4.autoClose)
+            self.assertEqual(browser4.args, ['--no-sandbox'])
+            self.assertEqual(browser4.wsEndpoint, 'wsEndpoint')
+
+    @mock.patch('screamshot.utils.get_endpoint')
+    @mock.patch('screamshot.utils.connect')
+    @mock.patch('screamshot.utils.open_browser')
+    def test_get_browser(self, mock_open_browser, mock_connect, mock_get_endpoint):
+        mock_connect.side_effect = mocked_connect
+        mock_open_browser.side_effect = mocked_open_browser
+
+        mock_get_endpoint.return_value = 'endpoint'
+        with self.assertRaisesRegex(ValueError, 'connect !'):
+            to_sync(get_browser())
+
+        mock_get_endpoint.return_value = None
+        with self.assertRaisesRegex(ValueError, 'open_browser !'):
+            to_sync(get_browser())
 
     @mock.patch('screamshot.utils.get')
     def test_wait_server_start(self, mock_get):
