@@ -121,12 +121,7 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
 
     element = await _selector_manager(page, params)
 
-    screamshot_params = {'fullPage': params.get('full_page')}
-    path = params.get("path")
-    if path:
-        screamshot_params["path"] = path
-
-    image = await element.screenshot(screamshot_params)
+    image = await element.screenshot(options=params.get('screenshot_options'))
 
     return image
 
@@ -191,4 +186,5 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
             return HttpResponse('Done')
     """
     img = await generate_bytes_img(url, **kwargs)
+
     future.set_result(img)
