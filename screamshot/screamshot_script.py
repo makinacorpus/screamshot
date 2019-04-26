@@ -4,7 +4,7 @@ Take a screenshot
 from argparse import ArgumentParser
 
 from screamshot import generate_bytes_img
-from screamshot.utils import to_sync
+from screamshot.utils import to_sync, open_browser, close_browser
 
 
 def main():
@@ -57,10 +57,17 @@ def main():
 
     args = parser.parse_args()
 
+    if not args.no_browser:
+        to_sync(
+            open_browser(args.headless, launch_args=args.no_sandbox))
+
     to_sync(
         generate_bytes_img(args.url, path=args.path, width=args.width, height=args.height,
                            full_page=args.fullpage, selector=args.selector,
                            wait_for=args.wait_for, wait_until=args.wait_until))
+
+    if not args.no_browser and not args.no_close:
+        to_sync(close_browser())
 
 
 if __name__ == '__main__':
