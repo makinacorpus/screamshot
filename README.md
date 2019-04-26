@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/makinacorpus/screamshot.svg?branch=master)](https://travis-ci.org/makinacorpus/screamshot)
-[![Coverage Status](https://coveralls.io/repos/github/makinacorpus/screamshot/badge.svg?branch=master)](https://coveralls.io/github/makinacorpus/screamshot?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/makinacorpus/screamshot/badge.svg?branch=master&service=github)](https://coveralls.io/github/makinacorpus/screamshot?branch=master&service=github)
 
 # screamshot
 Python library to capture screenshots of web applications
@@ -60,6 +60,6 @@ def home(request):
         generate_bytes_img_prom('https://www.google.fr', future))
     loop.run_until_complete(future)
 
-    print(futur.result())
+    print(future.result())
     return HttpResponse('Done')
 ``` 

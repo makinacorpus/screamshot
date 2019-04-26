@@ -3,10 +3,10 @@ Create or close a browser
 """
 from argparse import ArgumentParser
 
-from screamshot.utils import get_endpoint, close_browser, open_browser, to_sync
+from screamshot.utils import close_browser, open_browser, to_sync
 
 
-def _arg_parsing():
+def main():
     parser = ArgumentParser(description=__doc__)
 
     # Mandatory arguments
@@ -24,15 +24,11 @@ def _arg_parsing():
                         default="[]", help="Open the browser without sandbox")
 
     args = parser.parse_args()
-    return args
 
-
-def main():
-    args = _arg_parsing()
     if args.close:
-        to_sync(close_browser(get_endpoint()))
+        to_sync(close_browser())
     if args.open:
-        to_sync(open_browser(args.headless, args.no_sandbox))
+        to_sync(open_browser(args.headless, launch_args=args.no_sandbox))
 
 
 if __name__ == '__main__':
