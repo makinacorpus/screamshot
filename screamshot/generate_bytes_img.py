@@ -27,10 +27,14 @@ def _parse_parameters(**kwargs) -> dict:
     else:
         wait_until = ['load']
 
+    screenshot_options = {'fullPage': kwargs.get('full_page', False)}
+    if 'path' in kwargs:
+        path = kwargs.pop('path')
+        screenshot_options.update({'path': path})
+
     return {
-        'path': kwargs.get('path'),
         'arg_viewport': arg_viewport,
-        'full_page': kwargs.get('full_page', False),
+        'screenshot_options': screenshot_options,
         'selector': kwargs.get('selector'),
         'wait_for': kwargs.get('wait_for'),
         'wait_until': wait_until,
