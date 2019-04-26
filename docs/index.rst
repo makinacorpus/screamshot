@@ -21,7 +21,6 @@ It is based on the Pyppeteer_ library.
    :caption: Contents:
 
 
-
 Indices and tables
 ==================
 
