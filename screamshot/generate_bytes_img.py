@@ -9,10 +9,6 @@ from pyppeteer.page import Page
 from screamshot.utils import goto_page, get_browser
 
 
-# Name of the envrinment variable which contains the chrome ws endpoint
-VENV = 'WS_ENDPOINT_SCREAMSHOT'
-
-
 def _parse_parameters(**kwargs) -> dict:
     arg_viewport = {}
     if 'width' in kwargs:
