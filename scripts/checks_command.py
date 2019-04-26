@@ -3,7 +3,7 @@ This script installs the screamshot package and then waits for the server to res
     <http://127.0.0.1:5000/index.html>. Then, it performs the MYPY and PYLINT checks as well as \
         the tests. Finally, it sends a closing request to the server and waits for it.
 """
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from logging import getLogger, INFO
 from subprocess import run
 from argparse import ArgumentParser
