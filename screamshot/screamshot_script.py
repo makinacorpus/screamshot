@@ -31,6 +31,7 @@ def main():
                         default="load",
                         help="How long do you want to wait for the page to be loaded")
 
+    # CSS3 selectors group
     selector_group = parser.add_argument_group(title="CSS3 selectors (optional)",
                                                description="Using quotes is recommended for \
                                                    complex CSS3 selectors")
@@ -40,6 +41,19 @@ def main():
     selector_group.add_argument("--wait_for", metavar="wait_for_selector",
                                 help="The CSS3 selector of an element you want to wait to be \
                                     loaded before taking the screenshot")
+
+    # Browser group
+    browser_group = parser.add_argument_group(title='Browser (optional)',
+                                              description='By default a headless browser is \
+                                                  opened and closed')
+    browser_group.add_argument('--no-browser', action='store_true', default=False,
+                               help='No browser is opened')
+    browser_group.add_argument('-g', '--graphic', dest="headless", action="store_false",
+                               default=True, help="Open the browser in graphic mode")
+    browser_group.add_argument("--no-sandbox", action="store_const", const=["--no-sandbox"],
+                               default="[]", help="Open the browser without sandbox")
+    browser_group.add_argument('--no-close', action='store_true', default=False,
+                               help='The browser is not closed when the job is done')
 
     args = parser.parse_args()
 
