@@ -142,51 +142,6 @@ async def get_browser(is_headless=True, launch_args=None, write_websocket=True):
     return await open_browser(is_headless, launch_args=launch_args, write_websocket=write_websocket)
 
 
-async def goto_page(url, browser, wait_for=None, wait_until="load"):
-    """
-    Checks if a page already exists in a browser or create a new one
-    :param url: the url of the page to go to
-    :type url: str
-
-    :param browser: the browser to create the page into
-    :type browser: browser from pyppeteer
-
-    :param wait_for: optionnal, CSS3 selector, item to wait before handing over the page
-    :type wait_for: str
-
-    :param wait_until: optionnal, define how long you wait for the page to be loaded should be \
-        either load, domcontentloaded, networkidle0 or networkidle2
-    :type wait_until: str or list(str)
-
-    :retype: pyppeteer.page.Page
-    """
-
-    if not _check_wait_until_arg(wait_until):
-        logger.error(
-            "Invalid wait_until argument, should be should be a list of load, domcontentloaded, \
-                networkidle0 and/or networkidle2")
-        return None
-
-    if wait_until != "load":
-        page = await browser.newPage()
-        await page.goto(url, waitUntil=wait_until)
-    else:
-        page = None
-        already_created_pages = await browser.pages()
-        for page_created in already_created_pages:
-            if url_match(page_created.url, url):
-                page = page_created
-                break
-        if not page:
-            page = await browser.newPage()
-            await page.goto(url)
-
-    if wait_for:
-        await page.waitForSelector(wait_for)
-
-    return page
-
-
 def wait_server_start(url, waiting_message, final_message):
     """
     Wait for a web page to answer
