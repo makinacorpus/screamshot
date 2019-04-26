@@ -5,12 +5,9 @@ from typing import Any
 from asyncio.futures import Future
 
 from pyppeteer.page import Page
+from pyppeteer.browser import Browser
 
-from screamshot.utils import goto_page, get_browser
-
-
-# Name of the envrinment variable which contains the chrome ws endpoint
-VENV = 'WS_ENDPOINT_SCREAMSHOT'
+from screamshot.utils import get_browser
 
 
 def _parse_parameters(**kwargs) -> dict:
@@ -27,20 +24,41 @@ def _parse_parameters(**kwargs) -> dict:
     else:
         wait_until = ['load']
 
+    screenshot_options = {'fullPage': kwargs.get('full_page', False)}
+    if 'path' in kwargs:
+        path = kwargs.pop('path')
+        screenshot_options.update({'path': path})
+
     return {
-        'path': kwargs.get('path'),
         'arg_viewport': arg_viewport,
-        'full_page': kwargs.get('full_page', False),
+        'screenshot_options': screenshot_options,
         'selector': kwargs.get('selector'),
         'wait_for': kwargs.get('wait_for'),
         'wait_until': wait_until,
     }
 
 
+async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
+    page = await browser.newPage()
+
+    arg_viewport = params.get('arg_viewport')
+    if arg_viewport:
+        page.setViewport(arg_viewport)
+
+    await page.goto(url, waitUntil=params.get('wait_until'))
+
+    wait_for = params.get('wait_for')
+    if wait_for:
+        await page.waitForSelector(wait_for)
+
+    return page
+
+
 async def _selector_manager(page: Page, params: dict) -> Any:
     selector = params.get('selector')
     if selector:
         return await page.querySelector(selector)
+
     return page
 
 
@@ -99,18 +117,11 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
 
     browser = await get_browser()
 
-    page = await goto_page(url, browser,
-                           wait_for=params.get('wait_for'),
-                           wait_until=params.get('wait_until'))
+    page = await _page_manager(browser, url, params)
 
     element = await _selector_manager(page, params)
 
-    screamshot_params = {'fullPage': params.get('full_page')}
-    path = params.get("path")
-    if path:
-        screamshot_params["path"] = path
-
-    image = await element.screenshot(screamshot_params)
+    image = await element.screenshot(options=params.get('screenshot_options'))
 
     return image
 
@@ -175,4 +186,5 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
             return HttpResponse('Done')
     """
     img = await generate_bytes_img(url, **kwargs)
+
     future.set_result(img)
