@@ -5,12 +5,15 @@ import logging
 import asyncio
 from os import remove
 from time import sleep
+from typing import Any, Optional
+
 from urllib3.exceptions import MaxRetryError
 
 from requests import get
 from requests.exceptions import ConnectionError as RequestsConnectionError
 
 from pyppeteer import launch, connect
+from pyppeteer.browser import Browser
 
 
 FILENAME_ENDPOINT = "endpointlist.txt"
@@ -27,12 +30,12 @@ stream_handler.setLevel(logging.DEBUG)
 logger.addHandler(stream_handler)
 
 
-def _check_wait_until_arg(wait_until_arg):
+def _check_wait_until_arg(wait_until_arg: list) -> bool:
     values = ["load", "domcontentloaded", "networkidle0", "networkidle2"]
     return wait_until_arg in values or all([arg in values for arg in wait_until_arg])
 
 
-def to_sync(fun):
+def to_sync(fun: Any) -> Any:
     """
     This synchronous function execute and returns the result of an asynchronous function
 
@@ -44,7 +47,7 @@ def to_sync(fun):
     return asyncio.get_event_loop().run_until_complete(fun)
 
 
-def url_match(url1, url2):
+def url_match(url1: str, url2: str) -> bool:
     """
     This function takes two urls and check if they are the same modulo '/' at the end
     :param url1: mandatory, the first url
@@ -58,7 +61,7 @@ def url_match(url1, url2):
     return url1 == url2 or url1[:-1] == url2 or url1 == url2[:-1]
 
 
-def set_endpoint(ws_endpoint):
+def set_endpoint(ws_endpoint: str):
     """
     This function store the web socket endpoint of the launched browser
 
@@ -73,7 +76,7 @@ def set_endpoint(ws_endpoint):
         ws_file.write(ws_endpoint + "\n")
 
 
-def get_endpoint():
+def get_endpoint() -> Optional[str]:
     """
     This function returns the web socket endpoint of the running browser
 
@@ -91,7 +94,8 @@ def get_endpoint():
         return None
 
 
-async def open_browser(is_headless, launch_args=None, write_websocket=True):
+async def open_browser(is_headless: bool, launch_args: list = None,
+                       write_websocket: bool = True) -> Browser:
     """
     Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
 
@@ -124,7 +128,8 @@ async def close_browser():
     remove(FILENAME_ENDPOINT)
 
 
-async def get_browser(is_headless=True, launch_args=None, write_websocket=True):
+async def get_browser(is_headless: bool = True, launch_args: list = None,
+                      write_websocket: bool = True) -> Browser:
     """
     Returns a already created browser if one exists or a new one if not
 
@@ -142,7 +147,7 @@ async def get_browser(is_headless=True, launch_args=None, write_websocket=True):
     return await open_browser(is_headless, launch_args=launch_args, write_websocket=write_websocket)
 
 
-def wait_server_start(url, waiting_message, final_message):
+def wait_server_start(url: str, waiting_message: str, final_message: str):
     """
     Wait for a web page to answer
 
@@ -174,7 +179,7 @@ def wait_server_start(url, waiting_message, final_message):
     logger.info(final_message, count)
 
 
-def wait_server_close(url, waiting_message, final_message):
+def wait_server_close(url: str, waiting_message: str, final_message: str):
     """
     Wait for a server to close
 
