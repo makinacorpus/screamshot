@@ -94,14 +94,16 @@ def get_endpoint() -> Optional[str]:
         return None
 
 
-async def open_browser(is_headless: bool, launch_args: list = None, write_websocket: bool = True) -> Browser:
+async def open_browser(
+        is_headless: bool, launch_args: list = None, write_websocket: bool = True
+) -> Browser:
     """
     Launch a browser and writes its websocket endpoint in the file FILENAME_ENDPOINT if needed
 
     :param is_headless: mandatory, should the browser be launched in headless mode ?
     :type is_headless: bool
 
-    :param write_websocket: optional, should we store the websocket endpoint in the file FILENAME_ENDPOINT ?
+    :param write_websocket: optional, should we store the websocket endpoint a file ?
     :type write_websocket: bool
 
     :param launch_args: optional, other optional parameters use
@@ -127,15 +129,16 @@ async def close_browser():
     remove(FILENAME_ENDPOINT)
 
 
-async def get_browser(is_headless: bool = True, launch_args: list = None,
-                      write_websocket: bool = True) -> Browser:
+async def get_browser(
+        is_headless: bool = True, launch_args: list = None, write_websocket: bool = True
+) -> Browser:
     """
     Returns a already created browser if one exists or a new one if not
 
     :param is_headless: optionnal, should the browser be launched in headless mode ?
     :type is_headless: bool
 
-    :param write_websocket: optional, should we store the websocket endpoint in the file FILENAME_ENDPOINT ?
+    :param write_websocket: optional, should we store the websocket endpoint in a file ?
     :type write_websocket: bool
 
     :retype: pyppeteer.browser.Browser
