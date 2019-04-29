@@ -44,6 +44,9 @@ class FakePage:
     async def screenshot(self, **kwargs):
         return 'screenshot !'
 
+    async def close(self):
+        pass
+
 class FakeBrowser:
     async def newPage(self):
         return FakePage()
