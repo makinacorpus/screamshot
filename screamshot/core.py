@@ -14,3 +14,8 @@ def serialize(img: bytes, metadata: dict = None) -> str:
 
 def deserialize(data: str) -> bytes:
     json_img = loads(data)
+    str_img = json_img.get('image')
+    metadata = json_img.get('metadata', {})
+    b64_img = str_img.encode('utf-8')
+    b_img = b64decode(b64_img)
+    return b_img, metadata
