@@ -3,7 +3,7 @@ serialize and deserialize functions
 """
 from base64 import b64encode, b64decode
 from json import dumps, loads
-from typing import Tuple
+from typing import Tuple, Dict, Union
 
 
 def serialize(img: bytes, metadata: dict = None) -> str:
@@ -23,9 +23,9 @@ def serialize(img: bytes, metadata: dict = None) -> str:
     """
     b64_img = b64encode(img)
     str_img = b64_img.decode('utf-8')
-    data = {'image': str_img, 'metadata': dict()}
+    data = {'image': str_img} #type: Dict[str, Union[str, Dict[str, str]]]
     if metadata:
-        data['metadata'].update(metadata)
+        data.update({'metadata': metadata})
     json_img = dumps(data)
     return json_img
 
