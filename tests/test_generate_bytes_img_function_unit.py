@@ -24,7 +24,7 @@ class FakePage:
         self.querySelector_called = querySelector_called
         self.selector = selector
 
-    def setViewport(self, arg_viewport):
+    async def setViewport(self, arg_viewport):
         self.arg_viewport = arg_viewport
 
     async def goto(self, url, waitUntil=None):

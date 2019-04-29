@@ -43,7 +43,7 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
 
     arg_viewport = params.get('arg_viewport')
     if arg_viewport:
-        page.setViewport(arg_viewport)
+        await page.setViewport(arg_viewport)
 
     await page.goto(url, waitUntil=params.get('wait_until'))
 
