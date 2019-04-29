@@ -16,14 +16,14 @@ from pyppeteer import launch, connect
 from pyppeteer.browser import Browser
 
 
-FILENAME_ENDPOINT = "endpointlist.txt"
+FILENAME_ENDPOINT = "/tmp/endpoint.txt"
 
 
 logger = logging.getLogger()
 
 logger.setLevel(logging.WARNING)
 
-formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+formatter = logging.Formatter("%(asctime)s :: %(levelname)s :: %(message)s")
 
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.DEBUG)
@@ -68,7 +68,7 @@ def set_endpoint(ws_endpoint: str):
     :param ws_endpoint: mandatory, the web socket endpoint
     :type ws_endpoint: str
 
-    .. note :: ws_endpoint is saved in FILENAME_ENDPOINT
+    .. note :: ws_endpoint is saved in the file FILENAME_ENDPOINT
 
     .. warning :: It must have the following form: http://.../..., for get_endpoint to work
     """
@@ -82,7 +82,7 @@ def get_endpoint() -> Optional[str]:
 
     :retype: str
 
-    .. note :: ws_endpoint is retrieved from FILENAME_ENDPOINT
+    .. note :: ws_endpoint is retrieved from the file FILENAME_ENDPOINT
     """
     try:
         with open(FILENAME_ENDPOINT, "r") as ws_file:
@@ -94,15 +94,14 @@ def get_endpoint() -> Optional[str]:
         return None
 
 
-async def open_browser(is_headless: bool, launch_args: list = None,
-                       write_websocket: bool = True) -> Browser:
+async def open_browser(is_headless: bool, launch_args: list = None, write_websocket: bool = True) -> Browser:
     """
-    Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
+    Launch a browser and writes its websocket endpoint in the file FILENAME_ENDPOINT if needed
 
     :param is_headless: mandatory, should the browser be launched in headless mode ?
     :type is_headless: bool
 
-    :param write_websocket: optional, should we store the websocket endpoint in FILENAME_ENDPOINT ?
+    :param write_websocket: optional, should we store the websocket endpoint in the file FILENAME_ENDPOINT ?
     :type write_websocket: bool
 
     :param launch_args: optional, other optional parameters use
@@ -120,7 +119,7 @@ async def open_browser(is_headless: bool, launch_args: list = None,
 
 async def close_browser():
     """
-    Closes the browser related to ws_endpoint and remove FILENAME_ENDPOINT
+    Closes the browser related to ws_endpoint and remove the file FILENAME_ENDPOINT
     """
     ws_endpoint = get_endpoint()
     browser = await connect(browserWSEndpoint=ws_endpoint)
@@ -136,7 +135,7 @@ async def get_browser(is_headless: bool = True, launch_args: list = None,
     :param is_headless: optionnal, should the browser be launched in headless mode ?
     :type is_headless: bool
 
-    :param write_websocket: optional, should we store the websocket endpoint in FILENAME_ENDPOINT ?
+    :param write_websocket: optional, should we store the websocket endpoint in the file FILENAME_ENDPOINT ?
     :type write_websocket: bool
 
     :retype: pyppeteer.browser.Browser
@@ -144,7 +143,9 @@ async def get_browser(is_headless: bool = True, launch_args: list = None,
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    return await open_browser(is_headless, launch_args=launch_args, write_websocket=write_websocket)
+    return await open_browser(
+        is_headless, launch_args=launch_args, write_websocket=write_websocket
+    )
 
 
 def wait_server_start(url: str, waiting_message: str, final_message: str):
