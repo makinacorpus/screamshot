@@ -38,3 +38,10 @@ A test and verification tool using Docker is now available
 Add two commands:
 * `browser-manager`
 * `screamshot`
+
+0.1.4
+===
+
+Add two functions:
+* `serialize`
+* `deserialize`
