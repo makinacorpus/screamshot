@@ -123,6 +123,7 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
 
     image = await element.screenshot(options=params.get('screenshot_options'))
 
+    await page.close()
     return image
 
 
