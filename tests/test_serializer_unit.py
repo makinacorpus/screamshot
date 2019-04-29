@@ -15,9 +15,7 @@ class TestSerializerUnit(TestCase):
         extracted_data = loads(json_data)
 
         self.assertTrue('image' in extracted_data)
-        self.assertTrue('metadata' in extracted_data)
-
-        self.assertEqual(extracted_data.get('metadata'), {})
+        self.assertFalse('metadata' in extracted_data)
 
         b64_image = extracted_data.get('image').encode('utf-8')
         self.assertNotEqual(data, b64_image)
