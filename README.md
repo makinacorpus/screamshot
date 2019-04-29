@@ -4,17 +4,21 @@
 # screamshot
 Python library to capture screenshots of web applications
 
-# Good practices before committing
+# Good practices
 
-Please run the tests and checks and correct all errors and warnings before committing.
+* Any code addition must be done in your own branch. You can name it `fl/what_this_branch_brings` where 'f' is the first letter of your first name and 'l' the first letter of your last name.
+* A branch resolves a specific issue.
+* Please write exhaustive tests. The coverage must not decrease.
+* Please merge the master branch into yours, run the tests and checks and correct all errors and warnings before pushing your code.
+* When you think you have finished you can make a pull request.
 
 # Testing and checks
 ## To start the tests and checks
 ### The first time
 
-1. Install **Docker**
-2. Run: `docker-compose build`, to create all the required images
-3. To start the verification, run: `docker-compose up`
+1. Install **docker** and **docker-compose**.
+2. Run: `docker-compose build`, to create all the required images.
+3. To start the verification, run: `docker-compose up`.
 
 ### When it is already setup
 
@@ -22,27 +26,26 @@ You just need to run `docker-compose up`.
 
 ### To clean up
 
-* If you want to stop containers and remove containers, networks, volumes, and images created by up, run: `docker-compose down`.
-* If you want to delete all the images, run: `docker --rmi all`.
+* If you want to stop containers and remove containers, networks, volumes, and images created by up command, run: `docker-compose down`.
+* If you want to delete all the images, run: `docker rmi -f $(docker images -q)`.
 
 ## To write new tests
 
 * You must use the `unittest` package
 * You must put your test file in the **tests** folder
-* You must name your test file using the following next pattern: **tests_*.py**
+* You must name your test file using the following next pattern: **test_*.py**
 
 ### Local server
 
-A server with a web page can be used at the following address: <http://server:5000/index.html>
+A server with a web page can be used at the following address: <http://server:5000/index.html> and <http://server:5000/other.html>
 
 # Usage
-## generate_bytes_img_function_tests
-### Description
+## Documentation
 
 The documentation is accessible [here](https://screamshot.readthedocs.io/en/latest/), on readthedocs.
 
 
-### Exemple
+## Exemple
 
 ```
 # views.py in a Django project

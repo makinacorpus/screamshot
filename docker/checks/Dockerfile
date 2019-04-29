@@ -7,7 +7,8 @@ RUN apt install -y libx11-xcb1 libxrandr2 libasound2 \
 RUN mkdir screamshot
 WORKDIR /screamshot
 
-COPY . /screamshot
+COPY ./requirements.txt /screamshot
+COPY ./dev-requirements.txt /screamshot
 
 RUN pip3 install -r requirements.txt
 RUN pip3 install -r dev-requirements.txt
