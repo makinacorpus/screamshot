@@ -110,8 +110,5 @@ Pipfile.lock
 # mypy
 .mypy_cache/
 
-# Sphinx
-/sphinx
-
 # Pylint
 .pylintrc

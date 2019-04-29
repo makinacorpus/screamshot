@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/makinacorpus/screamshot.svg?branch=master)](https://travis-ci.org/makinacorpus/screamshot)
 [![Coverage Status](https://coveralls.io/repos/github/makinacorpus/screamshot/badge.svg?branch=master&service=github)](https://coveralls.io/github/makinacorpus/screamshot?branch=master&service=github)
+[![Documentation Status](https://readthedocs.org/projects/screamshot/badge/?version=latest)](https://screamshot.readthedocs.io/en/latest/?badge=latest)
 
 # screamshot
 Python library to capture screenshots of web applications
@@ -42,7 +43,8 @@ A server with a web page can be used at the following address: <http://server:50
 # Usage
 ## Documentation
 
-If you want to access the documentation run: `python3 -m http.server` at the root of the project and go to <http://0.0.0.0:8000/doc/html/screamshot.html>
+The documentation is accessible [here](https://screamshot.readthedocs.io/en/latest/), on readthedocs.
+
 
 ## Exemple
 
