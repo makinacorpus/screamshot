@@ -38,13 +38,14 @@ def _parse_parameters(**kwargs) -> dict:
         wait_for = kwargs.pop("wait_for")
 
     credentials = {}
-    if "credentials" in kwargs:
-        credentials_data = kwargs.pop("credentials")
-        if "username" in credentials_data and "password" in credentials_data:
-            credentials["login"] = True
-        if "token_in_header" in credentials_data:
-            credentials["token_in_header"] = credentials_data.pop("token_in_header")
-        credentials.update({"credentials_data": credentials_data})
+    if 'credentials' in kwargs:
+        credentials_data = kwargs.pop('credentials')
+        if credentials_data:
+            if 'username' in credentials_data and 'password' in credentials_data:
+                credentials['login'] = True
+            if 'token_in_header' in credentials_data:
+                credentials['token_in_header'] = credentials_data.pop('token_in_header')
+            credentials.update({'credentials_data': credentials_data})
 
     return {
         "arg_viewport": arg_viewport,
