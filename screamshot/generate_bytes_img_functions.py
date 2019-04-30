@@ -2,8 +2,7 @@
 generate_bytes_img and generate_bytes_img_prom functions.
 """
 from typing import Any
-from asyncio import Future
-from asyncio import get_event_loop, ensure_future
+from asyncio import get_event_loop, ensure_future, Future
 
 from pyppeteer.page import Page
 from pyppeteer.browser import Browser
