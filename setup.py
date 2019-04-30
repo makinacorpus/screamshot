@@ -41,6 +41,7 @@ setup(
 
     install_requires=[
         'pyppeteer',
+        'requests',
     ],
 
     entry_points={
