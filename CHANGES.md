@@ -45,3 +45,8 @@ Add two commands:
 Add two functions:
 * `serialize`
 * `deserialize`
+
+0.1.5
+===
+
+Add `generate_bytes_img_django_wrap` function
