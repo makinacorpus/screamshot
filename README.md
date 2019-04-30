@@ -73,4 +73,4 @@ def home(request):
 
 ### Using Gunicorn
 
-With Gunicorn there isn't the thread related problems and we don't need to use the --nothreading and --noreload arguments.
+With [Gunicorn](https://gunicorn.org/) there isn't the thread related problems and we don't need to use the --nothreading and --noreload arguments.
