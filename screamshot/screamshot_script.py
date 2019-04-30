@@ -2,9 +2,14 @@
 Take a screenshot
 """
 from argparse import ArgumentParser
+from logging import getLogger
+from re import search
 
 from screamshot import generate_bytes_img
 from screamshot.utils import to_sync, open_browser, close_browser
+
+
+logger = getLogger('screamshot')
 
 
 def main():
@@ -30,6 +35,13 @@ def main():
                                  "networkidle0", "networkidle2"],
                         default="load",
                         help="How long do you want to wait for the page to be loaded")
+
+    # Credentials group
+    credentials_group = parser.add_argument_group(title="Credentials (optional)")
+    credentials_group.add_argument('--username', help='The username to use')
+    credentials_group.add_argument('--password', help='The password to use')
+    credentials_group.add_argument('--token', help='The header line to add. \
+        Must be like the following expression: key:token')
 
     # CSS3 selectors group
     selector_group = parser.add_argument_group(title="CSS3 selectors (optional)",
@@ -57,6 +69,25 @@ def main():
 
     args = parser.parse_args()
 
+    credentials = None
+    if args.username and not args.password:
+        logger.error('A password must be specified')
+        exit(1)
+    elif not args.username and args.password:
+        logger.error('A username must be specified')
+        exit(1)
+    elif args.username and args.password:
+        credentials = {'username': args.username, 'password': args.password}
+    elif args.token:
+        regex_token = search(r'(?P<key>[^<]+)\:(?P<token>[^<]+)', args.token)
+        try:
+            key = regex_token.group('key')
+            token = regex_token.group('token')
+            credentials = {key: token, 'token_in_header': True}
+        except AttributeError as _:
+            logger.error('Bad token argument, please read the documentation')
+            exit(1)
+
     if not args.no_browser:
         to_sync(
             open_browser(args.headless, launch_args=args.no_sandbox))
@@ -64,7 +95,8 @@ def main():
     to_sync(
         generate_bytes_img(args.url, path=args.path, width=args.width, height=args.height,
                            full_page=args.fullpage, selector=args.selector,
-                           wait_for=args.wait_for, wait_until=args.wait_until))
+                           wait_for=args.wait_for, wait_until=args.wait_until,
+                           credentials=credentials))
 
     if not args.no_browser and not args.no_close:
         to_sync(close_browser())
