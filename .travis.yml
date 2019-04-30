@@ -2,13 +2,13 @@ language: python
 python:
   - 3.6
 install:
-  - sudo apt update
-  - pip3 install --upgrade pip
-  - pip install -r requirements.txt
 jobs:
   include:
     - stage: tests
       install:
+        - sudo apt update
+        - pip3 install --upgrade pip
+        - pip install -r requirements.txt
         - pip install -r dev-requirements.txt
         - pip install flask
         - pip install pyjwt
@@ -21,6 +21,9 @@ jobs:
         coveralls
     - stage: pylint
       install:
+        - sudo apt update
+        - pip3 install --upgrade pip
+        - pip install -r requirements.txt
         - pip install pylint
       script:
         - pylint ./screamshot
