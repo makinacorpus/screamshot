@@ -69,7 +69,6 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
         if credentials.get('login'):
             await page.authenticate(credentials_data)
         if credentials.get('token_in_header'):
-            print(credentials_data)
             await page.setExtraHTTPHeaders(credentials_data)
 
     await page.goto(url, waitUntil=params.get('wait_until'))
