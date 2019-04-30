@@ -19,8 +19,8 @@ from screamshot import (
 from screamshot.utils import to_sync, get_browser, close_browser
 
 
-TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoibWFraW5hIn0.\
-jUTxi6c2-o3nHJ6Bq7zRXFoKixUyYetgPX3cToOayiA'
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoibWFraW5hIn0.\
+jUTxi6c2-o3nHJ6Bq7zRXFoKixUyYetgPX3cToOayiA"
 
 
 def _rmsd(img1, img2):
@@ -42,44 +42,77 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
     def setUp(self):
         to_sync(get_browser(launch_args=["--no-sandbox"]))
 
-        self.img_dog = Image.open("tests/server/static/OtherPage/aww_dog.jpg")
+        self.img_dog = Image.open("tests/server/static/images/aww_dog.jpg")
         self.img_dog_change = Image.open(
-            "tests/server/static/OtherPage/aww_dog_change.jpg"
+            "tests/server/static/images/aww_dog_change.jpg"
         )
-        self.img_kitten = Image.open("tests/server/static/OtherPage/aww_kitten.jpg")
+        self.img_kitten = Image.open("tests/server/static/images/aww_kitten.jpg")
 
     def test_screenshot_protected_page_no_auth(self):
-        with self.assertRaisesRegex(AttributeError,
-                                    "'NoneType' object has no attribute 'screenshot'"):
-            to_sync(generate_bytes_img('http://localhost:5000/protected_other', selector='#godot'))
+        with self.assertRaisesRegex(
+            AttributeError, "'NoneType' object has no attribute 'screenshot'"
+        ):
+            to_sync(
+                generate_bytes_img(
+                    "http://localhost:5000/protected_index", selector="#godot"
+                )
+            )
 
     def test_screenshot_protected_page_bad_auth(self):
-        with self.assertRaisesRegex(AttributeError,
-                                    "'NoneType' object has no attribute 'screenshot'"):
-            to_sync(generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
-                                       credentials={'token_in_header': True, 'token': 'xxx'}))
-        with self.assertRaisesRegex(AttributeError,
-                                    "'NoneType' object has no attribute 'screenshot'"):
-            to_sync(generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
-                                       credentials={'token': TOKEN}))
+        with self.assertRaisesRegex(
+            AttributeError, "'NoneType' object has no attribute 'screenshot'"
+        ):
+            to_sync(
+                generate_bytes_img(
+                    "http://localhost:5000/protected_index",
+                    selector="#godot",
+                    credentials={"token_in_header": True, "token": "xxx"},
+                )
+            )
+        with self.assertRaisesRegex(
+            AttributeError, "'NoneType' object has no attribute 'screenshot'"
+        ):
+            to_sync(
+                generate_bytes_img(
+                    "http://localhost:5000/protected_index",
+                    selector="#godot",
+                    credentials={"token": TOKEN},
+                )
+            )
 
     def test_screenshot_protected_page_with_auth_token(self):
-        img_bytes = BytesIO(to_sync(
-            generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
-                               credentials={'token_in_header': True, 'token': TOKEN})))
+        img_bytes = BytesIO(
+            to_sync(
+                generate_bytes_img(
+                    "http://localhost:5000/protected_index",
+                    selector="#godot",
+                    credentials={"token_in_header": True, "token": TOKEN},
+                )
+            )
+        )
         img = Image.open(img_bytes)
-        dog_img = Image.open('tests/server/static/OtherPage/aww_dog.jpg').convert('RGBA')
-        kitten_img = Image.open('tests/server/static/OtherPage/aww_kitten.jpg').convert('RGBA')
+        dog_img = Image.open("tests/server/static/images/aww_dog.jpg").convert("RGBA")
+        kitten_img = Image.open("tests/server/static/images/aww_kitten.jpg").convert(
+            "RGBA"
+        )
         self.assertTrue(_is_same_image(img, dog_img))
         self.assertFalse(_is_same_image(img, kitten_img))
 
     def test_screenshot_protected_page_with_auth_login(self):
-        img_bytes = BytesIO(to_sync(
-            generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
-                               credentials={'username': 'makina', 'password': 'makina'})))
+        img_bytes = BytesIO(
+            to_sync(
+                generate_bytes_img(
+                    "http://localhost:5000/protected_index",
+                    selector="#godot",
+                    credentials={"username": "makina", "password": "makina"},
+                )
+            )
+        )
         img = Image.open(img_bytes)
-        dog_img = Image.open('tests/server/static/OtherPage/aww_dog.jpg').convert('RGBA')
-        kitten_img = Image.open('tests/server/static/OtherPage/aww_kitten.jpg').convert('RGBA')
+        dog_img = Image.open("tests/server/static/images/aww_dog.jpg").convert("RGBA")
+        kitten_img = Image.open("tests/server/static/images/aww_kitten.jpg").convert(
+            "RGBA"
+        )
         self.assertTrue(_is_same_image(img, dog_img))
         self.assertFalse(_is_same_image(img, kitten_img))
 
@@ -90,7 +123,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         img_bytes = BytesIO(
             to_sync(
                 generate_bytes_img(
-                    "http://localhost:5000/other.html",
+                    "http://localhost:5000/index.html",
                     path="test_img.jpg",  # Use of path to specify the type
                     selector="#godot",
                 )
@@ -108,7 +141,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         """
         to_sync(
             generate_bytes_img(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 selector="#godot",
                 path="test_img.jpg",
             )
@@ -123,7 +156,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         """
         to_sync(
             generate_bytes_img(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 selector="#caterpillar",
                 path="test_img.jpg",
             )
@@ -138,7 +171,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         """
         to_sync(
             generate_bytes_img(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 selector="#godot",
                 path="test_img.jpg",
             )
@@ -157,7 +190,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         future = asyncio.Future()
         asyncio.ensure_future(
             generate_bytes_img_prom(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 future,
                 selector="#godot",
                 path="test_img.jpg",
@@ -180,7 +213,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         future = asyncio.Future()
         asyncio.ensure_future(
             generate_bytes_img_prom(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 future,
                 selector="#godot",
                 path="test_img.jpg",
@@ -200,7 +233,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         future = asyncio.Future()
         asyncio.ensure_future(
             generate_bytes_img_prom(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 future,
                 selector="#caterpillar",
                 path="test_img.jpg",
@@ -220,7 +253,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         future = asyncio.Future()
         asyncio.ensure_future(
             generate_bytes_img_prom(
-                "http://localhost:5000/other.html",
+                "http://localhost:5000/index.html",
                 future,
                 selector="#godot",
                 path="test_img.jpg",
@@ -238,7 +271,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Uses the django_wrap function.
         """
         img_bytes = generate_bytes_img_django_wrap(
-            "http://localhost:5000/other.html",
+            "http://localhost:5000/index.html",
             selector="#godot",
             path="test_img.jpg",  # Use of path to specify the type
         )
@@ -255,7 +288,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Uses the django_wrap function.
         """
         generate_bytes_img_django_wrap(
-            "http://localhost:5000/other.html", selector="#godot", path="test_img.jpg"
+            "http://localhost:5000/index.html", selector="#godot", path="test_img.jpg"
         )
         img = Image.open("test_img.jpg")
 
@@ -267,7 +300,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Uses the django_wrap function.
         """
         generate_bytes_img_django_wrap(
-            "http://localhost:5000/other.html",
+            "http://localhost:5000/index.html",
             selector="#caterpillar",
             path="test_img.jpg",
         )
@@ -281,7 +314,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Uses the django_wrap function.
         """
         generate_bytes_img_django_wrap(
-            "http://localhost:5000/other.html", selector="#godot", path="test_img.jpg"
+            "http://localhost:5000/index.html", selector="#godot", path="test_img.jpg"
         )
         img = Image.open("test_img.jpg")
 
