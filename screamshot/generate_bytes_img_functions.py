@@ -192,7 +192,7 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
     future.set_result(img)
 
 
-def generate_bytes_img_django_wrap(url: str, future: Future, **kwargs):
+def generate_bytes_img_django_wrap(url: str, **kwargs):
     """
     This function takes a screenshot and returns it as a `bytes` object in \
         synchorouns mode, usable directly in django
