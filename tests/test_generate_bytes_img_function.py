@@ -64,7 +64,9 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
                                credentials={'token_in_header': True, 'token': TOKEN})))
         img = Image.open(img_bytes)
         dog_img = Image.open('tests/server/static/OtherPage/aww_dog.jpg').convert('RGBA')
+        kitten_img = Image.open('tests/server/static/OtherPage/aww_kitten.jpg').convert('RGBA')
         self.assertTrue(_is_same_image(img, dog_img))
+        self.assertFalse(_is_same_image(img, kitten_img))
 
     def test_screenshot_protected_page_with_auth_login(self):
         img_bytes = BytesIO(to_sync(
@@ -72,7 +74,9 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
                                credentials={'username': 'makina', 'password': 'makina'})))
         img = Image.open(img_bytes)
         dog_img = Image.open('tests/server/static/OtherPage/aww_dog.jpg').convert('RGBA')
+        kitten_img = Image.open('tests/server/static/OtherPage/aww_kitten.jpg').convert('RGBA')
         self.assertTrue(_is_same_image(img, dog_img))
+        self.assertFalse(_is_same_image(img, kitten_img))
 
     def test_screamshot_same_bytes_write(self):
         """
