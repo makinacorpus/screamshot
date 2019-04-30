@@ -264,7 +264,7 @@ def generate_bytes_img_django_wrap(url: str, **kwargs):
     """
 
     loop = get_event_loop()
-    future = Future()
+    future = Future() #type: Future
 
     ensure_future(generate_bytes_img_prom(url, future, **kwargs))
     loop.run_until_complete(future)
