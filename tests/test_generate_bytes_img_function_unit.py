@@ -14,8 +14,9 @@ from screamshot.utils import to_sync
 class FakePage:
     def __init__(self, arg_viewport=None, wait_until=None, goto_called=False, url=None,
                  waitForSelector_called=False, wait_for=None, querySelector_called=False,
-                 selector=None):
+                 selector=None, credentials=None):
         self.arg_viewport = arg_viewport
+        self.credentials = credentials
         self.wait_until = wait_until
         self.goto_called = goto_called
         self.url = url
@@ -26,6 +27,12 @@ class FakePage:
 
     async def setViewport(self, arg_viewport):
         self.arg_viewport = arg_viewport
+
+    async def authenticate(self, credentials):
+        self.credentials = credentials
+
+    async def setExtraHTTPHeaders(self, credentials):
+        self.credentials = credentials
 
     async def goto(self, url, waitUntil=None):
         self.goto_called = True
@@ -66,39 +73,54 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(_parse_parameters(),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': False}, 'selector': None,
-                          'wait_for': None, 'wait_until': ['load']})
+                          'wait_for': None, 'wait_until': ['load'], 'credentials': {}})
         self.assertEqual(_parse_parameters(width=800),
                          {'arg_viewport': {'width': 800},
                           'screenshot_options': {'fullPage': False},
-                          'selector': None, 'wait_for': None, 'wait_until': ['load']})
+                          'selector': None, 'wait_for': None, 'wait_until': ['load'],
+                          'credentials': {}})
         self.assertEqual(_parse_parameters(height=800),
                          {'arg_viewport': {'height': 800},
                           'screenshot_options': {'fullPage': False},
-                          'selector': None, 'wait_for': None, 'wait_until': ['load']})
+                          'selector': None, 'wait_for': None, 'wait_until': ['load'],
+                          'credentials': {}})
         self.assertEqual(_parse_parameters(wait_until=['networkidle0']),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': False}, 'selector': None,
-                          'wait_for': None, 'wait_until': ['networkidle0']})
+                          'wait_for': None, 'wait_until': ['networkidle0'], 'credentials': {}})
         self.assertEqual(_parse_parameters(wait_until='networkidle0'),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': False}, 'selector': None,
-                          'wait_for': None, 'wait_until': ['networkidle0']})
+                          'wait_for': None, 'wait_until': ['networkidle0'], 'credentials': {}})
         self.assertEqual(_parse_parameters(full_page=True),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': True}, 'selector': None,
-                          'wait_for': None, 'wait_until': ['load']})
+                          'wait_for': None, 'wait_until': ['load'], 'credentials': {}})
         self.assertEqual(_parse_parameters(selector='div'),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': False}, 'selector': 'div',
-                          'wait_for': None, 'wait_until': ['load']})
+                          'wait_for': None, 'wait_until': ['load'], 'credentials': {}})
         self.assertEqual(_parse_parameters(wait_for='div'),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': False}, 'selector': None,
-                          'wait_for': 'div', 'wait_until': ['load']})
+                          'wait_for': 'div', 'wait_until': ['load'], 'credentials': {}})
         self.assertEqual(_parse_parameters(path='/'),
                          {'arg_viewport': {},
                           'screenshot_options': {'fullPage': False, 'path': '/'}, 'selector': None,
-                          'wait_for': None, 'wait_until': ['load']})
+                          'wait_for': None, 'wait_until': ['load'], 'credentials': {}})
+        self.assertEqual(
+            _parse_parameters(credentials={'username': 'makina', 'password': 'makina'}),
+            {'arg_viewport': {},
+             'screenshot_options': {'fullPage': False}, 'selector': None,
+             'wait_for': None, 'wait_until': ['load'],
+             'credentials': {'login': True, 'credentials_data': {'username': 'makina',
+                                                                 'password': 'makina'}}})
+        self.assertEqual(
+            _parse_parameters(credentials={'token_in_header': True, 'token': 'xxx'}),
+            {'arg_viewport': {},
+             'screenshot_options': {'fullPage': False}, 'selector': None,
+             'wait_for': None, 'wait_until': ['load'],
+             'credentials': {'token_in_header': True, 'credentials_data': {'token': 'xxx'}}})
 
     def test_page_manager(self):
         """
@@ -108,9 +130,11 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         url = 'http://fake'
 
         params_page1 = {'arg_viewport': {}, 'screenshot_options': {'fullPage': False},
-                        'selector': None, 'wait_for': None, 'wait_until': ['load']}
+                        'selector': None, 'wait_for': None, 'wait_until': ['load'],
+                        'credentials': {}}
         page1 = to_sync(_page_manager(browser, url, params_page1))
         self.assertEqual(page1.arg_viewport, None)
+        self.assertEqual(page1.credentials, None)
         self.assertEqual(page1.wait_until, ['load'])
         self.assertTrue(page1.goto_called)
         self.assertEqual(page1.url, url)
@@ -121,9 +145,11 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
 
         params_page2 = {'arg_viewport': {'width': 800, 'height': 800},
                         'screenshot_options': {'fullPage': False},
-                        'selector': None, 'wait_for': None, 'wait_until': ['load']}
+                        'selector': None, 'wait_for': None, 'wait_until': ['load'],
+                        'credentials': {}}
         page2 = to_sync(_page_manager(browser, url, params_page2))
         self.assertEqual(page2.arg_viewport, {'width': 800, 'height': 800})
+        self.assertEqual(page2.credentials, None)
         self.assertEqual(page2.wait_until, ['load'])
         self.assertTrue(page2.goto_called)
         self.assertEqual(page2.url, url)
@@ -133,9 +159,11 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(page2.selector, None)
 
         params_page3 = {'arg_viewport': {}, 'screenshot_options': {'fullPage': False},
-                        'selector': None, 'wait_for': None, 'wait_until': ['load', 'networkidle0']}
+                        'selector': None, 'wait_for': None, 'wait_until': ['load', 'networkidle0'],
+                        'credentials': {}}
         page3 = to_sync(_page_manager(browser, url, params_page3))
         self.assertEqual(page3.arg_viewport, None)
+        self.assertEqual(page3.credentials, None)
         self.assertEqual(page3.wait_until, ['load', 'networkidle0'])
         self.assertTrue(page3.goto_called)
         self.assertEqual(page3.url, url)
@@ -145,9 +173,11 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(page3.selector, None)
 
         params_page4 = {'arg_viewport': {}, 'screenshot_options': {'fullPage': False},
-                        'selector': None, 'wait_for': 'div', 'wait_until': ['load']}
+                        'selector': None, 'wait_for': 'div', 'wait_until': ['load'],
+                        'credentials': {}}
         page4 = to_sync(_page_manager(browser, url, params_page4))
         self.assertEqual(page4.arg_viewport, None)
+        self.assertEqual(page4.credentials, None)
         self.assertEqual(page4.wait_until, ['load'])
         self.assertTrue(page4.goto_called)
         self.assertEqual(page4.url, url)
@@ -155,6 +185,37 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(page4.wait_for, 'div')
         self.assertFalse(page4.querySelector_called)
         self.assertEqual(page4.selector, None)
+
+        params_page5 = {'arg_viewport': {}, 'screenshot_options': {'fullPage': False},
+                        'selector': None, 'wait_for': 'div', 'wait_until': ['load'],
+                        'credentials': {'login': True,
+                                        'credentials_data': {'username': 'makina',
+                                                             'password': 'makina'}}}
+        page5 = to_sync(_page_manager(browser, url, params_page5))
+        self.assertEqual(page5.arg_viewport, None)
+        self.assertEqual(page5.credentials, {'username': 'makina', 'password': 'makina'})
+        self.assertEqual(page5.wait_until, ['load'])
+        self.assertTrue(page5.goto_called)
+        self.assertEqual(page5.url, url)
+        self.assertTrue(page5.waitForSelector_called)
+        self.assertEqual(page5.wait_for, 'div')
+        self.assertFalse(page5.querySelector_called)
+        self.assertEqual(page5.selector, None)
+
+        params_page6 = {'arg_viewport': {}, 'screenshot_options': {'fullPage': False},
+                        'selector': None, 'wait_for': 'div', 'wait_until': ['load'],
+                        'credentials': {'token_in_header': True,
+                                        'credentials_data': {'token': 'xxx'}}}
+        page6 = to_sync(_page_manager(browser, url, params_page6))
+        self.assertEqual(page6.arg_viewport, None)
+        self.assertEqual(page6.credentials, {'token': 'xxx'})
+        self.assertEqual(page6.wait_until, ['load'])
+        self.assertTrue(page6.goto_called)
+        self.assertEqual(page6.url, url)
+        self.assertTrue(page6.waitForSelector_called)
+        self.assertEqual(page6.wait_for, 'div')
+        self.assertFalse(page6.querySelector_called)
+        self.assertEqual(page6.selector, None)
 
 
     def test_selector_manager(self):
