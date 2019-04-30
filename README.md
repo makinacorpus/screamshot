@@ -51,12 +51,11 @@ The documentation is accessible [here](https://screamshot.readthedocs.io/en/late
 The server must be launched using --nothreading and --noreload as argument.
 ```
 # views.py in a Django project
-import asyncio
-
 from django.http import HttpResponse
 
-from screamshot import generate_bytes_img_prom
+import asyncio
 
+from screamshot import generate_bytes_img_prom
 
 def home(request):
     loop = asyncio.get_event_loop()
@@ -66,11 +65,21 @@ def home(request):
         generate_bytes_img_prom('https://www.google.fr', future))
     loop.run_until_complete(future)
 
-    print(future.result())
-    return HttpResponse('Done')
+    return HttpResponse(future.result(), content_type='image')
+``` 
+Or using the already wrapped function
+```
+# views.py in a Django project
+from django.http import HttpResponse
+
+from screamshot import generate_bytes_img__django_wrap
+
+def home(request):
+    img = generate_bytes_img__django_wrap('https://www.google.fr')
+    return HttpResponse(img, content_type='image')
 ``` 
 
 
 ### Using Gunicorn
 
-With Gunicorn there isn't the thread related problems and we don't need to use the --nothreading and --noreload arguments.
+With [Gunicorn](https://gunicorn.org/) there isn't the thread related problems so we don't need to use the --nothreading and --noreload arguments.
