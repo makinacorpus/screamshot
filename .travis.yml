@@ -4,11 +4,11 @@ python:
 install:
   - sudo apt update
   - pip3 install --upgrade pip
+  - pip install -r requirements.txt
 jobs:
   include:
     - stage: tests
       install:
-        - pip install -r requirements.txt
         - pip install -r dev-requirements.txt
         - pip install flask
         - pip install pyjwt
