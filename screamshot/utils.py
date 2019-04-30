@@ -23,7 +23,7 @@ logger = logging.getLogger()
 
 logger.setLevel(logging.WARNING)
 
-formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+formatter = logging.Formatter("%(asctime)s :: %(levelname)s :: %(message)s")
 
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.DEBUG)
@@ -94,8 +94,9 @@ def get_endpoint() -> Optional[str]:
         return None
 
 
-async def open_browser(is_headless: bool, launch_args: list = None,
-                       write_websocket: bool = True) -> Browser:
+async def open_browser(
+        is_headless: bool, launch_args: list = None, write_websocket: bool = True
+) -> Browser:
     """
     Launch a browser and writes its websocket endpoint in FILENAME_ENDPOINT if needed
 
@@ -113,8 +114,7 @@ async def open_browser(is_headless: bool, launch_args: list = None,
     """
     browser = await launch(headless=is_headless, autoClose=False, args=launch_args)
     if write_websocket:
-        endpoint = browser.wsEndpoint
-        set_endpoint(endpoint)
+        set_endpoint(browser.wsEndpoint)
     return browser
 
 
@@ -123,13 +123,15 @@ async def close_browser():
     Closes the browser related to ws_endpoint and remove FILENAME_ENDPOINT
     """
     ws_endpoint = get_endpoint()
-    browser = await connect(browserWSEndpoint=ws_endpoint)
-    await browser.close()
-    remove(FILENAME_ENDPOINT)
+    if ws_endpoint:
+        browser = await connect(browserWSEndpoint=ws_endpoint)
+        await browser.close()
+        remove(FILENAME_ENDPOINT)
 
 
-async def get_browser(is_headless: bool = True, launch_args: list = None,
-                      write_websocket: bool = True) -> Browser:
+async def get_browser(
+        is_headless: bool = True, launch_args: list = None, write_websocket: bool = True
+) -> Browser:
     """
     Returns a already created browser if one exists or a new one if not
 
@@ -144,7 +146,9 @@ async def get_browser(is_headless: bool = True, launch_args: list = None,
     endpoint = get_endpoint()
     if endpoint:
         return await connect(browserWSEndpoint=endpoint)
-    return await open_browser(is_headless, launch_args=launch_args, write_websocket=write_websocket)
+    return await open_browser(
+        is_headless, launch_args=launch_args, write_websocket=write_websocket
+    )
 
 
 def wait_server_start(url: str, waiting_message: str, final_message: str):

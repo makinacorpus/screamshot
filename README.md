@@ -46,8 +46,9 @@ A server with a web page can be used at the following address: <http://server:50
 The documentation is accessible [here](https://screamshot.readthedocs.io/en/latest/), on readthedocs.
 
 
-## Exemple
+## Exemple with django
 
+The server must be launched using --nothreading and --noreload as argument.
 ```
 # views.py in a Django project
 import asyncio
@@ -68,3 +69,8 @@ def home(request):
     print(future.result())
     return HttpResponse('Done')
 ``` 
+
+
+### Using Gunicorn
+
+With Gunicorn there isn't the thread related problems and we don't need to use the --nothreading and --noreload arguments.
