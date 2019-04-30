@@ -7,7 +7,6 @@ This script installs the screamshot package and then waits for the server to res
 from logging import getLogger, INFO
 from subprocess import run
 from argparse import ArgumentParser
-from re import search
 
 from screamshot.utils import wait_server_start, wait_server_close
 
