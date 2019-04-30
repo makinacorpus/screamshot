@@ -17,7 +17,6 @@ setup(
     version=screamshot.__version__,
     author=screamshot.__author__,
     description="Python library to capture screenshots of web applications or pages",
-    license="License :: OSI Approved :: BSD License",
     long_description=open(os.path.join(HERE, "README.md")).read()
     + "\n\n"
     + open(os.path.join(HERE, "CHANGES.md")).read(),
@@ -27,7 +26,7 @@ setup(
     url="https://github.com/makinacorpus/screamshot",
     classifiers=[
         "Programming Language :: Python",
-        "License :: BSD 2-Clause License",
+        "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.7",
