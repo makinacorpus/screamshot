@@ -29,12 +29,30 @@ def _parse_parameters(**kwargs) -> dict:
         path = kwargs.pop('path')
         screenshot_options.update({'path': path})
 
+    selector = None
+    if 'selector' in kwargs:
+        selector = kwargs.pop('selector')
+
+    wait_for = None
+    if 'wait_for' in kwargs:
+        wait_for = kwargs.pop('wait_for')
+
+    credentials = {}
+    if 'credentials' in kwargs:
+        credentials_data = kwargs.pop('credentials')
+        if 'username' in credentials_data and 'password' in credentials_data:
+            credentials['login'] = True
+        if 'token_in_header' in credentials_data:
+            credentials['token_in_header'] = credentials_data.pop('token_in_header')
+        credentials.update({'credentials_data': credentials_data})
+
     return {
         'arg_viewport': arg_viewport,
         'screenshot_options': screenshot_options,
-        'selector': kwargs.get('selector'),
-        'wait_for': kwargs.get('wait_for'),
+        'selector': selector,
+        'wait_for': wait_for,
         'wait_until': wait_until,
+        'credentials': credentials,
     }
 
 
@@ -44,6 +62,14 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
     arg_viewport = params.get('arg_viewport')
     if arg_viewport:
         await page.setViewport(arg_viewport)
+
+    credentials = params.get('credentials')
+    if credentials:
+        credentials_data = credentials.get('credentials_data')
+        if credentials.get('login'):
+            await page.authenticate(credentials_data)
+        if credentials.get('token_in_header'):
+            await page.setExtraHTTPHeaders(credentials_data)
 
     await page.goto(url, waitUntil=params.get('wait_until'))
 
@@ -71,6 +97,12 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
 
     :param path: optional, the path to the image output
     :type path: str
+
+    :param credentials: If the website uses "login authentication", you can specify two fields: \
+        username and password. Otherwise, if it uses a "token identification" that must be \
+            specified in the header, please indicate to `credentials` the field that should be \
+                passed to the header, as well as a `token_in_header` field equal to `on`.
+    :type credentials: dict
 
     :param width: optionnal, the window's width
     :type width: int
@@ -140,6 +172,12 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
 
     :param path: optional, the path to the image output
     :type path: str
+
+    :param credentials: If the website uses "login authentication", you can specify two fields: \
+        username and password. Otherwise, if it uses a "token identification" that must be \
+            specified in the header, please indicate to `credentials` the field that should be \
+                passed to the header, as well as a `token_in_header` field equal to `on`.
+    :type credentials: dict
 
     :param width: optionnal, the window's width
     :type width: int

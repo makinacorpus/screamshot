@@ -15,6 +15,10 @@ from screamshot import generate_bytes_img, generate_bytes_img_prom
 from screamshot.utils import to_sync, get_browser, close_browser
 
 
+TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoibWFraW5hIn0.\
+jUTxi6c2-o3nHJ6Bq7zRXFoKixUyYetgPX3cToOayiA'
+
+
 def _rmsd(img1, img2):
     img1 = (img1 - np.mean(img1)) / (np.std(img1))
     img2 = (img2 - np.mean(img2)) / (np.std(img2))
@@ -38,6 +42,41 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
             'tests/server/static/OtherPage/aww_dog_change.jpg')
         self.img_kitten = Image.open(
             'tests/server/static/OtherPage/aww_kitten.jpg')
+
+    def test_screenshot_protected_page_no_auth(self):
+        with self.assertRaisesRegex(AttributeError,
+                                    "'NoneType' object has no attribute 'screenshot'"):
+            to_sync(generate_bytes_img('http://localhost:5000/protected_other', selector='#godot'))
+
+    def test_screenshot_protected_page_bad_auth(self):
+        with self.assertRaisesRegex(AttributeError,
+                                    "'NoneType' object has no attribute 'screenshot'"):
+            to_sync(generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
+                                       credentials={'token_in_header': True, 'token': 'xxx'}))
+        with self.assertRaisesRegex(AttributeError,
+                                    "'NoneType' object has no attribute 'screenshot'"):
+            to_sync(generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
+                                       credentials={'token': TOKEN}))
+
+    def test_screenshot_protected_page_with_auth_token(self):
+        img_bytes = BytesIO(to_sync(
+            generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
+                               credentials={'token_in_header': True, 'token': TOKEN})))
+        img = Image.open(img_bytes)
+        dog_img = Image.open('tests/server/static/OtherPage/aww_dog.jpg').convert('RGBA')
+        kitten_img = Image.open('tests/server/static/OtherPage/aww_kitten.jpg').convert('RGBA')
+        self.assertTrue(_is_same_image(img, dog_img))
+        self.assertFalse(_is_same_image(img, kitten_img))
+
+    def test_screenshot_protected_page_with_auth_login(self):
+        img_bytes = BytesIO(to_sync(
+            generate_bytes_img('http://localhost:5000/protected_other', selector='#godot',
+                               credentials={'username': 'makina', 'password': 'makina'})))
+        img = Image.open(img_bytes)
+        dog_img = Image.open('tests/server/static/OtherPage/aww_dog.jpg').convert('RGBA')
+        kitten_img = Image.open('tests/server/static/OtherPage/aww_kitten.jpg').convert('RGBA')
+        self.assertTrue(_is_same_image(img, dog_img))
+        self.assertFalse(_is_same_image(img, kitten_img))
 
     def test_screamshot_same_bytes_write(self):
         """
