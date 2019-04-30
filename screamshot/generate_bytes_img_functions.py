@@ -101,7 +101,7 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
     :param credentials: If the website uses "login authentication", you can specify two fields: \
         `username` and `password`. Otherwise, if it uses a "token identification" that must be \
             specified in the header, please indicate into `credentials` the field that should be \
-                passed to the header, as well as a `token_in_header` field equal to `on`.
+                passed to the header, as well as a `token_in_header` field equal to `True`.
     :type credentials: dict
 
     :param width: optionnal, the window's width
@@ -176,7 +176,7 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
     :param credentials: If the website uses "login authentication", you can specify two fields: \
         `username` and `password`. Otherwise, if it uses a "token identification" that must be \
             specified in the header, please indicate into `credentials` the field that should be \
-                passed to the header, as well as a `token_in_header` field equal to `on`.
+                passed to the header, as well as a `token_in_header` field equal to `True`.
     :type credentials: dict
 
     :param width: optionnal, the window's width
