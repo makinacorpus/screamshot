@@ -30,7 +30,6 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.7",
-        "Topic :: Screenshot",
     ],
     install_requires=["pyppeteer", "requests"],
     entry_points={
