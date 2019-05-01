@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Screamshot'
-copyright = '2019, Maxime Courte and Félix Cloup'
-author = 'Maxime Courte and Félix Cloup'
+copyright = '2019, Maxime Courtet and Félix Cloup'
+author = 'Maxime Courtet and Félix Cloup'
 
 
 # -- General configuration ---------------------------------------------------
