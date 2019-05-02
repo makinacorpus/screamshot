@@ -23,6 +23,7 @@ setup(
     include_package_data=True,
     package_data={"screamshot": ["py.typed"]},
     packages=["screamshot"],
+    package_dir={"screamshot": "screamshot"},
     url="https://github.com/makinacorpus/screamshot",
     classifiers=[
         "Programming Language :: Python",
@@ -31,7 +32,7 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.7",
     ],
-    install_requires=["pyppeteer", "requests"],
+    install_requires=["pyppeteer==0.0.25", "requests==2.21.0"],
     entry_points={
         "console_scripts": [
             "screamshot = screamshot.screamshot_script:main",
