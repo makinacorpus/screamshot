@@ -50,3 +50,8 @@ Add two functions:
 ===
 
 Add `generate_bytes_img_django_wrap` function
+
+0.1.6
+===
+
+Module is now available 
