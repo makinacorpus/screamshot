@@ -1,46 +1,27 @@
 screamshot package
 ==================
 
-Submodules
-----------
-
-screamshot.browser\_manager\_script module
-------------------------------------------
-
-.. automodule:: screamshot.browser_manager_script
+.. autofunction:: screamshot.generate_bytes_img.generate_bytes_img
     :members:
     :undoc-members:
     :show-inheritance:
 
-screamshot.generate\_bytes\_img module
---------------------------------------
-
-.. automodule:: screamshot.generate_bytes_img
+.. autofunction:: screamshot.generate_bytes_img_prom
     :members:
     :undoc-members:
     :show-inheritance:
 
-screamshot.screamshot\_script module
-------------------------------------
-
-.. automodule:: screamshot.screamshot_script
+.. autofunction:: screamshot.generate_bytes_img_django_wrap
     :members:
     :undoc-members:
     :show-inheritance:
 
-screamshot.utils module
------------------------
-
-.. automodule:: screamshot.utils
+.. autofunction:: screamshot.serialize
     :members:
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: screamshot
+.. autofunction:: screamshot.deserialize
     :members:
     :undoc-members:
     :show-inheritance:
