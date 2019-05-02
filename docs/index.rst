@@ -61,16 +61,4 @@ In this case, if you use ``manage.py``, the server must be launched using ``--no
    :maxdepth: 2
    :caption: Contents:
 
-.. _screamshot:
-:ref:`screamshot`
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* `Screamshot module`_
-* :ref:`search`
-
-.. _`Screamshot module`: screamshot.html
+    screamshot
