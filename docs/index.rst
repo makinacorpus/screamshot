@@ -33,7 +33,8 @@ Usage
 
 **Exemple:** a Django_ view that uses screamshot
 
-::
+.. code-block:: Python
+
     # views.py in a Django project
     from django.http import HttpResponse
 
