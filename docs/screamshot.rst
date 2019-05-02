@@ -1,3 +1,5 @@
+.. _screamshot:
+
 screamshot package
 ==================
 
