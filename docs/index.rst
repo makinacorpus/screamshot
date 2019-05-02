@@ -58,13 +58,10 @@ In this case, if you use ``manage.py``, the server must be launched using ``--no
 .. _Django: https://www.djangoproject.com
 
 .. toctree::
-   :maxdepth: 4
-
-   screamshot
-
-.. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+screamshot
 
 
 Indices and tables
