@@ -30,7 +30,7 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.6",
     ],
     install_requires=["pyppeteer==0.0.25", "requests==2.21.0"],
     entry_points={

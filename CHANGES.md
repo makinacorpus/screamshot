@@ -55,3 +55,8 @@ Add `generate_bytes_img_django_wrap` function
 ===
 
 Module is now available 
+
+0.1.7
+===
+
+From now on the browser endpoint is saved in the temporary directory

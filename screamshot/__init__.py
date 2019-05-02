@@ -5,7 +5,7 @@
 
 
 __author__ = """Maxime Courtet & Félix Cloup"""
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 
 from screamshot.generate_bytes_img_functions import (
