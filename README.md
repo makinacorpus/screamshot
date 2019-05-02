@@ -2,6 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/makinacorpus/screamshot/badge.svg?branch=master&service=github)](https://coveralls.io/github/makinacorpus/screamshot?branch=master&service=github)
 [![Documentation Status](https://readthedocs.org/projects/screamshot/badge/?version=latest)](https://screamshot.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/screamshot.svg)](https://badge.fury.io/py/screamshot)
+[![Python version](https://img.shields.io/badge/Python-3.6-blue.svg?style=flat&logo=appveyor)]
 # Screamshot
 Python library to capture screenshots of web applications
 
