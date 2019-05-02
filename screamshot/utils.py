@@ -4,8 +4,10 @@ Collection of functions.
 import logging
 import asyncio
 from os import remove
+from os.path import join
 from time import sleep
 from typing import Any, Optional
+from tempfile import gettempdir
 
 from urllib3.exceptions import MaxRetryError
 
@@ -16,7 +18,7 @@ from pyppeteer import launch, connect
 from pyppeteer.browser import Browser
 
 
-FILENAME_ENDPOINT = "endpointlist.txt"
+FILENAME_ENDPOINT = join(gettempdir(), "endpointlist.txt")
 
 
 logger = logging.getLogger()
