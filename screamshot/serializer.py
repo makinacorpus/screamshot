@@ -15,10 +15,10 @@ def serialize(img: bytes, metadata: dict = None) -> dict:
     :param metadata: optional, some metadata about the object
     :type metadata: dict
 
-    :return: a json formatted string containing the image and metadata
+    :return: a dictionary containing the image and metadata
     :retype: str
 
-    .. info :: In the json formatted string, the image is saved in base64 format
+    .. info :: The image is saved in base64 format
     """
     b64_img = b64encode(img)
     str_img = b64_img.decode('utf-8')
@@ -30,16 +30,16 @@ def serialize(img: bytes, metadata: dict = None) -> dict:
 
 def deserialize(data: dict) -> Union[Tuple[None, None], Tuple[bytes, dict]]:
     """
-    This function deserialize json formatted string
+    This function deserialize a dictionary
 
-    :param data: the string json formatted string to deserialize
+    :param data: the dictionary to deserialize
     :type data: str
 
     :return: the binary bytes image and metadata
     :retype: bytes, dict
 
     .. warning :: The data should look like the following example: \
-        ``{"image": ..., "metadata": {...}}``
+        ``{"image": ..., "metadata": {...}}`` or ``None, None`` is returned
     """
     str_img = data.get('image')
     if str_img:
