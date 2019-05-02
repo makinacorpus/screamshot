@@ -61,7 +61,8 @@ In this case, if you use ``manage.py``, the server must be launched using ``--no
    :maxdepth: 2
    :caption: Contents:
 
-screamshot
+.. _screamshot:
+:ref:`screamshot`
 
 
 Indices and tables
