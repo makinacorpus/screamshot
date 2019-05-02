@@ -2,11 +2,10 @@
 serialize and deserialize functions
 """
 from base64 import b64encode, b64decode
-from json import dumps, loads
 from typing import Tuple, Dict, Union
 
 
-def serialize(img: bytes, metadata: dict = None) -> str:
+def serialize(img: bytes, metadata: dict = None) -> dict:
     """
     This function serialize a binary bytes object
 
@@ -26,11 +25,10 @@ def serialize(img: bytes, metadata: dict = None) -> str:
     data = {'image': str_img} #type: Dict[str, Union[str, Dict[str, str]]]
     if metadata:
         data.update({'metadata': metadata})
-    json_img = dumps(data)
-    return json_img
+    return data
 
 
-def deserialize(data: str) -> Tuple[bytes, dict]:
+def deserialize(data: dict) -> Union[Tuple[None, None], Tuple[bytes, dict]]:
     """
     This function deserialize json formatted string
 
@@ -43,9 +41,10 @@ def deserialize(data: str) -> Tuple[bytes, dict]:
     .. warning :: The data should look like the following example: \
         ``{"image": ..., "metadata": {...}}``
     """
-    json_img = loads(data)
-    str_img = json_img.get('image')
-    metadata = json_img.get('metadata', {})
-    b64_img = str_img.encode('utf-8')
-    b_img = b64decode(b64_img)
-    return b_img, metadata
+    str_img = data.get('image')
+    if str_img:
+        metadata = data.get('metadata', {})
+        b64_img = str_img.encode('utf-8')
+        b_img = b64decode(b64_img)
+        return b_img, metadata
+    return None, None
