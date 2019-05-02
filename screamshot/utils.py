@@ -18,7 +18,7 @@ from pyppeteer import launch, connect
 from pyppeteer.browser import Browser
 
 
-FILENAME_ENDPOINT = join(gettempdir(), "endpointlist.txt")
+FILENAME_ENDPOINT = join(gettempdir(), "screamshot_browser_endpoint")
 
 
 logger = logging.getLogger()
