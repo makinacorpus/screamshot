@@ -59,5 +59,6 @@ In this case, if you use ``manage.py``, the server must be launched using ``--no
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
    
    screamshot
