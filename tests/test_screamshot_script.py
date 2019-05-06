@@ -1,7 +1,7 @@
 """
 Tests screamshot script
 """
-from unittest import TestCase, main
+from unittest import TestCase
 from subprocess import run, PIPE
 from os import remove
 
@@ -74,7 +74,3 @@ class TestScreamshotScript(TestCase):
              'test_simple_screamshot.png'])
         open('test_simple_screamshot.png', 'r')
         remove('test_simple_screamshot.png')
-
-
-if __name__ == "__main__":
-    main()

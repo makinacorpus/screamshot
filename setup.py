@@ -12,6 +12,13 @@ import screamshot
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
+def get_requires():
+    requirements_f = open('requirements.txt', 'r')
+    install_requires = requirements_f.read().splitlines()
+    requirements_f.close()
+    return install_requires
+
+
 setup(
     name="screamshot",
     version=screamshot.__version__,
@@ -32,7 +39,7 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.6",
     ],
-    install_requires=["pyppeteer==0.0.25", "requests==2.21.0"],
+    install_requires=get_requires(),
     entry_points={
         "console_scripts": [
             "screamshot = screamshot.screamshot_script:main",

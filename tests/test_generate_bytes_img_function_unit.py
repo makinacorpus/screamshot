@@ -1,7 +1,7 @@
 """
 Unit tests of `generate_bytes_img_function.py`
 """
-from unittest import TestCase, main
+from unittest import TestCase
 from unittest.mock import patch
 from asyncio import get_event_loop, Future, ensure_future
 
@@ -279,9 +279,3 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         loop.run_until_complete(future)
         screenshot1 = future.result()
         self.assertEqual(screenshot1, 'screenshot !')
-
-
-
-
-if __name__ == '__main__':
-    main()
