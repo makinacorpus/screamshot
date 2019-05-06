@@ -326,7 +326,3 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
 
         if exists("test_img.jpg"):
             remove("test_img.jpg")
-
-
-if __name__ == "__main__":
-    unittest.main()

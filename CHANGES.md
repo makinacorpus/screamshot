@@ -69,4 +69,4 @@ From now on `serialize` function returns a `dict` object and `deserialize` takes
 0.1.9
 ===
 
-Remove serializer functions
+Remove serializer functions and add a bytes_to_img function
