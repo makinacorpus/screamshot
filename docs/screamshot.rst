@@ -18,7 +18,7 @@ generate_bytes_img_django_wrap
 
 .. autofunction:: screamshot.generate_bytes_img_functions.generate_bytes_img_django_wrap
 
-bytes_to_img
+bytes_to_png
 ------------
 
-.. autofunction:: screamshot.bytes_to_img_function.bytes_to_img
+.. autofunction:: screamshot.bytes_to_png_function.bytes_to_png
