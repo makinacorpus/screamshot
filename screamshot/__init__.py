@@ -13,13 +13,10 @@ from screamshot.generate_bytes_img_functions import (
     generate_bytes_img_prom,
     generate_bytes_img_django_wrap,
 )
-from screamshot.serializer import serialize, deserialize
 
 
 __all__ = [
     "generate_bytes_img",
     "generate_bytes_img_prom",
     "generate_bytes_img_django_wrap",
-    "serialize",
-    "deserialize",
 ]
