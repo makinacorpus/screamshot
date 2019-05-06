@@ -1,7 +1,7 @@
 """
 Tests browser manager script
 """
-from unittest import TestCase, main
+from unittest import TestCase
 from subprocess import run
 
 from pyppeteer import connect
@@ -23,7 +23,3 @@ class TestBrowserManagerScript(TestCase):
         browser = to_sync(connect({'browserWSEndpoint': endpoint}))
         self.assertIsInstance(browser, Browser)
         run(['python3', 'screamshot/browser_manager_script.py', '-c'])
-
-
-if __name__ == '__main__':
-    main()

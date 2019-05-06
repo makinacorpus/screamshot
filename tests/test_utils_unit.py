@@ -2,7 +2,7 @@
 Unit tests of `utils.py` functions
 """
 from os import remove
-from unittest import TestCase, main
+from unittest import TestCase
 from unittest import mock
 
 from urllib3.exceptions import MaxRetryError
@@ -224,7 +224,3 @@ class UnistTestsUtilsFunctions(TestCase):
         with self.assertLogs() as logs:
             wait_server_close('http://false', 'Wait for: %ds', 'Awaited: %ds')
         self.assertEqual(logs.output, ['INFO:root:Awaited: 0s'])
-
-
-if __name__ == '__main__':
-    main()
