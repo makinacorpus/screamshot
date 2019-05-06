@@ -65,3 +65,8 @@ From now on the browser endpoint is saved in the temporary directory
 ===
 
 From now on `serialize` function returns a `dict` object and `deserialize` takes a `dict` object
+
+0.1.9
+===
+
+Remove serializer functions
