@@ -75,3 +75,8 @@ takes some parameters and returns a binary `bytes` object.
 ===
 * ``generate_bytes_img_django_wrap`` is renamed ``generate_bytes_img_wrap``
 * Error are handled
+
+0.1.11
+===
+* ``bytes_to_png`` is renamed ``bytes_to_file``
+* ``bytes_to_file`` supports type choice
