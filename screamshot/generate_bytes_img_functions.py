@@ -6,8 +6,10 @@ from asyncio import get_event_loop, ensure_future, Future
 
 from pyppeteer.page import Page
 from pyppeteer.browser import Browser
+from pyppeteer.errors import PageError
 
 from screamshot.utils import get_browser
+from screamshot.errors import BadUrl, BadSelector
 
 
 def _parse_parameters(**kwargs) -> dict:
@@ -72,7 +74,10 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
         if credentials.get("token_in_header"):
             await page.setExtraHTTPHeaders(credentials_data)
 
-    await page.goto(url, waitUntil=params.get("wait_until"))
+    try:
+        await page.goto(url, waitUntil=params.get("wait_until"))
+    except PageError as _:
+        raise BadUrl('url unknown: "{0}"'.format(url)) from None
 
     wait_for = params.get("wait_for")
     if wait_for:
@@ -84,7 +89,10 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
 async def _selector_manager(page: Page, params: dict) -> Any:
     selector = params.get("selector")
     if selector:
-        return await page.querySelector(selector)
+        element = await page.querySelector(selector)
+        if not element:
+            raise BadSelector('selector unknown: "{0}"'.format(selector))
+        return element
 
     return page
 
