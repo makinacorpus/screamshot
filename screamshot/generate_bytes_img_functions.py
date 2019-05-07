@@ -2,7 +2,7 @@
 generate_bytes_img and generate_bytes_img_prom functions.
 """
 from typing import Any
-from asyncio import get_event_loop, ensure_future, Future
+from asyncio import get_event_loop, Future, gather
 
 from pyppeteer.page import Page
 from pyppeteer.browser import Browser
@@ -270,11 +270,11 @@ def generate_bytes_img_wrap(url: str, **kwargs):
 
 
     """
-
     loop = get_event_loop()
     future = Future() #type: Future
 
-    ensure_future(generate_bytes_img_prom(url, future, **kwargs))
-    loop.run_until_complete(future)
+    await_obj = gather(generate_bytes_img_prom(url, future, **kwargs))
+
+    loop.run_until_complete(await_obj)
 
     return future.result()
