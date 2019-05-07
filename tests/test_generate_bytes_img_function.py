@@ -17,6 +17,7 @@ from screamshot import (
     generate_bytes_img_wrap,
 )
 from screamshot.utils import to_sync, get_browser, close_browser
+from screamshot.errors import BadUrl, BadSelector
 
 
 TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoibWFraW5hIn0.\
@@ -48,10 +49,12 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         )
         self.img_kitten = Image.open("tests/server/static/images/aww_kitten.jpg")
 
+    def test_screenshot_bad_url(self):
+        with self.assertRaises(BadUrl):
+            to_sync(generate_bytes_img("http://fake"))
+
     def test_screenshot_protected_page_no_auth(self):
-        with self.assertRaisesRegex(
-            AttributeError, "'NoneType' object has no attribute 'screenshot'"
-        ):
+        with self.assertRaisesRegex(BadSelector, 'selector unknown: "#godot"'):
             to_sync(
                 generate_bytes_img(
                     "http://localhost:5000/protected_index", selector="#godot"
@@ -59,9 +62,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
             )
 
     def test_screenshot_protected_page_bad_auth(self):
-        with self.assertRaisesRegex(
-            AttributeError, "'NoneType' object has no attribute 'screenshot'"
-        ):
+        with self.assertRaisesRegex(BadSelector, 'selector unknown: "#godot"'):
             to_sync(
                 generate_bytes_img(
                     "http://localhost:5000/protected_index",
@@ -69,9 +70,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
                     credentials={"token_in_header": True, "token": "xxx"},
                 )
             )
-        with self.assertRaisesRegex(
-            AttributeError, "'NoneType' object has no attribute 'screenshot'"
-        ):
+        with self.assertRaisesRegex(BadSelector, 'selector unknown: "#godot"'):
             to_sync(
                 generate_bytes_img(
                     "http://localhost:5000/protected_index",
