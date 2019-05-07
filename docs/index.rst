@@ -14,7 +14,7 @@ Screamshot_ is a python library to capture screenshots of web pages.
 Specification
 -------------
 
-It is based on the Pyppeteer_ library that uses the Asyncio_ package and therefore **asynchronous funcrions**. Thus, you may experience some thread issues.
+It is based on the Pyppeteer_ library that uses the Asyncio_ package and therefore **asynchronous functions**. Thus, you may experience some thread issues.
 
 .. _Pyppeteer: https://github.com/miyakogi/pyppeteer/
 .. _Asyncio: https://docs.python.org/3/library/asyncio.html
@@ -60,5 +60,5 @@ In this case, if you use ``manage.py``, the server must be launched using ``--no
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-   
+
    screamshot

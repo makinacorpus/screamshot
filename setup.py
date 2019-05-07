@@ -13,7 +13,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 
 def get_requires():
-    requirements_f = open('requirements.txt', 'r')
+    requirements_f = open("requirements.txt", "r")
     install_requires = requirements_f.read().splitlines()
     requirements_f.close()
     return install_requires
@@ -24,6 +24,7 @@ setup(
     version=screamshot.__version__,
     author=screamshot.__author__,
     description="Python library to capture screenshots of web applications or pages",
+    description_content_type="text/markdown",
     long_description=open(os.path.join(HERE, "README.md")).read()
     + "\n\n"
     + open(os.path.join(HERE, "CHANGES.md")).read(),
