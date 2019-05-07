@@ -21,7 +21,7 @@ def _is_same_image(img1, img2):
 
 
 class TestBytesToImgFunction(TestCase):
-    def tests_bytes_to_img(self):
+    def test_bytes_to_img(self):
         img = Image.open('tests/server/static/images/aww_dog.jpg')
         buffer = BytesIO()
         img.save(buffer, format='PNG')
