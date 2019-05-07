@@ -13,10 +13,10 @@ generate_bytes_img_prom
 
 .. autofunction:: screamshot.generate_bytes_img_functions.generate_bytes_img_prom
 
-generate_bytes_img_django_wrap
+generate_bytes_img_wrap
 ------------------------------
 
-.. autofunction:: screamshot.generate_bytes_img_functions.generate_bytes_img_django_wrap
+.. autofunction:: screamshot.generate_bytes_img_functions.generate_bytes_img_wrap
 
 bytes_to_png
 ------------

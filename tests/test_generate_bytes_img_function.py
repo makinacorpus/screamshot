@@ -14,7 +14,7 @@ from PIL import Image
 from screamshot import (
     generate_bytes_img,
     generate_bytes_img_prom,
-    generate_bytes_img_django_wrap,
+    generate_bytes_img_wrap,
 )
 from screamshot.utils import to_sync, get_browser, close_browser
 
@@ -270,7 +270,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Takes a screenshot and compares the buffer to the saved image.
         Uses the django_wrap function.
         """
-        img_bytes = generate_bytes_img_django_wrap(
+        img_bytes = generate_bytes_img_wrap(
             "http://localhost:5000/index.html",
             selector="#godot",
             path="test_img.jpg",  # Use of path to specify the type
@@ -287,7 +287,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Takes a screenshot of a given div and compares it to the real image.
         Uses the django_wrap function.
         """
-        generate_bytes_img_django_wrap(
+        generate_bytes_img_wrap(
             "http://localhost:5000/index.html", selector="#godot", path="test_img.jpg"
         )
         img = Image.open("test_img.jpg")
@@ -299,7 +299,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Takes a screenshot of a given div and compares it to the real image.
         Uses the django_wrap function.
         """
-        generate_bytes_img_django_wrap(
+        generate_bytes_img_wrap(
             "http://localhost:5000/index.html",
             selector="#caterpillar",
             path="test_img.jpg",
@@ -313,7 +313,7 @@ class TestGenerateBytesImgFunction(unittest.TestCase):
         Takes a screenshot of a given div and compares it to a different image.
         Uses the django_wrap function.
         """
-        generate_bytes_img_django_wrap(
+        generate_bytes_img_wrap(
             "http://localhost:5000/index.html", selector="#godot", path="test_img.jpg"
         )
         img = Image.open("test_img.jpg")

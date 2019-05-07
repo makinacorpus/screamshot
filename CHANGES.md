@@ -70,3 +70,7 @@ From now on `serialize` function returns a `dict` object and `deserialize` takes
 ===
 
 Remove serializer functions and add a bytes_to_img function
+
+0.1.10
+===
+``generate_bytes_img_django_wrap`` is renamed ``generate_bytes_img_wrap``
