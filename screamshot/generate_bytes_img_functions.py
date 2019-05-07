@@ -132,9 +132,11 @@ async def generate_bytes_img(url: str, **kwargs) -> bytes:
     :returns: the binary code of the image
     :retype: `bytes`
 
-    .. warning:: It uses **pyppeteer** and so **async** functions
+    .. note:: A ``ScreamshotException.BadUrl`` and a ``ScreamshotException.BadSelector`` \
+        can be raised.
+    .. note:: The `asyncio` library can be used to manipulate this function.
 
-    .. note :: The `asyncio` library can be used to manipulate this function
+    .. warning:: It uses **pyppeteer** and so **async** functions.
 
     :Exemple:
 
@@ -206,9 +208,11 @@ async def generate_bytes_img_prom(url: str, future: Future, **kwargs):
 
     :retype: None
 
-    .. warning:: It uses **pyppeteer** and so **async** functions
+    .. note:: A ``ScreamshotException.BadUrl`` and a ``ScreamshotException.BadSelector`` \
+        can be raised.
 
-    .. warning:: This function must be used with the `asyncio` library
+    .. warning:: It uses **pyppeteer** and so **async** functions.
+    .. warning:: This function must be used with the `asyncio` library.
 
     :Exemple:
 
@@ -268,7 +272,8 @@ def generate_bytes_img_wrap(url: str, **kwargs):
     :returns: the binary code of the image
     :retype: `bytes`
 
-
+    .. note:: A ``ScreamshotException.BadUrl`` and a ``ScreamshotException.BadSelector`` \
+        can be raised.
     """
     loop = get_event_loop()
     future = Future() #type: Future
