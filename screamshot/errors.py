@@ -1,6 +1,8 @@
 """
 Screamshot exceptions
 """
+
+
 class ScreamshotException(Exception):
     """
     Base screamshot exception
@@ -9,7 +11,13 @@ class ScreamshotException(Exception):
 
 class BadUrl(ScreamshotException):
     """
-    Bad url excpetion
+    Bad url exception
+    """
+
+
+class BadAuth(ScreamshotException):
+    """
+    Bad authentification exception
     """
 
 

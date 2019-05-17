@@ -8,7 +8,7 @@ from pyppeteer.page import Page
 from pyppeteer.browser import Browser
 from pyppeteer.errors import PageError
 
-from screamshot.utils import get_browser
+from screamshot.utils import get_browser, get_token
 from screamshot.errors import BadUrl, BadSelector
 
 
@@ -31,31 +31,41 @@ def _parse_parameters(**kwargs) -> dict:
         path = kwargs.pop("path")
         screenshot_options.update({"path": path})
 
-    selector = None
-    if "selector" in kwargs:
-        selector = kwargs.pop("selector")
+    selector = kwargs.pop("selector", None)
 
-    wait_for = None
-    if "wait_for" in kwargs:
-        wait_for = kwargs.pop("wait_for")
+    wait_for = kwargs.pop("wait_for", None)
+
+    wait_for_xpath = kwargs.pop("wait_for_xpath", None)
 
     credentials = {}
-    if 'credentials' in kwargs:
-        credentials_data = kwargs.pop('credentials')
+    if "credentials" in kwargs:
+        credentials_data = kwargs.pop("credentials")
         if credentials_data:
-            if 'username' in credentials_data and 'password' in credentials_data:
-                credentials['login'] = True
-            if 'token_in_header' in credentials_data:
-                credentials['token_in_header'] = credentials_data.pop('token_in_header')
-            credentials.update({'credentials_data': credentials_data})
+            if "username" in credentials_data and "password" in credentials_data:
+                credentials["login"] = True
+            if "token_in_header" in credentials_data:
+                credentials["token_in_header"] = credentials_data.pop("token_in_header")
+            credentials.update({"credentials_data": credentials_data})
+
+    credentials_token_request = {}
+    if (
+            "url_token" in kwargs
+            and "username_token" in kwargs
+            and "password_token" in kwargs
+    ):
+        credentials_token_request["url"] = kwargs.pop("url_token")
+        credentials_token_request["username"] = kwargs.pop("username_token")
+        credentials_token_request["password"] = kwargs.pop("password_token")
 
     return {
         "arg_viewport": arg_viewport,
         "screenshot_options": screenshot_options,
         "selector": selector,
         "wait_for": wait_for,
+        "wait_for_xpath": wait_for_xpath,
         "wait_until": wait_until,
         "credentials": credentials,
+        "credentials_token_request": credentials_token_request,
     }
 
 
@@ -67,12 +77,17 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
         await page.setViewport(arg_viewport)
 
     credentials = params.get("credentials")
+    credentials_token_request = params.get("credentials_token_request")
     if credentials:
         credentials_data = credentials.get("credentials_data")
         if credentials.get("login"):
             await page.authenticate(credentials_data)
         if credentials.get("token_in_header"):
             await page.setExtraHTTPHeaders(credentials_data)
+    elif credentials_token_request:
+        url_token = credentials_token_request.pop("url")
+        extra_headers = get_token(url_token, credentials_token_request)
+        await page.setExtraHTTPHeaders(extra_headers)
 
     try:
         await page.goto(url, waitUntil=params.get("wait_until"))
@@ -82,6 +97,10 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
     wait_for = params.get("wait_for")
     if wait_for:
         await page.waitForSelector(wait_for)
+
+    wait_for_xpath = params.get("wait_for_xpath")
+    if wait_for_xpath:
+        await page.waitForXPath(wait_for_xpath)
 
     return page
 
@@ -276,7 +295,7 @@ def generate_bytes_img_wrap(url: str, **kwargs):
         can be raised.
     """
     loop = get_event_loop()
-    future = Future() #type: Future
+    future = Future()  # type: Future
 
     await_obj = gather(generate_bytes_img_prom(url, future, **kwargs))
 

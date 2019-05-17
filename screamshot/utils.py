@@ -11,11 +11,12 @@ from tempfile import gettempdir
 
 from urllib3.exceptions import MaxRetryError
 
-from requests import get
+from requests import get, post
 from requests.exceptions import ConnectionError as RequestsConnectionError
 
 from pyppeteer import launch, connect
 from pyppeteer.browser import Browser
+from screamshot.errors import BadAuth
 
 
 FILENAME_ENDPOINT = join(gettempdir(), "screamshot_browser_endpoint")
@@ -151,6 +152,26 @@ async def get_browser(
     return await open_browser(
         is_headless, launch_args=launch_args, write_websocket=write_websocket
     )
+
+
+def get_token(url, data):
+    """
+    Returns the token fetched to an url
+
+    :param url: The url to visit
+    :type url: str
+
+    :param data: credentials data to use
+    :type data: dict
+
+    :retype: dict
+
+    ..warning:: Raises BadAuth error if the response hasn't the status code 200
+    """
+    request = post(url, data=data)
+    if not request.status_code == 200:
+        raise BadAuth("Server response {}".format(request.status_code))
+    return request.content
 
 
 def wait_server_start(url: str, waiting_message: str, final_message: str):
