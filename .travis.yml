@@ -24,6 +24,7 @@ jobs:
         - sudo apt update
         - pip3 install --upgrade pip
         - pip install -r requirements.txt
+        - pip install -r dev-requirements.txt
         - pip install pylint
       script:
         - pylint ./screamshot
