@@ -21,6 +21,7 @@ from screamshot.utils import (
     wait_server_start,
     wait_server_close,
     get_token,
+    get_token_local_storage,
 )
 from screamshot.errors import BadAuth
 
@@ -279,3 +280,14 @@ class UnistTestsUtilsFunctions(TestCase):
         with self.assertRaises(BadAuth):
             get_token("http://false", {})
 
+    @mock.patch("screamshot.utils.post")
+    def test_get_token_local_storage(self, mock_post):
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.content = '{"token": "hey you"}'
+        browser = to_sync(open_browser(True, write_websocket=False, launch_args=["--no-sandbox"]))
+        page = to_sync(browser.newPage())
+        to_sync(page.goto('http://duckduckgo.com'))
+        to_sync(get_token_local_storage("http://false", {}, page))
+        token = to_sync(page.evaluate("() => window.localStorage.getItem('token')"))
+        self.assertEqual(token, '{"token": "hey you"}')
+        browser.close()

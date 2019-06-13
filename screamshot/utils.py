@@ -173,6 +173,27 @@ def get_token(url, data):
         raise BadAuth("Server response {}".format(request.status_code))
     return request.content
 
+async def get_token_local_storage(url, data, page):
+    """
+    Returns the token fetched to an url
+
+    :param url: The url to visit
+    :type url: str
+
+    :param data: credentials data to use
+    :type data: dict
+
+    :param page: page used for the local storage
+    :type page: pyppeteer.page.Page
+
+    :retype: dict
+
+    ..warning:: Raises BadAuth error if the response hasn't the status code 200
+    """
+    token = get_token(url, data)
+    await page.evaluate("() => window.localStorage.setItem('token', '{}')".format(token))
+    return token
+
 
 def wait_server_start(url: str, waiting_message: str, final_message: str):
     """
