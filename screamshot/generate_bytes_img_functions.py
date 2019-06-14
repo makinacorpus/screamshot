@@ -44,7 +44,8 @@ def _parse_parameters(**kwargs) -> dict:
             if "username" in credentials_data and "password" in credentials_data:
                 credentials["login"] = True
             if "token_in_header" in credentials_data:
-                credentials["token_in_header"] = credentials_data.pop("token_in_header")
+                credentials["token_in_header"] = credentials_data.pop(
+                    "token_in_header")
             credentials.update({"credentials_data": credentials_data})
 
     credentials_token_request = {}
@@ -56,6 +57,8 @@ def _parse_parameters(**kwargs) -> dict:
         credentials_token_request["url"] = kwargs.pop("url_token")
         credentials_token_request["username"] = kwargs.pop("username_token")
         credentials_token_request["password"] = kwargs.pop("password_token")
+        credentials_token_request["local_storage"] = "local_storage" in kwargs and kwargs.pop(
+            "local_storage")
 
     return {
         "arg_viewport": arg_viewport,
@@ -86,7 +89,9 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
             await page.setExtraHTTPHeaders(credentials_data)
     elif credentials_token_request:
         url_token = credentials_token_request.pop("url")
-        extra_headers = get_token(url_token, credentials_token_request)
+        local_storage = credentials_token_request.pop("local_storage")
+        extra_headers = get_token(
+            url_token, credentials_token_request, local_storage=local_storage, page=page)
         await page.setExtraHTTPHeaders(extra_headers)
 
     try:

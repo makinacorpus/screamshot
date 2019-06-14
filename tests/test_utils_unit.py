@@ -21,7 +21,6 @@ from screamshot.utils import (
     wait_server_start,
     wait_server_close,
     get_token,
-    get_token_local_storage,
 )
 from screamshot.errors import BadAuth
 
@@ -94,13 +93,19 @@ class UnistTestsUtilsFunctions(TestCase):
         """
         Tests url_match
         """
-        self.assertTrue(url_match("https://www.google.fr", "https://www.google.fr"))
-        self.assertTrue(url_match("https://www.google.fr/", "https://www.google.fr"))
-        self.assertTrue(url_match("https://www.google.fr", "https://www.google.fr/"))
+        self.assertTrue(
+            url_match("https://www.google.fr", "https://www.google.fr"))
+        self.assertTrue(
+            url_match("https://www.google.fr/", "https://www.google.fr"))
+        self.assertTrue(url_match("https://www.google.fr",
+                                  "https://www.google.fr/"))
 
-        self.assertFalse(url_match("http://www.google.fr", "https://www.google.fr"))
-        self.assertFalse(url_match("http://www.google.fr/", "https://www.google.fr"))
-        self.assertFalse(url_match("http://www.google.fr", "https://www.google.fr/"))
+        self.assertFalse(
+            url_match("http://www.google.fr", "https://www.google.fr"))
+        self.assertFalse(
+            url_match("http://www.google.fr/", "https://www.google.fr"))
+        self.assertFalse(
+            url_match("http://www.google.fr", "https://www.google.fr/"))
 
     def test_set_endpoint(self):
         """
@@ -129,7 +134,8 @@ class UnistTestsUtilsFunctions(TestCase):
         with self.assertLogs() as logs:
             get_endpoint()
         self.assertEqual(
-            logs.output, ["WARNING:root:{0} not found".format(FILENAME_ENDPOINT)]
+            logs.output, [
+                "WARNING:root:{0} not found".format(FILENAME_ENDPOINT)]
         )
 
         endpoint_f = open(FILENAME_ENDPOINT, "w")
@@ -158,7 +164,8 @@ class UnistTestsUtilsFunctions(TestCase):
         self.assertEqual(browser2.wsEndpoint, "wsEndpoint")
 
         browser3 = to_sync(
-            open_browser(True, launch_args=["--no-sandbox"], write_websocket=False)
+            open_browser(True, launch_args=[
+                         "--no-sandbox"], write_websocket=False)
         )
         self.assertTrue(browser3.headless)
         self.assertFalse(browser3.autoClose)
@@ -166,7 +173,8 @@ class UnistTestsUtilsFunctions(TestCase):
         self.assertEqual(browser3.wsEndpoint, "wsEndpoint")
 
         with self.assertRaisesRegex(ValueError, "wsEndpoint"):
-            browser4 = to_sync(open_browser(True, launch_args=["--no-sandbox"]))
+            browser4 = to_sync(open_browser(
+                True, launch_args=["--no-sandbox"]))
             self.assertTrue(browser4.headless)
             self.assertFalse(browser4.autoClose)
             self.assertEqual(browser4.args, ["--no-sandbox"])
@@ -214,7 +222,8 @@ class UnistTestsUtilsFunctions(TestCase):
 
         mock_response = mock.Mock()
         mock_response.status_code.return_value = 200
-        mock_get.side_effect = [MaxRetryError(None, "http://false"), mock_response]
+        mock_get.side_effect = [MaxRetryError(
+            None, "http://false"), mock_response]
         with self.assertLogs() as logs:
             wait_server_start("http://false", "Wait for: %ds", "Awaited: %ds")
         self.assertEqual(
@@ -284,10 +293,12 @@ class UnistTestsUtilsFunctions(TestCase):
     def test_get_token_local_storage(self, mock_post):
         mock_post.return_value.status_code = 200
         mock_post.return_value.content = '{"token": "hey you"}'
-        browser = to_sync(open_browser(True, write_websocket=False, launch_args=["--no-sandbox"]))
+        browser = to_sync(open_browser(
+            True, write_websocket=False, launch_args=["--no-sandbox"]))
         page = to_sync(browser.newPage())
         to_sync(page.goto('http://duckduckgo.com'))
-        to_sync(get_token_local_storage("http://false", {}, page))
-        token = to_sync(page.evaluate("() => window.localStorage.getItem('token')"))
+        get_token("http://false", {}, True, page)
+        token = to_sync(page.evaluate(
+            "() => window.localStorage.getItem('token')"))
         self.assertEqual(token, '{"token": "hey you"}')
         browser.close()

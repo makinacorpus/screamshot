@@ -52,7 +52,7 @@ takes some parameters and returns a binary `bytes` object.
 0.1.6
 ===
 
-* Module is now available 
+* Module is now available
 
 0.1.7
 ===
@@ -80,3 +80,8 @@ takes some parameters and returns a binary `bytes` object.
 ===
 * ``bytes_to_png`` is renamed ``bytes_to_file``
 * ``bytes_to_file`` supports type choice
+
+0.1.12
+===
+* You can now fetch http headers from another page with ``get_token``
+* And store these headers in the local storage

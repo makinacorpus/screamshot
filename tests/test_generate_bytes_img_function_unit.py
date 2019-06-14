@@ -66,7 +66,6 @@ class FakePage:
         self.waitForxPath_called = True
         self.wait_for_xpath = wait_for_xpath
 
-
     async def querySelector(self, selector):
         self.querySelector_called = True
         self.selector = selector
@@ -92,6 +91,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
     """
     Test class
     """
+
     def test_parse_parameters(self):
         """
         Tests _parse_parameters
@@ -100,7 +100,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             _parse_parameters(),
             {
                 "arg_viewport": {},
-              "screenshot_options": {"fullPage": False},
+                "screenshot_options": {"fullPage": False},
                 "selector": None,
                 "wait_for": None,
                 "wait_for_xpath": None,
@@ -227,7 +227,8 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             },
         )
         self.assertEqual(
-            _parse_parameters(credentials={"username": "makina", "password": "makina"}),
+            _parse_parameters(
+                credentials={"username": "makina", "password": "makina"}),
             {
                 "arg_viewport": {},
                 "screenshot_options": {"fullPage": False},
@@ -243,7 +244,8 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             },
         )
         self.assertEqual(
-            _parse_parameters(credentials={"token_in_header": True, "token": "xxx"}),
+            _parse_parameters(
+                credentials={"token_in_header": True, "token": "xxx"}),
             {
                 "arg_viewport": {},
                 "screenshot_options": {"fullPage": False},
@@ -259,7 +261,8 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             },
         )
         self.assertEqual(
-            _parse_parameters(url_token="http://fake", username_token="me", password_token="1234"),
+            _parse_parameters(url_token="http://fake",
+                              username_token="me", password_token="1234"),
             {
                 "arg_viewport": {},
                 "screenshot_options": {"fullPage": False},
@@ -272,9 +275,11 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                     "url": "http://fake",
                     "username": "me",
                     "password": "1234",
+                    "local_storage": False,
                 },
             },
         )
+
     @patch("screamshot.generate_bytes_img_functions.get_token")
     def test_page_manager(self, mock_get_token):
         """
@@ -414,7 +419,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(page6.wait_for, "div")
         self.assertFalse(page6.querySelector_called)
         self.assertEqual(page6.selector, None)
-    
+
         params_page7 = {
             "arg_viewport": {},
             "screenshot_options": {"fullPage": False},
@@ -436,7 +441,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(page7.wait_for_xpath, "div")
         self.assertFalse(page7.querySelector_called)
         self.assertEqual(page7.selector, None)
-        
+
         params_page8 = {
             "arg_viewport": {},
             "screenshot_options": {"fullPage": False},
@@ -444,7 +449,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_for_xpath": "div",
             "wait_until": ["load"],
             "credentials": {},
-            "credentials_token_request": {"url": "http://fake", "username": "me", "password": "1234"},
+            "credentials_token_request": {"url": "http://fake", "username": "me", "password": "1234", "local_storage": False},
         }
         page8 = to_sync(_page_manager(browser, url, params_page8))
         self.assertEqual(page8.arg_viewport, None)
@@ -459,6 +464,27 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertFalse(page8.querySelector_called)
         self.assertEqual(page8.selector, None)
 
+        params_page9 = {
+            "arg_viewport": {},
+            "screenshot_options": {"fullPage": False},
+            "selector": None,
+            "wait_for_xpath": "div",
+            "wait_until": ["load"],
+            "credentials": {},
+            "credentials_token_request": {"url": "http://fake", "username": "me", "password": "1234", "local_storage": True},
+        }
+        page9 = to_sync(_page_manager(browser, url, params_page9))
+        self.assertEqual(page9.arg_viewport, None)
+        self.assertEqual(page9.credentials, {"token": "xxx"})
+        self.assertEqual(page9.wait_until, ["load"])
+        self.assertTrue(page9.goto_called)
+        self.assertEqual(page9.url, url)
+        self.assertFalse(page9.waitForSelector_called)
+        self.assertEqual(page9.wait_for, None)
+        self.assertTrue(page9.waitForxPath_called)
+        self.assertEqual(page9.wait_for_xpath, "div")
+        self.assertFalse(page9.querySelector_called)
+        self.assertEqual(page9.selector, None)
 
     def test_selector_manager(self):
         """
@@ -545,4 +571,3 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         loop.run_until_complete(future)
         screenshot1 = future.result()
         self.assertEqual(screenshot1, "screenshot !")
-
