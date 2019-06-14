@@ -25,6 +25,7 @@ setup(
     author=screamshot.__author__,
     description="Python library to capture screenshots of web applications or pages",
     description_content_type="text/markdown",
+    long_description_content_type="text/markdown",
     long_description=open(os.path.join(HERE, "README.md")).read()
     + "\n\n"
     + open(os.path.join(HERE, "CHANGES.md")).read(),
