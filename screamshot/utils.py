@@ -183,6 +183,20 @@ def get_token(url, data, local_storage=False, page=None):
     return request.content
 
 
+def get_local_storage_token(page):
+    """
+    Returns the token stored in the local storage
+
+    :param page: page used for the local storage
+    :type page: pyppeteer.page.Page
+
+    :retype: dict
+    """
+    local_token = to_sync(page.evaluate(
+        "() => window.localStorage.getItem('token')"))
+    return local_token
+
+
 def wait_server_start(url: str, waiting_message: str, final_message: str):
     """
     Wait for a web page to answer

@@ -8,7 +8,7 @@ from pyppeteer.page import Page
 from pyppeteer.browser import Browser
 from pyppeteer.errors import PageError
 
-from screamshot.utils import get_browser, get_token
+from screamshot.utils import get_browser, get_token, get_local_storage_token
 from screamshot.errors import BadUrl, BadSelector
 
 
@@ -60,6 +60,8 @@ def _parse_parameters(**kwargs) -> dict:
         credentials_token_request["local_storage"] = "local_storage" in kwargs and kwargs.pop(
             "local_storage")
 
+    use_local_token = kwargs.pop("use_local_token", None)
+
     return {
         "arg_viewport": arg_viewport,
         "screenshot_options": screenshot_options,
@@ -69,6 +71,7 @@ def _parse_parameters(**kwargs) -> dict:
         "wait_until": wait_until,
         "credentials": credentials,
         "credentials_token_request": credentials_token_request,
+        "use_local_token": use_local_token,
     }
 
 
@@ -81,6 +84,7 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
 
     credentials = params.get("credentials")
     credentials_token_request = params.get("credentials_token_request")
+    use_local_token = params.get("use_local_token")
     if credentials:
         credentials_data = credentials.get("credentials_data")
         if credentials.get("login"):
@@ -92,6 +96,9 @@ async def _page_manager(browser: Browser, url: str, params: dict) -> Page:
         local_storage = credentials_token_request.pop("local_storage")
         extra_headers = get_token(
             url_token, credentials_token_request, local_storage=local_storage, page=page)
+        await page.setExtraHTTPHeaders(extra_headers)
+    elif use_local_token:
+        extra_headers = get_local_storage_token(page)
         await page.setExtraHTTPHeaders(extra_headers)
 
     try:

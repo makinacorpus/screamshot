@@ -21,6 +21,7 @@ from screamshot.utils import (
     wait_server_start,
     wait_server_close,
     get_token,
+    get_local_storage_token,
 )
 from screamshot.errors import BadAuth
 
@@ -290,7 +291,7 @@ class UnistTestsUtilsFunctions(TestCase):
             get_token("http://false", {})
 
     @mock.patch("screamshot.utils.post")
-    def test_get_token_local_storage(self, mock_post):
+    def test_get_token_put_local_storage(self, mock_post):
         mock_post.return_value.status_code = 200
         mock_post.return_value.content = '{"token": "hey you"}'
         browser = to_sync(open_browser(
@@ -300,5 +301,18 @@ class UnistTestsUtilsFunctions(TestCase):
         get_token("http://false", {}, True, page)
         token = to_sync(page.evaluate(
             "() => window.localStorage.getItem('token')"))
+        self.assertEqual(token, '{"token": "hey you"}')
+        browser.close()
+
+    @mock.patch("screamshot.utils.post")
+    def test_get_token_from_local_storage(self, mock_post):
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.content = '{"token": "hey you"}'
+        browser = to_sync(open_browser(
+            True, write_websocket=False, launch_args=["--no-sandbox"]))
+        page = to_sync(browser.newPage())
+        to_sync(page.goto('http://duckduckgo.com'))
+        get_token("http://false", {}, True, page)
+        token = get_local_storage_token(page)
         self.assertEqual(token, '{"token": "hey you"}')
         browser.close()

@@ -30,6 +30,7 @@ class FakePage:
         selector=None,
         credentials=None,
         credentials_token_request=None,
+        use_local_token=None,
     ):
         self.arg_viewport = arg_viewport
         self.credentials = credentials
@@ -43,6 +44,8 @@ class FakePage:
         self.wait_for_xpath = wait_for_xpath
         self.querySelector_called = querySelector_called
         self.selector = selector
+        if use_local_token:
+            self.credentials_token_request = {"token": "xxx"}
 
     async def setViewport(self, arg_viewport):
         self.arg_viewport = arg_viewport
@@ -107,6 +110,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -120,6 +124,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -133,6 +138,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -146,6 +152,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["networkidle0"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -159,6 +166,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["networkidle0"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -172,6 +180,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -185,6 +194,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -198,6 +208,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -211,6 +222,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -224,6 +236,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "wait_until": ["load"],
                 "credentials": {},
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -241,6 +254,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                     "credentials_data": {"username": "makina", "password": "makina"},
                 },
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -258,6 +272,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                     "credentials_data": {"token": "xxx"},
                 },
                 "credentials_token_request": {},
+                "use_local_token": None,
             },
         )
         self.assertEqual(
@@ -277,17 +292,20 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                     "password": "1234",
                     "local_storage": False,
                 },
+                "use_local_token": None,
             },
         )
 
     @patch("screamshot.generate_bytes_img_functions.get_token")
-    def test_page_manager(self, mock_get_token):
+    @patch("screamshot.generate_bytes_img_functions.get_local_storage_token")
+    def test_page_manager(self, mock_get_token, mock_get_local_storage_token):
         """
         Tests _page_manager
         """
         browser = FakeBrowser()
         url = "http://fake"
         mock_get_token.return_value = {"token": "xxx"}
+        mock_get_local_storage_token.return_value = {"token": "xxx"}
 
         params_page1 = {
             "arg_viewport": {},
@@ -298,6 +316,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load"],
             "credentials": {},
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page1 = to_sync(_page_manager(browser, url, params_page1))
         self.assertEqual(page1.arg_viewport, None)
@@ -319,6 +338,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load"],
             "credentials": {},
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page2 = to_sync(_page_manager(browser, url, params_page2))
         self.assertEqual(page2.arg_viewport, {"width": 800, "height": 800})
@@ -340,6 +360,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load", "networkidle0"],
             "credentials": {},
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page3 = to_sync(_page_manager(browser, url, params_page3))
         self.assertEqual(page3.arg_viewport, None)
@@ -360,6 +381,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load"],
             "credentials": {},
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page4 = to_sync(_page_manager(browser, url, params_page4))
         self.assertEqual(page4.arg_viewport, None)
@@ -383,6 +405,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "credentials_data": {"username": "makina", "password": "makina"},
             },
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page5 = to_sync(_page_manager(browser, url, params_page5))
         self.assertEqual(page5.arg_viewport, None)
@@ -408,6 +431,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
                 "credentials_data": {"token": "xxx"},
             },
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page6 = to_sync(_page_manager(browser, url, params_page6))
         self.assertEqual(page6.arg_viewport, None)
@@ -428,6 +452,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load"],
             "credentials": {},
             "credentials_token_request": {},
+            "use_local_token": None,
         }
         page7 = to_sync(_page_manager(browser, url, params_page7))
         self.assertEqual(page7.arg_viewport, None)
@@ -450,6 +475,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load"],
             "credentials": {},
             "credentials_token_request": {"url": "http://fake", "username": "me", "password": "1234", "local_storage": False},
+            "use_local_token": None,
         }
         page8 = to_sync(_page_manager(browser, url, params_page8))
         self.assertEqual(page8.arg_viewport, None)
@@ -472,6 +498,7 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
             "wait_until": ["load"],
             "credentials": {},
             "credentials_token_request": {"url": "http://fake", "username": "me", "password": "1234", "local_storage": True},
+            "use_local_token": True,
         }
         page9 = to_sync(_page_manager(browser, url, params_page9))
         self.assertEqual(page9.arg_viewport, None)
@@ -485,6 +512,41 @@ class TestGenerateBytesImgFunctionUnit(TestCase):
         self.assertEqual(page9.wait_for_xpath, "div")
         self.assertFalse(page9.querySelector_called)
         self.assertEqual(page9.selector, None)
+
+        params_page10 = {
+            "arg_viewport": {},
+            "screenshot_options": {"fullPage": False},
+            "selector": None,
+            "wait_for_xpath": "div",
+            "wait_until": ["load"],
+            "credentials": {},
+            "credentials_token_request": {},
+            "use_local_token": True,
+        }
+        page10 = to_sync(_page_manager(browser, url, {
+            "arg_viewport": {},
+            "screenshot_options": {"fullPage": False},
+            "selector": None,
+            "wait_for_xpath": "div",
+            "wait_until": ["load"],
+            "credentials": {},
+            "credentials_token_request": {
+                "url": "http://fake", "username": "me", "password": "1234", "local_storage": True
+            },
+            "use_local_token": True,
+        }))
+        page10 = to_sync(_page_manager(browser, url, params_page10))
+        self.assertEqual(page10.arg_viewport, None)
+        self.assertEqual(page10.credentials, {"token": "xxx"})
+        self.assertEqual(page10.wait_until, ["load"])
+        self.assertTrue(page10.goto_called)
+        self.assertEqual(page10.url, url)
+        self.assertFalse(page10.waitForSelector_called)
+        self.assertEqual(page10.wait_for, None)
+        self.assertTrue(page10.waitForxPath_called)
+        self.assertEqual(page10.wait_for_xpath, "div")
+        self.assertFalse(page10.querySelector_called)
+        self.assertEqual(page10.selector, None)
 
     def test_selector_manager(self):
         """
