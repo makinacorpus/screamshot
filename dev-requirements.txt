@@ -4,4 +4,4 @@ numpy==1.16.3
 pytest==4.4.1
 pytest-cov==2.6.1
 python-coveralls==2.9.1
-Pillow==6.0.0
+Pillow==8.2.0
